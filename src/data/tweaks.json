@@ -545,14 +545,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100",
-        "reason": "\"powercfg\" operations are not implemented yet"
-      },
-      {
-        "type": "unsupported",
-        "command": "powercfg -setactive SCHEME_CURRENT",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "procMinState",
+        "value": 100
       }
     ],
     "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100 & powercfg -setactive SCHEME_CURRENT",
@@ -573,14 +569,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100",
-        "reason": "\"powercfg\" operations are not implemented yet"
-      },
-      {
-        "type": "unsupported",
-        "command": "powercfg -setactive SCHEME_CURRENT",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "coreParkingMin",
+        "value": 100
       }
     ],
     "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100 & powercfg -setactive SCHEME_CURRENT",
@@ -630,14 +622,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg /SETACVALUEINDEX SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0",
-        "reason": "\"powercfg\" operations are not implemented yet"
-      },
-      {
-        "type": "unsupported",
-        "command": "powercfg -SETACTIVE SCHEME_CURRENT",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "usbSelectiveSuspend",
+        "value": 0
       }
     ],
     "originalCommand": "powercfg /SETACVALUEINDEX SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0 & powercfg -SETACTIVE SCHEME_CURRENT",
@@ -1206,9 +1194,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg -h off",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "hibernate",
+        "enabled": false
       }
     ],
     "originalCommand": "powercfg -h off",
@@ -1435,14 +1423,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg -setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0",
-        "reason": "\"powercfg\" operations are not implemented yet"
-      },
-      {
-        "type": "unsupported",
-        "command": "powercfg -setactive SCHEME_CURRENT",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "pcieAspm",
+        "value": 0
       }
     ],
     "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0 & powercfg -setactive SCHEME_CURRENT",
@@ -1486,14 +1470,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1",
-        "reason": "\"powercfg\" operations are not implemented yet"
-      },
-      {
-        "type": "unsupported",
-        "command": "powercfg -setactive SCHEME_CURRENT",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "cpuIdleDisable",
+        "value": 1
       }
     ],
     "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1 & powercfg -setactive SCHEME_CURRENT",
@@ -3835,9 +3815,10 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powercfg /change monitor-timeout-ac 0",
-        "reason": "\"powercfg\" operations are not implemented yet"
+        "type": "powercfg",
+        "action": "setting",
+        "setting": "displayTimeout",
+        "value": 0
       }
     ],
     "originalCommand": "powercfg /change monitor-timeout-ac 0",

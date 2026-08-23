@@ -111,6 +111,10 @@
   "reason.privacyLow": "Bei deinem Datenschutz-Wert ist noch Luft nach oben",
   "reason.manyPreinstalled": "Es wurden viele vorinstallierte Apps und Autostart-Einträge gefunden",
   "reason.performanceLow": "Bei deinem Leistungs-Wert ist noch Luft nach oben",
+  "skipped.title": "Auf diesem PC weggelassen",
+  "skipped.subtitle": "Das hier wäre vorgeschlagen worden, aber etwas an deinem PC spricht dagegen.",
+  "skipped.risky": "Riskant — wird nie automatisch angewendet, in den Einstellungen freischaltbar",
+  "skipped.laptopBattery": "Das ist ein Laptop — die Hardware wachzuhalten kostet mehr Akku, als es bringt",
   "tweaks.title": "Alle Tweaks",
   "tweaks.subtitle": "{count} Tweaks. Bei jedem steht, was genau er verändert.",
   "tweaks.filterRisk": "Risiko",
@@ -327,5 +331,7 @@
   "startMode.Manual": "Manuell",
   "startMode.Disabled": "Deaktiviert",
   "startMode.Boot": "Beim Systemstart",
-  "startMode.System": "System"
+  "startMode.System": "System",
+  "apply.noneAvailable": "Davon läuft auf diesem PC keiner — alle sind als nicht verfügbar markiert.",
+  "apply.unavailableTrimmed": "{count} weggelassen: auf diesem PC nicht verfügbar."
 }

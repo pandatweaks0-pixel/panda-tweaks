@@ -272,3 +272,80 @@ test("an unreadable service is still attempted, not skipped", async () => {
     const res = await svc.apply(op, unreadable);
     assert.equal(res.ok, false, "a failed read is not permission to skip the write");
 });
+
+// ---------------------------------------------------------------------------
+// Power scheme settings
+// ---------------------------------------------------------------------------
+//
+// Nothing here writes to the power scheme. The one test that touches powercfg
+// only reads, because the parser is the part that can quietly rot: the captions
+// in that output are translated, so the values are taken by position and a
+// changed layout would go unnoticed until someone's CPU sat at 5%.
+
+test("a power setting outside the allowlist never becomes an operation", () => {
+    assert.throws(
+        () => validateOp({ type: "powercfg", action: "setting", setting: "whateverIWant", value: 1 }),
+        /Unknown power setting/
+    );
+    // A GUID pair passed directly is exactly what the allowlist exists to stop.
+    assert.throws(
+        () => validateOp({ type: "powercfg", action: "setting", setting: "54533251-82be-4824-96c1-47b60b740d00", value: 1 }),
+        /Unknown power setting/
+    );
+});
+
+test("power setting values must be whole numbers in range", () => {
+    for (const bad of ["100%", 1.5, -1, NaN, null]) {
+        assert.throws(
+            () => validateOp({ type: "powercfg", action: "setting", setting: "procMinState", value: bad }),
+            /Invalid power setting value/,
+            `${bad} should not validate`
+        );
+    }
+    assert.equal(validateOp({ type: "powercfg", action: "setting", setting: "procMinState", value: 100 }).value, 100);
+    // Zero is a legitimate value - it is what "never turn off the display" is.
+    assert.equal(validateOp({ type: "powercfg", action: "setting", setting: "displayTimeout", value: 0 }).value, 0);
+});
+
+test("hibernate needs a real boolean, not a truthy string", () => {
+    assert.throws(() => validateOp({ type: "powercfg", action: "hibernate", enabled: "off" }), /true or false/);
+    assert.equal(validateOp({ type: "powercfg", action: "hibernate", enabled: false }).enabled, false);
+});
+
+test("a power setting is judged on the mains value, and an unread one is unknown", () => {
+    const pc = OPS.powercfg;
+    const op = validateOp({ type: "powercfg", action: "setting", setting: "procMinState", value: 100 });
+
+    assert.equal(pc.isApplied(op, { ac: 100, dc: 5 }), true, "DC differing must not make it unapplied");
+    assert.equal(pc.isApplied(op, { ac: 5, dc: 5 }), false);
+    assert.equal(pc.isApplied(op, { readFailed: true }), null, "a failed read is not a verdict");
+    assert.equal(pc.isApplied(op, null), null);
+});
+
+test("describe() names the setting and the value before anything runs", () => {
+    const pc = OPS.powercfg;
+    const d = pc.describe(validateOp({ type: "powercfg", action: "setting", setting: "coreParkingMin", value: 100 }));
+    assert.match(d, /Core parking/i);
+    assert.match(d, /100%/);
+    assert.match(pc.describe(validateOp({ type: "powercfg", action: "hibernate", enabled: false })), /hibernation off/i);
+});
+
+test("the powercfg output parser finds a real current value on this machine", async () => {
+    const pc = OPS.powercfg;
+    const op = validateOp({ type: "powercfg", action: "setting", setting: "procMinState", value: 100 });
+
+    const state = (await pc.capture([op])).get(op);
+    assert.ok(state, "capture must return an entry for every operation it was given");
+    if (state.readFailed) {
+        // A machine with no configurable power scheme is a legitimate outcome;
+        // silently passing on a broken parser is not, so say which happened.
+        assert.match(state.error, /powercfg|value/i);
+        return;
+    }
+    // Minimum processor state is a percentage: anything outside 0-100 means the
+    // parser grabbed one of the range lines instead of the current index.
+    for (const rail of ["ac", "dc"]) {
+        assert.equal(Number.isInteger(state[rail]), true, `${rail} should be a whole number`);
+        assert.ok(state[rail] >= 0 && state[rail] <= 100, `${rail} was ${state[rail]}, which is not a percentage`);
+    }
+});

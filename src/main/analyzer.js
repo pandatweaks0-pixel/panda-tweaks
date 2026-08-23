@@ -57,13 +57,15 @@ async function analyze() {
         logger.error("Tweak detection failed during analysis", { error: e.message });
     }
 
+    const { list, skipped } = recommend(analysis, scores, detection);
     const payload = {
         scannedAt: new Date().toISOString(),
         durationMs: Date.now() - started,
         analysis,
         scores,
         detection,
-        recommendations: recommend(analysis, scores, detection),
+        recommendations: list,
+        skipped,
     };
     saveCache(payload);
     logger.info("System analysis complete", {
@@ -102,10 +104,26 @@ function contextReasons(analysis, scores) {
     return reasons;
 }
 
+// A tweak that keeps hardware awake costs a desktop nothing and costs a laptop
+// its battery. Rather than maintaining a list by hand, this asks the operations:
+// everything that edits the power scheme qualifies, so a powercfg tweak added
+// later is covered without anyone remembering to add it here. Only the one
+// exception that is not a powercfg operation has to be named.
+const ALSO_DRAINS_BATTERY = new Set(["cpu_powerthrottle_off"]);
+
+const drainsBattery = (tweak) =>
+    ALSO_DRAINS_BATTERY.has(tweak.id) || (tweak.operations || []).some((op) => op.type === "powercfg");
+
+// Returns both halves of the decision. The list is what gets offered; skipped is
+// what was deliberately held back and why — the two policy exclusions only, not
+// every tweak that happens to be applied already. "Nothing to do here" is not a
+// decision worth explaining; "your laptop, so no" is.
 function recommend(analysis, scores, detection) {
     const statusById = new Map(detection.map((d) => [d.id, d]));
     const context = contextReasons(analysis, scores);
-    const out = [];
+    const onLaptop = analysis.isLaptop === true;
+    const list = [];
+    const skipped = [];
 
     for (const tweak of engine.getTweaks()) {
         if (tweak.unavailable) continue;
@@ -113,16 +131,28 @@ function recommend(analysis, scores, detection) {
         if (!state || !state.supported) continue;
         // Already in place, or we could not read it — either way, do not push it.
         if (state.status !== "not-applied" && state.status !== "partial") continue;
+
+        const wouldOffer = tweak.recommended || (context.has(tweak.category) && tweak.risk === "advanced");
+
         // Risky tweaks are never recommended automatically.
-        if (tweak.risk === "risky") continue;
+        if (tweak.risk === "risky") {
+            if (wouldOffer) skipped.push({ id: tweak.id, name: tweak.name, reason: "skipped.risky" });
+            continue;
+        }
+        // The machine has a battery, so leaving hardware permanently awake is a
+        // worse trade here than the frames it buys.
+        if (onLaptop && drainsBattery(tweak)) {
+            if (wouldOffer) skipped.push({ id: tweak.id, name: tweak.name, reason: "skipped.laptopBattery" });
+            continue;
+        }
 
         if (tweak.recommended) {
-            out.push({ id: tweak.id, category: tweak.category, risk: tweak.risk, reason: "reason.generallyRecommended" });
+            list.push({ id: tweak.id, category: tweak.category, risk: tweak.risk, reason: "reason.generallyRecommended" });
         } else if (context.has(tweak.category) && tweak.risk === "advanced") {
-            out.push({ id: tweak.id, category: tweak.category, risk: tweak.risk, reason: context.get(tweak.category) });
+            list.push({ id: tweak.id, category: tweak.category, risk: tweak.risk, reason: context.get(tweak.category) });
         }
     }
-    return out;
+    return { list, skipped };
 }
 
 module.exports = { init, analyze, getCached, recommend, contextReasons };

@@ -111,6 +111,10 @@
   "reason.privacyLow": "Your privacy score has room to improve",
   "reason.manyPreinstalled": "A lot of preinstalled apps and startup entries were found",
   "reason.performanceLow": "Your performance score has room to improve",
+  "skipped.title": "Left out on this machine",
+  "skipped.subtitle": "These would have been suggested, but something about your PC says otherwise.",
+  "skipped.risky": "Risky — never applied automatically, switch it on in Settings if you want it",
+  "skipped.laptopBattery": "This is a laptop — keeping the hardware awake would cost more battery than it gains you",
   "tweaks.title": "All tweaks",
   "tweaks.subtitle": "{count} tweaks. Every one shows exactly what it changes.",
   "tweaks.filterRisk": "Risk",
@@ -327,5 +331,7 @@
   "startMode.Manual": "Manual",
   "startMode.Disabled": "Disabled",
   "startMode.Boot": "At boot",
-  "startMode.System": "System"
+  "startMode.System": "System",
+  "apply.noneAvailable": "None of these can run on this PC — they are all marked unavailable.",
+  "apply.unavailableTrimmed": "{count} left out: not available on this PC."
 }

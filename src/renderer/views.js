@@ -403,6 +403,25 @@ Views.dashboard = () => {
 
 // --- recommended -------------------------------------------------------------
 
+// What the analysis decided against, and why. Only the deliberate exclusions
+// appear here — risky, and anything that would keep a laptop's hardware awake.
+// A tweak that is simply already applied is not a decision worth explaining.
+function skippedPanel() {
+    const skipped = State.scan?.skipped || [];
+    if (!skipped.length) return null;
+    return h(
+        "div.card.mt-4",
+        null,
+        h("h3", { text: t("skipped.title") }),
+        h("p.faint.small", { text: t("skipped.subtitle") }),
+        h(
+            "div.list--tight.mt-3",
+            null,
+            ...skipped.map((s) => h("div", null, h("b", { text: s.name }), h("div.faint.small", { text: t(s.reason) })))
+        )
+    );
+}
+
 Views.recommended = () => {
     const scan = State.scan;
     const recs = scan ? App.liveRecommendations() : [];
@@ -412,7 +431,10 @@ Views.recommended = () => {
             "div.page",
             null,
             pageHead(t("recommended.title"), t("recommended.subtitle")),
-            h("div.empty", { text: scan ? t("recommended.empty") : t("dashboard.neverScanned") })
+            h("div.empty", { text: scan ? t("recommended.empty") : t("dashboard.neverScanned") }),
+            // Still worth showing with an empty list: "nothing to suggest" reads
+            // very differently once you can see what was held back and why.
+            skippedPanel()
         );
     }
 
@@ -429,6 +451,7 @@ Views.recommended = () => {
             })
         ),
         h("div.list", null, ...recs.map((r) => tweakCard(byId.get(r.id), { reason: r.reason })).filter(Boolean)),
+        skippedPanel(),
         selectionBar()
     );
 };

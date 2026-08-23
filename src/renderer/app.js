@@ -339,7 +339,19 @@ const App = {
         const ids = explicitIds || [...State.selection];
         if (!ids.length) return;
 
-        const chosen = ids.map((id) => State.tweaks.find((x) => x.id === id)).filter(Boolean);
+        // Drop what cannot run before asking to run it. A preset is a fixed list
+        // of ids, and some of them name tweaks this machine has marked
+        // unavailable — applying those can only ever report a failure, so the
+        // Fortnite preset finished with a dozen red lines that were nobody's
+        // fault. Selections cannot contain one (the card is disabled), so this
+        // only ever trims the explicit lists.
+        const all = ids.map((id) => State.tweaks.find((x) => x.id === id)).filter(Boolean);
+        const chosen = all.filter((x) => !x.unavailable);
+        const unavailable = all.length - chosen.length;
+        if (!chosen.length) {
+            toast(t("apply.noneAvailable"), "warn");
+            return;
+        }
         const counts = {
             safe: chosen.filter((x) => x.risk === "safe").length,
             advanced: chosen.filter((x) => x.risk === "advanced").length,
@@ -352,6 +364,9 @@ const App = {
                 "div",
                 null,
                 h("p", { text: t("apply.breakdown", counts) }),
+                unavailable
+                    ? h("div.notice.mt-3", { text: t("apply.unavailableTrimmed", { count: unavailable }) })
+                    : null,
                 counts.risky ? h("div.notice.notice--bad.mt-4", { text: t("apply.riskyWarning") }) : null,
                 needAdmin && !State.appInfo.isAdmin
                     ? h("div.notice.notice--warn.mt-3", { text: t("apply.needsAdminWarning", { count: needAdmin }) })
@@ -383,7 +398,9 @@ const App = {
             }
         }
 
-        await this.runApply(ids);
+        // chosen, not ids: the unavailable ones were trimmed above, and handing
+        // them to the engine anyway would put back the failures this removed.
+        await this.runApply(chosen.map((x) => x.id));
     },
 
     async runApply(ids) {

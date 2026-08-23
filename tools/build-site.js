@@ -364,6 +364,7 @@ const RECOMMENDED_EXAMPLES = [
 ];
 
 const SKIPPED_EXAMPLES = [
+    "On a laptop? Anything that keeps the hardware awake is left out — it costs more battery than it gains",
     "Risky tweaks are never recommended automatically, however good the number would look",
     "Anything already applied leaves the list instead of being suggested twice",
     "A service your Windows does not even have counts as done, not as a failure",

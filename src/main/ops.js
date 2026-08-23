@@ -795,6 +795,165 @@ function formatBytes(n) {
 }
 
 // ---------------------------------------------------------------------------
+// Power scheme settings (powercfg)
+// ---------------------------------------------------------------------------
+
+// An allowlist, for the same reason the command type has one: a tweak asks for
+// "coreParkingMin", never for an arbitrary GUID pair, so a bad definition fails
+// validation instead of writing somewhere unexpected in the power scheme.
+//
+// Each entry names the subgroup and setting the way powercfg itself does -
+// aliases where powercfg publishes one, raw GUIDs where it does not. Both forms
+// are valid arguments to /setacvalueindex and /query, so nothing needs resolving
+// first. The four aliased pairs were read back off a real machine rather than
+// typed from memory; the two GUID pairs are the ones the original commands used.
+const POWER_SETTINGS = {
+    procMinState: { sub: "SUB_PROCESSOR", setting: "PROCTHROTTLEMIN", label: "Minimum processor state", unit: "%" },
+    coreParkingMin: { sub: "SUB_PROCESSOR", setting: "CPMINCORES", label: "Core parking: minimum cores", unit: "%" },
+    cpuIdleDisable: { sub: "SUB_PROCESSOR", setting: "IDLEDISABLE", label: "Processor idle states" },
+    usbSelectiveSuspend: {
+        sub: "2a737441-1930-4402-8d77-b2bebba308a3",
+        setting: "48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
+        label: "USB selective suspend",
+    },
+    pcieAspm: {
+        sub: "501a4d13-42af-4429-9fd1-a8218c268e20",
+        setting: "ee12f906-d277-404b-b6da-e5fa1a576df5",
+        label: "PCI Express link state power management",
+    },
+    displayTimeout: { sub: "SUB_VIDEO", setting: "VIDEOIDLE", label: "Turn off display after", unit: "s" },
+};
+
+const HIBERNATE_KEY = "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power";
+
+function validatePowerCfg(op) {
+    const action = String(op.action || "setting");
+    if (action === "hibernate") {
+        if (typeof op.enabled !== "boolean") throw new Error("powercfg hibernate needs enabled: true or false");
+        return { action, enabled: op.enabled };
+    }
+    if (action !== "setting") throw new Error(`Unknown powercfg action: ${op.action}`);
+    const setting = String(op.setting || "");
+    if (!POWER_SETTINGS[setting]) throw new Error(`Unknown power setting: ${op.setting}`);
+    // Coerce only from a number or a non-empty numeric string. Number(null) and
+    // Number("") are both 0, so a definition that simply forgot its value would
+    // otherwise validate as "set this to 0" - which for displayTimeout is the
+    // real instruction "never turn the screen off".
+    const raw = op.value;
+    const value =
+        typeof raw === "number" ? raw : typeof raw === "string" && raw.trim() !== "" ? Number(raw) : NaN;
+    if (!Number.isInteger(value) || value < 0 || value > 0xffffffff) {
+        throw new Error(`Invalid power setting value: ${op.value}`);
+    }
+    return { action, setting, value };
+}
+
+// powercfg prints the allowed range first and the two current indices last, AC
+// before DC. Only the captions are translated, so the values are taken by
+// position from the end - matching "Index der aktuellen Wechselstromeinstellung"
+// would work on exactly one Windows language.
+async function readPowerSetting(entry) {
+    const res = await run("powercfg.exe", ["/query", "SCHEME_CURRENT", entry.sub, entry.setting]);
+    if (!res.ok) {
+        return { readFailed: true, error: res.stderr || res.stdout || `powercfg exited ${res.code}` };
+    }
+    const hex = String(res.stdout || "").match(/0x[0-9a-f]{8}/gi);
+    if (!hex || hex.length < 2) {
+        return { readFailed: true, error: "powercfg returned no current value for this setting" };
+    }
+    return { ac: parseInt(hex[hex.length - 2], 16), dc: parseInt(hex[hex.length - 1], 16) };
+}
+
+async function readHibernate() {
+    const res = await run("reg.exe", ["query", HIBERNATE_KEY, "/v", "HibernateEnabled"]);
+    if (!res.ok) {
+        // Absent means hibernation was never enabled on this install, which is a
+        // real answer rather than a failed read.
+        if (/cannot find|nicht gefunden/i.test(res.stderr + res.stdout)) return { enabled: false };
+        return { readFailed: true, error: res.stderr || res.stdout || `reg exited ${res.code}` };
+    }
+    const m = String(res.stdout || "").match(/REG_DWORD\s+0x([0-9a-f]+)/i);
+    if (!m) return { readFailed: true, error: "Could not read HibernateEnabled" };
+    return { enabled: parseInt(m[1], 16) !== 0 };
+}
+
+// One read per distinct setting, however many tweaks reference it.
+async function capturePowerCfg(ops) {
+    const out = new Map();
+    const cache = new Map();
+    for (const op of ops) {
+        const key = op.action === "hibernate" ? "hibernate" : op.setting;
+        if (!cache.has(key)) {
+            cache.set(key, op.action === "hibernate" ? await readHibernate() : await readPowerSetting(POWER_SETTINGS[op.setting]));
+        }
+        out.set(op, cache.get(key));
+    }
+    return out;
+}
+
+function powerCfgIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    if (op.action === "hibernate") return cur.enabled === op.enabled;
+    return cur.ac === op.value;
+}
+
+// Writing an index only edits the stored scheme; /setactive is what makes the
+// running system pick it up. Skipping the second call is why the same tweak
+// applied twice in a row still looked unapplied.
+async function writePowerSetting(entry, value) {
+    const set = await run("powercfg.exe", ["/setacvalueindex", "SCHEME_CURRENT", entry.sub, entry.setting, String(value)]);
+    if (!set.ok) return { ok: false, error: set.stderr || set.stdout || `powercfg exited ${set.code}` };
+    const activate = await run("powercfg.exe", ["/setactive", "SCHEME_CURRENT"]);
+    if (!activate.ok) {
+        return { ok: true, warning: "Value written, but the scheme could not be re-activated - it applies after the next sign-in" };
+    }
+    return { ok: true };
+}
+
+async function applyPowerCfg(op) {
+    if (op.action === "hibernate") {
+        const res = await run("powercfg.exe", ["/hibernate", op.enabled ? "on" : "off"]);
+        return res.ok ? { ok: true } : { ok: false, error: res.stderr || res.stdout || `powercfg exited ${res.code}` };
+    }
+    return writePowerSetting(POWER_SETTINGS[op.setting], op.value);
+}
+
+async function restorePowerCfg(op, prev) {
+    if (!prev || prev.readFailed) return { ok: false, error: "No captured state for this power setting" };
+    if (op.action === "hibernate") {
+        const res = await run("powercfg.exe", ["/hibernate", prev.enabled ? "on" : "off"]);
+        return res.ok ? { ok: true } : { ok: false, error: res.stderr || res.stdout || `powercfg exited ${res.code}` };
+    }
+    return writePowerSetting(POWER_SETTINGS[op.setting], prev.ac);
+}
+
+function describePowerCfg(op) {
+    if (op.action === "hibernate") return `Turn hibernation ${op.enabled ? "on" : "off"} (powercfg /hibernate)`;
+    const e = POWER_SETTINGS[op.setting];
+    return `Set "${e.label}" to ${op.value}${e.unit || ""} on mains power`;
+}
+
+function explainPowerCfg(op, cur) {
+    if (op.action === "hibernate") {
+        return {
+            kind: "Power",
+            target: "Hibernation",
+            type: "",
+            now: cur && !cur.readFailed ? (cur.enabled ? "On" : "Off") : null,
+            after: op.enabled ? "On" : "Off",
+        };
+    }
+    const e = POWER_SETTINGS[op.setting];
+    return {
+        kind: "Power setting",
+        target: e.label,
+        type: "on mains power",
+        now: cur && !cur.readFailed ? `${cur.ac}${e.unit || ""}` : null,
+        after: `${op.value}${e.unit || ""}`,
+    };
+}
+
+// ---------------------------------------------------------------------------
 
 const OPS = {
     registry: {
@@ -840,6 +999,17 @@ const OPS = {
         explain: explainAppx,
         requiresAdmin: () => false, // per-user removal
         undoable: false,
+    },
+    powercfg: {
+        validate: validatePowerCfg,
+        capture: capturePowerCfg,
+        isApplied: powerCfgIsApplied,
+        apply: applyPowerCfg,
+        restore: restorePowerCfg,
+        describe: describePowerCfg,
+        explain: explainPowerCfg,
+        requiresAdmin: () => true,
+        undoable: true,
     },
     // Placeholder for commands the converter could not translate into a typed,
     // reversible operation (powercfg, netsh, bcdedit, ...). Validation fails on
@@ -917,6 +1087,7 @@ module.exports = {
     getOp,
     validateOp,
     normalizeRegValue,
+    POWER_SETTINGS,
     CLEANUP_ROOTS,
     cleanupScan,
     listInstalledApps,
