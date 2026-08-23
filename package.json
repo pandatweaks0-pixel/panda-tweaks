@@ -15,7 +15,8 @@
     "build:site": "node tools/build-site.js",
     "build": "electron-builder --win portable",
     "build:setup": "electron-builder --win nsis",
-    "build:all": "electron-builder --win portable nsis"
+    "build:all": "electron-builder --win portable nsis",
+    "build:presets": "node tools/build-presets.js"
   },
   "devDependencies": {
     "electron": "43.4.0",
