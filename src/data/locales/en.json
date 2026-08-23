@@ -333,5 +333,11 @@
   "startMode.Boot": "At boot",
   "startMode.System": "System",
   "apply.noneAvailable": "None of these can run on this PC — they are all marked unavailable.",
-  "apply.unavailableTrimmed": "{count} left out: not available on this PC."
+  "apply.unavailableTrimmed": "{count} left out: not available on this PC.",
+  "apply.noneFit": "None of these suit this PC — every one was held back.",
+  "apply.unfitTrimmed": "{count} left out because of your hardware:",
+  "skipped.needsSsd": "Your system drive is a hard disk — prefetching actually helps there",
+  "skipped.driveUnknown": "Cannot tell whether your system drive is an SSD, and this hurts on a hard disk",
+  "skipped.needsRam": "Not enough RAM for this to be a good trade",
+  "skipped.ramUnknown": "Cannot read how much RAM this PC has"
 }

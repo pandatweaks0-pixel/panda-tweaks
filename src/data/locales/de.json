@@ -333,5 +333,11 @@
   "startMode.Boot": "Beim Systemstart",
   "startMode.System": "System",
   "apply.noneAvailable": "Davon läuft auf diesem PC keiner — alle sind als nicht verfügbar markiert.",
-  "apply.unavailableTrimmed": "{count} weggelassen: auf diesem PC nicht verfügbar."
+  "apply.unavailableTrimmed": "{count} weggelassen: auf diesem PC nicht verfügbar.",
+  "apply.noneFit": "Davon passt keiner zu diesem PC — alle wurden zurückgehalten.",
+  "apply.unfitTrimmed": "{count} wegen deiner Hardware weggelassen:",
+  "skipped.needsSsd": "Deine Systemplatte ist eine Festplatte — dort hilft Prefetching tatsächlich",
+  "skipped.driveUnknown": "Ob deine Systemplatte eine SSD ist, lässt sich nicht feststellen, und auf einer Festplatte schadet das",
+  "skipped.needsRam": "Zu wenig RAM, als dass sich das lohnen würde",
+  "skipped.ramUnknown": "Wie viel RAM dieser PC hat, lässt sich nicht auslesen"
 }

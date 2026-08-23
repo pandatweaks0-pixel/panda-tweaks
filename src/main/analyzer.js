@@ -57,7 +57,7 @@ async function analyze() {
         logger.error("Tweak detection failed during analysis", { error: e.message });
     }
 
-    const { list, skipped } = recommend(analysis, scores, detection);
+    const { list, skipped, unfit } = recommend(analysis, scores, detection);
     const payload = {
         scannedAt: new Date().toISOString(),
         durationMs: Date.now() - started,
@@ -66,6 +66,7 @@ async function analyze() {
         detection,
         recommendations: list,
         skipped,
+        unfit,
     };
     saveCache(payload);
     logger.info("System analysis complete", {
@@ -114,6 +115,38 @@ const ALSO_DRAINS_BATTERY = new Set(["cpu_powerthrottle_off"]);
 const drainsBattery = (tweak) =>
     ALSO_DRAINS_BATTERY.has(tweak.id) || (tweak.operations || []).some((op) => op.type === "powercfg");
 
+// Tweaks whose own description names a hardware condition. Keeping the rule here
+// rather than in tweaks.json means the converter cannot overwrite it, and it
+// stays next to the code that enforces it.
+const NEEDS_SSD = new Set(["mem_prefetch_off"]); // "SSD only. Do NOT use on HDDs."
+const NEEDS_RAM_GB = { cpu_pagingexec: 16 }; // "needs plenty of RAM"
+
+// Does this tweak suit this machine? Returns null when it fits, or the reason it
+// does not, ready to show.
+//
+// Anything unproven counts as not fitting. That is the opposite of how detection
+// treats an unreadable value - there, "I could not look" must never become a
+// verdict - but the question is different. Detection reports what IS; this
+// decides what to DO unasked, and the honest default for "I cannot tell whether
+// this would help or hurt" is to leave it for the user to choose deliberately.
+// Every one of these stays applicable by hand from the tweak list.
+function machineFit(tweak, analysis) {
+    if (analysis.isLaptop === true && drainsBattery(tweak)) return "skipped.laptopBattery";
+
+    if (NEEDS_SSD.has(tweak.id) && String(analysis.systemDriveType || "").toUpperCase() !== "SSD") {
+        return analysis.systemDriveType ? "skipped.needsSsd" : "skipped.driveUnknown";
+    }
+
+    const needRam = NEEDS_RAM_GB[tweak.id];
+    if (needRam !== undefined) {
+        const have = analysis.ram && analysis.ram.totalGB;
+        if (!have) return "skipped.ramUnknown";
+        if (have < needRam) return "skipped.needsRam";
+    }
+
+    return null;
+}
+
 // Returns both halves of the decision. The list is what gets offered; skipped is
 // what was deliberately held back and why — the two policy exclusions only, not
 // every tweak that happens to be applied already. "Nothing to do here" is not a
@@ -121,12 +154,21 @@ const drainsBattery = (tweak) =>
 function recommend(analysis, scores, detection) {
     const statusById = new Map(detection.map((d) => [d.id, d]));
     const context = contextReasons(analysis, scores);
-    const onLaptop = analysis.isLaptop === true;
     const list = [];
     const skipped = [];
+    // Every usable tweak that does not suit this machine, whether or not it
+    // would have been recommended. The renderer needs the full set, because a
+    // preset is a fixed list of ids that never passed through the loop below.
+    const unfit = [];
 
     for (const tweak of engine.getTweaks()) {
         if (tweak.unavailable) continue;
+
+        // Judged against the hardware, not against what the user selected, so
+        // this verdict is equally valid for a preset the user presses later.
+        const misfit = machineFit(tweak, analysis);
+        if (misfit) unfit.push({ id: tweak.id, name: tweak.name, reason: misfit });
+
         const state = statusById.get(tweak.id);
         if (!state || !state.supported) continue;
         // Already in place, or we could not read it — either way, do not push it.
@@ -139,10 +181,8 @@ function recommend(analysis, scores, detection) {
             if (wouldOffer) skipped.push({ id: tweak.id, name: tweak.name, reason: "skipped.risky" });
             continue;
         }
-        // The machine has a battery, so leaving hardware permanently awake is a
-        // worse trade here than the frames it buys.
-        if (onLaptop && drainsBattery(tweak)) {
-            if (wouldOffer) skipped.push({ id: tweak.id, name: tweak.name, reason: "skipped.laptopBattery" });
+        if (misfit) {
+            if (wouldOffer) skipped.push({ id: tweak.id, name: tweak.name, reason: misfit });
             continue;
         }
 
@@ -152,7 +192,7 @@ function recommend(analysis, scores, detection) {
             list.push({ id: tweak.id, category: tweak.category, risk: tweak.risk, reason: context.get(tweak.category) });
         }
     }
-    return { list, skipped };
+    return { list, skipped, unfit };
 }
 
-module.exports = { init, analyze, getCached, recommend, contextReasons };
+module.exports = { init, analyze, getCached, recommend, contextReasons, machineFit };

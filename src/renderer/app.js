@@ -346,10 +346,20 @@ const App = {
         // fault. Selections cannot contain one (the card is disabled), so this
         // only ever trims the explicit lists.
         const all = ids.map((id) => State.tweaks.find((x) => x.id === id)).filter(Boolean);
-        const chosen = all.filter((x) => !x.unavailable);
-        const unavailable = all.length - chosen.length;
+        const available = all.filter((x) => !x.unavailable);
+        const unavailable = all.length - available.length;
+
+        // A preset is a fixed list written months ago on someone else's machine,
+        // so it gets checked against this one: no battery-draining tweaks on a
+        // laptop, no prefetch change on a spinning disk. A hand-picked selection
+        // is left alone — ticking a box is a deliberate choice, and every one of
+        // these stays applicable that way.
+        const unfitById = new Map((State.scan?.unfit || []).map((u) => [u.id, u]));
+        const misfits = explicitIds ? available.filter((x) => unfitById.has(x.id)) : [];
+        const chosen = available.filter((x) => !misfits.includes(x));
+
         if (!chosen.length) {
-            toast(t("apply.noneAvailable"), "warn");
+            toast(t(all.length && !available.length ? "apply.noneAvailable" : "apply.noneFit"), "warn");
             return;
         }
         const counts = {
@@ -366,6 +376,18 @@ const App = {
                 h("p", { text: t("apply.breakdown", counts) }),
                 unavailable
                     ? h("div.notice.mt-3", { text: t("apply.unavailableTrimmed", { count: unavailable }) })
+                    : null,
+                // Named one by one rather than counted. "3 left out" invites the
+                // question this already answers.
+                misfits.length
+                    ? h(
+                          "div.notice.notice--warn.mt-3",
+                          null,
+                          h("b", { text: t("apply.unfitTrimmed", { count: misfits.length }) }),
+                          ...misfits.map((x) =>
+                              h("div.small.mt-1", { text: `${x.name} — ${t(unfitById.get(x.id).reason)}` })
+                          )
+                      )
                     : null,
                 counts.risky ? h("div.notice.notice--bad.mt-4", { text: t("apply.riskyWarning") }) : null,
                 needAdmin && !State.appInfo.isAdmin
