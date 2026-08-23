@@ -1,0 +1,2206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panda Tweaks — the free Windows optimizer you can read</title>
+<meta name="description" content="106 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
+<meta property="og:title" content="Panda Tweaks">
+<meta property="og:description" content="Make Windows faster — and read every change before it happens.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#05070b">
+<style>
+:root{
+  --bg:#05070b; --panel:#0c1017; --panel2:#080b11; --elev:#131924;
+  --line:#181e2b; --line2:#242c3c;
+  --text:#edf1f7; --muted:#8994a6; --faint:#525c6e;
+  --acc:#4ade80; --acc2:#86efac; --acc-ink:#04140a;
+  --ok:#33c27a; --warn:#fbbf24; --bad:#f87171; --info:#74c0fc;
+  --blurple:#5865f2;
+  --sans:"Inter",system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Consolas,monospace;
+  --wrap:1200px; --pill:999px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+section{padding:86px 0}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;color:var(--acc);
+  text-transform:uppercase;margin:0 0 14px}
+h2{font-size:clamp(28px,4.4vw,46px);font-weight:900;letter-spacing:-.035em;
+  line-height:1.05;margin:0 0 16px}
+.sub{color:var(--muted);max-width:660px;margin:0 0 40px;font-size:17px}
+
+/* ------------------------------------------------------------------ nav -- */
+.topbar{background:var(--acc);color:var(--acc-ink);text-align:center;
+  font-size:13px;font-weight:700;padding:8px 16px;letter-spacing:.01em}
+header{position:sticky;top:0;z-index:60;background:rgba(5,7,11,.86);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:26px;height:70px}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;
+  font-weight:900;font-size:15px;letter-spacing:.06em;line-height:1}
+.brand .mark{width:34px;height:34px;border-radius:10px;background:var(--acc);
+  color:var(--acc-ink);display:grid;place-items:center;font-size:17px;font-weight:900}
+.brand span{display:block}
+.brand .b2{color:var(--muted);font-size:11px;letter-spacing:.22em}
+.nav .link{color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase}
+.nav .link:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:var(--pill);padding:12px 22px;font-size:14px;font-weight:800;
+  border:1px solid var(--line2);color:var(--text);background:var(--elev);
+  white-space:nowrap;transition:.15s;cursor:pointer}
+.btn:hover{border-color:var(--faint);transform:translateY(-1px)}
+.btn--acc{background:var(--acc);color:var(--acc-ink);border-color:transparent}
+.btn--acc:hover{background:var(--acc2)}
+.btn--dc{background:var(--blurple);color:#fff;border-color:transparent}
+.btn--dc:hover{filter:brightness(1.12)}
+.btn--lg{padding:16px 30px;font-size:15.5px}
+@media(max-width:940px){.nav .link{display:none}}
+
+/* ----------------------------------------------------------------- hero -- */
+.hero{padding:104px 0 84px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-40% 0 auto 0;height:620px;
+  background:radial-gradient(760px 380px at 50% 40%,rgba(74,222,128,.16),transparent 68%);
+  pointer-events:none}
+.hero .wrap{position:relative}
+.hero h1{font-size:clamp(38px,7.4vw,82px);font-weight:900;letter-spacing:-.035em;
+  line-height:.98;margin:0 0 24px}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero .lede{font-size:clamp(16.5px,2vw,19px);color:var(--muted);max-width:660px;
+  margin:0 auto 34px}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero .fine{margin-top:22px;font-size:13px;color:var(--faint)}
+
+/* ---------------------------------------------------------------- tiles -- */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.tile{background:var(--panel);padding:30px 24px}
+.tile b{display:block;font-size:12.5px;font-weight:900;letter-spacing:.12em;
+  color:var(--acc);text-transform:uppercase;margin-bottom:10px}
+.tile p{margin:0;color:var(--muted);font-size:14.5px}
+@media(max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.tiles{grid-template-columns:1fr}}
+
+/* ---------------------------------------------------------------- stats -- */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.stat{background:var(--panel);padding:28px 16px;text-align:center}
+.stat b{display:block;font-size:36px;font-weight:900;letter-spacing:-.03em;color:var(--acc);
+  line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+@media(max-width:820px){.stats{grid-template-columns:repeat(2,1fr)}
+  .stat:last-child{grid-column:1/-1}}
+
+/* ---------------------------------------------------------------- cards -- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
+.card .ico{font-size:22px;margin-bottom:14px;display:block}
+.card h3{margin:0 0 9px;font-size:17.5px;font-weight:800;letter-spacing:-.01em}
+.card p{margin:0;color:var(--muted);font-size:14.5px}
+
+/* two-column explainer (recommended / skipped) */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
+.panel h3{margin:0 0 4px;font-size:12.5px;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--acc)}
+.panel h3.dim{color:var(--faint)}
+.panel ul{margin:16px 0 0;padding:0;list-style:none}
+.panel li{position:relative;padding-left:26px;margin-bottom:13px;color:var(--muted);font-size:14.5px}
+.panel li::before{content:"→";position:absolute;left:0;color:var(--acc);font-weight:800}
+.panel.dim li::before{content:"×";color:var(--faint)}
+
+/* ------------------------------------------------------------ catalogue -- */
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input[type=search],select{background:var(--panel2);border:1px solid var(--line2);
+  color:var(--text);border-radius:var(--pill);padding:12px 18px;font:inherit;font-size:14.5px;outline:none}
+input[type=search]{flex:1;min-width:240px}
+input[type=search]:focus,select:focus{border-color:var(--acc)}
+.count{color:var(--faint);font-size:13px;margin:0 0 12px}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.item{padding:20px 24px;border-top:1px solid var(--line);display:block}
+.item:first-child{border-top:none}
+.item__name{font-weight:750;display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:15.5px}
+.item__desc{color:var(--muted);font-size:14.5px;margin:6px 0 0}
+.item__targets{margin:10px 0 0;padding:0;list-style:none}
+.item__targets li{font-family:var(--mono);font-size:12.5px;color:var(--faint);
+  background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+  padding:6px 11px;margin-top:5px;overflow-wrap:anywhere}
+.badge{font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 10px;
+  border-radius:var(--pill);border:1px solid transparent;white-space:nowrap;text-transform:uppercase}
+.badge--safe{color:var(--ok);background:rgba(51,194,122,.11);border-color:rgba(51,194,122,.3)}
+.badge--advanced{color:var(--warn);background:rgba(251,191,36,.11);border-color:rgba(251,191,36,.3)}
+.badge--risky{color:var(--bad);background:rgba(248,113,113,.11);border-color:rgba(248,113,113,.3)}
+.badge--group{color:var(--muted);background:var(--panel2);border-color:var(--line2)}
+.badge--note{color:var(--info);background:rgba(116,192,252,.1);border-color:rgba(116,192,252,.3)}
+.empty{padding:52px;text-align:center;color:var(--faint)}
+
+/* risk legend */
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+@media(max-width:760px){.legend{grid-template-columns:1fr}}
+
+/* honest block */
+.honest{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--warn);
+  border-radius:16px;padding:30px}
+.honest h3{margin:0 0 10px;font-size:19px;font-weight:800;letter-spacing:-.01em}
+.honest p{margin:0;color:var(--muted);font-size:15px}
+
+/* discord band */
+.band{background:linear-gradient(150deg,rgba(88,101,242,.2),rgba(74,222,128,.09));
+  border:1px solid var(--line2);border-radius:22px;padding:56px 40px;text-align:center}
+.band h2{margin-bottom:12px}
+.band .sub{margin:0 auto 34px}
+.dcgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:0 0 34px;text-align:left}
+.dcgrid div{background:var(--panel);padding:24px 20px}
+.dcgrid b{display:block;font-size:15px;margin:8px 0 5px;font-weight:800}
+.dcgrid p{margin:0;color:var(--muted);font-size:13.5px}
+@media(max-width:820px){.dcgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.dcgrid{grid-template-columns:1fr}}
+.handle{font-family:var(--mono);color:var(--muted);font-size:14px;margin-top:18px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;
+  counter-increment:s;position:relative}
+.step::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;
+  border-radius:10px;background:var(--acc);color:var(--acc-ink);font-weight:900;font-size:15px;
+  margin-bottom:16px}
+.step h3{margin:0 0 7px;font-size:17px;font-weight:800}
+.step p{margin:0;color:var(--muted);font-size:14.5px}
+
+/* faq */
+details{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:20px 24px;margin-bottom:10px}
+details[open]{border-color:var(--line2)}
+summary{cursor:pointer;font-weight:750;font-size:16px;list-style:none;
+  display:flex;justify-content:space-between;gap:16px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-weight:900;font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:14px 0 0;color:var(--muted);font-size:14.5px}
+
+footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-size:13.5px}
+.foot{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.foot a{color:var(--muted)}
+.foot .sp{margin-left:auto}
+</style>
+</head>
+<body id="top">
+
+<div class="topbar">The download is on Discord only — free, one click, no account beyond Discord itself</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <span class="mark">P</span>
+      <span><span>PANDA</span><span class="b2">TWEAKS</span></span>
+    </a>
+    <a class="link" href="#features">Features</a>
+    <a class="link" href="#analysis">Analysis</a>
+    <a class="link" href="#catalogue">All tweaks</a>
+    <a class="link" href="#faq">FAQ</a>
+    <a class="btn btn--dc" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join the Discord</a>
+  </div>
+</header>
+
+<main>
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Windows 10 &amp; 11 — 100% free</p>
+      <h1>Read first.<br><em>Then optimize.</em></h1>
+      <p class="lede">Most tweaking tools hand everyone the same preset and never say what they
+        touched. Panda Tweaks reads your PC first, suggests only what actually helps on your
+        machine — and shows the exact registry key behind every single change.</p>
+      <div class="cta">
+        <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join Discord &amp; download</a>
+        <a class="btn btn--lg" href="#catalogue">See every change first</a>
+      </div>
+      <p class="fine">The download lives in our Discord — that is the only place to get it.<br>
+        Version 0.1.0 · portable, no install · everything reversible one at a time</p>
+    </div>
+  </div>
+
+  <div class="wrap"><div class="tiles">
+    <div class="tile"><b>Real undo</b><p>The old value is read and stored before anything is written. Undo puts back your value, not a guessed Windows default.</p></div>
+    <div class="tile"><b>Nothing hidden</b><p>Every change names the exact registry key or service it touches — in the app before it runs, and in full on this page.</p></div>
+    <div class="tile"><b>No free-form commands</b><p>The interface cannot run a shell. Every action is a typed, validated operation, even when the app is elevated.</p></div>
+    <div class="tile"><b>No account, no tracking</b><p>No sign-up, no telemetry, no connection to anywhere except the links you click yourself.</p></div>
+  </div></div>
+
+  <section style="padding-bottom:0"><div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>106</b><span>tweaks</span></div>
+      <div class="stat"><b>17</b><span>repairs</span></div>
+      <div class="stat"><b>53</b><span>removable apps</span></div>
+      <div class="stat"><b>21</b><span>services</span></div>
+      <div class="stat"><b>2</b><span>game presets</span></div>
+    </div>
+  </div></section>
+
+  <section id="where"><div class="wrap"><div class="band">
+    <p class="eyebrow">Discord only</p>
+    <h2>There is no download<br>button on this site.</h2>
+    <p class="sub" style="text-align:left">Panda Tweaks is handed out through our Discord and
+      nowhere else. One official file, one place to ask when something goes wrong, and no
+      reuploads on some download portal with an installer bolted onto them. It is free either
+      way — joining is the whole price.</p>
+    <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Open the Discord</a>
+    <p class="handle">discord.gg/HNf6PNtQZ</p>
+  </div></div></section>
+
+  <section id="features" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">What is inside</p>
+    <h2>One button if that is all you want.<br>Every switch if it is not.</h2>
+    <p class="sub">The analysis covers the single-click case. Anyone who wants more gets every
+      change individually — searchable, risk-labelled, and with the exact place it takes effect.</p>
+    <div class="grid">
+      <div class="card"><span class="ico">🧠</span><h3>System analysis</h3><p>Reads your CPU, GPU, memory, drives, refresh rate and power plan, then suggests only what actually does something on this machine.</p></div>
+      <div class="card"><span class="ico">🎮</span><h3>2 game presets</h3><p>FORTNITE and GTA V — a ready-made selection each, running through the same confirmation as everything else.</p></div>
+      <div class="card"><span class="ico">🔧</span><h3>17 repairs</h3><p>Audio, Bluetooth, network, Windows Update, Store, Explorer. One click restores the Windows default — including what another tool broke.</p></div>
+      <div class="card"><span class="ico">🧹</span><h3>53 removable apps</h3><p>Preinstalled Store apps with a hard block list: packages Windows depends on cannot be selected at all.</p></div>
+      <div class="card"><span class="ico">⚙</span><h3>21 curated services</h3><p>A reviewed list rather than a blanket sweep. Each service with a plain-English description and a risk label.</p></div>
+      <div class="card"><span class="ico">🕘</span><h3>History with per-item undo</h3><p>Every change lands in the history with its before and after. Roll one back, or all of them.</p></div>
+    </div>
+  </div></section>
+
+  <section id="analysis" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">Relevance, not volume</p>
+    <h2>It also tells you<br>what it left out.</h2>
+    <p class="sub">Other tools advertise a thousand tweaks and get there by counting every registry
+      value separately. The more useful question is which of them change anything on your machine —
+      and why the rest was skipped.</p>
+    <div class="split">
+      <div class="panel">
+        <h3>Suggested</h3>
+        <ul><li>Game DVR still on? It gets suggested — it costs real frames in the background</li><li>Power plan on Balanced? High performance goes on the list</li><li>Monitor running below its maximum refresh rate? The analysis tells you</li><li>Telemetry services that are actually running — not the ones your Windows never had</li></ul>
+      </div>
+      <div class="panel dim">
+        <h3 class="dim">Skipped — and why</h3>
+        <ul><li>Risky tweaks are never recommended automatically, however good the number would look</li><li>Anything already applied leaves the list instead of being suggested twice</li><li>A service your Windows does not even have counts as done, not as a failure</li><li>A value Windows protects on your build is remembered and not offered again</li></ul>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="catalogue" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">Full control</p>
+    <h2>197 entries, every one explained</h2>
+    <p class="sub">No hidden scripts. This is the same list the app uses — generated from the same
+      data, so it cannot drift away from it. Under every entry is exactly what gets touched.</p>
+
+    <div class="tools">
+      <input type="search" id="q" placeholder="Search — name, description or registry key…" aria-label="Search">
+      <select id="g" aria-label="Area">
+        <option value="">All areas</option>
+        <option value="Windows">Windows</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Performance">Performance</option>
+        <option value="Network">Network</option>
+        <option value="Debloat">Debloat</option>
+        <option value="Privacy">Privacy</option>
+        <option value="Repairs">Repairs</option>
+        <option value="Preinstalled apps">Preinstalled apps</option>
+        <option value="Services">Services</option>
+      </select>
+      <select id="r" aria-label="Risk">
+        <option value="">Any risk</option>
+        <option value="safe">Safe</option>
+        <option value="advanced">Advanced</option>
+        <option value="risky">Risky</option>
+      </select>
+    </div>
+
+    <p class="count" id="count"></p>
+    <div class="list" id="list">
+      
+        <article class="item" data-group="Windows" data-risk="safe" data-search="enable game mode windows game mode on for better game scheduling. hkcu\software\microsoft\gamebar\autogamemodeenabled = 1">
+          <div class="item__name">Enable Game Mode
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Windows Game Mode on for better game scheduling.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\GameBar\AutoGameModeEnabled = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable xbox game dvr stops background recording (real fps drain). hkcu\system\gameconfigstore\gamedvr_enabled = 0 hklm\software\policies\microsoft\windows\gamedvr\allowgamedvr = 0">
+          <div class="item__name">Disable Xbox Game DVR
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops background recording (real FPS drain).</p>
+          <ul class="item__targets"><li>HKCU\System\GameConfigStore\GameDVR_Enabled = 0</li><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR\AllowGameDVR = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable game bar capture turns off win+g background capture. hkcu\software\microsoft\windows\currentversion\gamedvr\appcaptureenabled = 0">
+          <div class="item__name">Disable Game Bar Capture
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Turns off Win+G background capture.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\GameDVR\AppCaptureEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable fullscreen optimizations global fso off for lower input lag (test per game). hkcu\system\gameconfigstore\gamedvr_fsebehaviormode = 2 hkcu\system\gameconfigstore\gamedvr_honoruserfsebehaviormode = 1">
+          <div class="item__name">Disable Fullscreen Optimizations
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Global FSO off for lower input lag (test per game).</p>
+          <ul class="item__targets"><li>HKCU\System\GameConfigStore\GameDVR_FSEBehaviorMode = 2</li><li>HKCU\System\GameConfigStore\GameDVR_HonorUserFSEBehaviorMode = 1</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable mouse acceleration raw, consistent aim (turns off pointer precision). hkcu\control panel\mouse\mousespeed = 0 hkcu\control panel\mouse\mousethreshold1 = 0 hkcu\control panel\mouse\mousethreshold2 = 0">
+          <div class="item__name">Disable Mouse Acceleration
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">Raw, consistent aim (turns off pointer precision).</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseSpeed = 0</li><li>HKCU\Control Panel\Mouse\MouseThreshold1 = 0</li><li>HKCU\Control Panel\Mouse\MouseThreshold2 = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="visual effects: performance disables animations/shadows for a snappier desktop. hkcu\software\microsoft\windows\currentversion\explorer\visualeffects\visualfxsetting = 2">
+          <div class="item__name">Visual Effects: Performance
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Disables animations/shadows for a snappier desktop.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\VisualFXSetting = 2</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable transparency turns off transparency effects (tiny gpu/cpu save). hkcu\software\microsoft\windows\currentversion\themes\personalize\enabletransparency = 0">
+          <div class="item__name">Disable Transparency
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Turns off transparency effects (tiny GPU/CPU save).</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize\EnableTransparency = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="remove menu show delay menus open instantly instead of after 400ms. hkcu\control panel\desktop\menushowdelay = 0">
+          <div class="item__name">Remove Menu Show Delay
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Menus open instantly instead of after 400ms.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Desktop\MenuShowDelay = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="remove startup delay autostart apps launch immediately. hkcu\software\microsoft\windows\currentversion\explorer\serialize\startupdelayinmsec = 0">
+          <div class="item__name">Remove Startup Delay
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Autostart apps launch immediately.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize\StartupDelayInMSec = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="show file extensions always show file extensions in explorer. hkcu\software\microsoft\windows\currentversion\explorer\advanced\hidefileext = 0">
+          <div class="item__name">Show File Extensions
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Always show file extensions in Explorer.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable fast startup cleaner full shutdowns (fixes some driver quirks). hklm\system\currentcontrolset\control\session manager\power\hiberbootenabled = 0">
+          <div class="item__name">Disable Fast Startup
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Cleaner full shutdowns (fixes some driver quirks).</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power\HiberbootEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="risky" data-search="disable core isolation (hvci) risky: lowers security (memory integrity). can raise fps. reboot. hklm\system\currentcontrolset\control\deviceguard\scenarios\hypervisorenforcedcodeintegrity\enabled = 0">
+          <div class="item__name">Disable Core Isolation (HVCI)
+            <span class="badge badge--risky">Risky</span>
+            <span class="badge badge--group">Windows</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">RISKY: lowers security (memory integrity). Can raise FPS. Reboot.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="risky" data-search="disable vbs risky: disables virtualization-based security. reboot. hklm\system\currentcontrolset\control\deviceguard\enablevirtualizationbasedsecurity = 0">
+          <div class="item__name">Disable VBS
+            <span class="badge badge--risky">Risky</span>
+            <span class="badge badge--group">Windows</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">RISKY: disables Virtualization-Based Security. Reboot.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\EnableVirtualizationBasedSecurity = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="hardware gpu scheduling (hags) reboot required. can lower latency - test on your rig. hklm\system\currentcontrolset\control\graphicsdrivers\hwschmode = 2">
+          <div class="item__name">Hardware GPU Scheduling (HAGS)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Reboot required. Can lower latency - test on your rig.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\HwSchMode = 2</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable mpo fixes flicker/stutter on some nvidia/amd setups. hklm\software\microsoft\windows\dwm\overlaytestmode = 5">
+          <div class="item__name">Disable MPO
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Fixes flicker/stutter on some NVIDIA/AMD setups.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\Dwm\OverlayTestMode = 5</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="increase tdrdelay fewer 'display driver stopped responding' timeouts. hklm\system\currentcontrolset\control\graphicsdrivers\tdrdelay = 10">
+          <div class="item__name">Increase TdrDelay
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Fewer 'display driver stopped responding' timeouts.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\TdrDelay = 10</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable power throttling stops windows throttling the cpu under load. hklm\system\currentcontrolset\control\power\powerthrottling\powerthrottlingoff = 1">
+          <div class="item__name">Disable Power Throttling
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows throttling the CPU under load.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling\PowerThrottlingOff = 1</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="foreground priority boost win32priorityseparation = 26 (favors the active app). hklm\system\currentcontrolset\control\prioritycontrol\win32priorityseparation = 26">
+          <div class="item__name">Foreground Priority Boost
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Win32PrioritySeparation = 26 (favors the active app).</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl\Win32PrioritySeparation = 26</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="system responsiveness for games gives games more cpu headroom (mmcss = 0). hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\systemresponsiveness = 0">
+          <div class="item__name">System Responsiveness for Games
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Gives games more CPU headroom (MMCSS = 0).</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\SystemResponsiveness = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="keep kernel in ram disablepagingexecutive - needs plenty of ram. hklm\system\currentcontrolset\control\session manager\memory management\disablepagingexecutive = 1">
+          <div class="item__name">Keep Kernel in RAM
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">DisablePagingExecutive - needs plenty of RAM.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\DisablePagingExecutive = 1</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="risky" data-search="disable spectre/meltdown mitigations risky: turns off cpu security mitigations for small perf. hklm\system\currentcontrolset\control\session manager\memory management\featuresettingsoverride = 3">
+          <div class="item__name">Disable Spectre/Meltdown Mitigations
+            <span class="badge badge--risky">Risky</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">RISKY: turns off CPU security mitigations for small perf.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\FeatureSettingsOverride = 3</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="disable background apps stops uwp apps running in the background. hkcu\software\microsoft\windows\currentversion\backgroundaccessapplications\globaluserdisabled = 1">
+          <div class="item__name">Disable Background Apps
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Stops UWP apps running in the background.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications\GlobalUserDisabled = 1</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable sysmain (superfetch) can reduce disk churn (marginal on ssd). service &quot;sysmain&quot; → disabled">
+          <div class="item__name">Disable SysMain (Superfetch)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Can reduce disk churn (marginal on SSD).</p>
+          <ul class="item__targets"><li>Service &quot;SysMain&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable prefetch (ssd only) only for ssds. do not use on hdds. hklm\system\currentcontrolset\control\session manager\memory management\prefetchparameters\enableprefetcher = 0">
+          <div class="item__name">Disable Prefetch (SSD only)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Only for SSDs. Do NOT use on HDDs.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher = 0</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable network throttling lifts the 10ms multimedia network throttle. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\networkthrottlingindex = 4294967295">
+          <div class="item__name">Disable Network Throttling
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Lifts the 10ms multimedia network throttle.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\NetworkThrottlingIndex = 4294967295</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="safe" data-search="free qos reserved bandwidth removes the 20% reserved bandwidth limit. hklm\software\policies\microsoft\windows\psched\nonbesteffortlimit = 0">
+          <div class="item__name">Free QoS Reserved Bandwidth
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Removes the 20% reserved bandwidth limit.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched\NonBestEffortLimit = 0</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="safe" data-search="disable delivery optimization stops windows update p2p using your bandwidth. hklm\software\policies\microsoft\windows\deliveryoptimization\dodownloadmode = 0">
+          <div class="item__name">Disable Delivery Optimization
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows Update P2P using your bandwidth.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization\DODownloadMode = 0</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="clean temp files deletes %temp% and c:\windows\temp. clean up: usertemp clean up: windowstemp">
+          <div class="item__name">Clean Temp Files
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Deletes %TEMP% and C:\Windows\Temp.</p>
+          <ul class="item__targets"><li>Clean up: userTemp</li><li>Clean up: windowsTemp</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="clear prefetch removes cached prefetch files. clean up: prefetch">
+          <div class="item__name">Clear Prefetch
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Removes cached prefetch files.</p>
+          <ul class="item__targets"><li>Clean up: prefetch</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable advertising id no personalized ad tracking. hkcu\software\microsoft\windows\currentversion\advertisinginfo\enabled = 0">
+          <div class="item__name">Disable Advertising ID
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No personalized ad tracking.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo\Enabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable activity history stops windows timeline / activity feed. hklm\software\policies\microsoft\windows\system\publishuseractivities = 0">
+          <div class="item__name">Disable Activity History
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows Timeline / activity feed.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\PublishUserActivities = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable tailored experiences no suggestions based on diagnostic data. hkcu\software\microsoft\windows\currentversion\privacy\tailoredexperienceswithdiagnosticdataenabled = 0">
+          <div class="item__name">Disable Tailored Experiences
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No suggestions based on diagnostic data.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Privacy\TailoredExperiencesWithDiagnosticDataEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable web search in start removes bing/web results from start search. hkcu\software\microsoft\windows\currentversion\search\bingsearchenabled = 0">
+          <div class="item__name">Disable Web Search in Start
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Removes Bing/web results from Start search.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Search\BingSearchEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable consumer features stops auto-installed suggested/bloat apps. hklm\software\policies\microsoft\windows\cloudcontent\disablewindowsconsumerfeatures = 1">
+          <div class="item__name">Disable Consumer Features
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops auto-installed suggested/bloat apps.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent\DisableWindowsConsumerFeatures = 1</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable location services turns off windows location access. hklm\software\microsoft\windows\currentversion\capabilityaccessmanager\consentstore\location\value = deny">
+          <div class="item__name">Disable Location Services
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Turns off Windows location access.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location\Value = Deny</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry (diagtrack) stops and disables the telemetry service. hklm\software\policies\microsoft\windows\datacollection\allowtelemetry = 0 service &quot;diagtrack&quot; → disabled">
+          <div class="item__name">Disable Telemetry (DiagTrack)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops and disables the telemetry service.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry = 0</li><li>Service &quot;DiagTrack&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="clear pagefile at shutdown wipes the pagefile on shutdown (slower shutdown). hklm\system\currentcontrolset\control\session manager\memory management\clearpagefileatshutdown = 1">
+          <div class="item__name">Clear Pagefile at Shutdown
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Wipes the pagefile on shutdown (slower shutdown).</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown = 1</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="lower tcptimedwaitdelay frees closed ports faster (helps many connections). hklm\system\currentcontrolset\services\tcpip\parameters\tcptimedwaitdelay = 30">
+          <div class="item__name">Lower TcpTimedWaitDelay
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Frees closed ports faster (helps many connections).</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\TcpTimedWaitDelay = 30</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="raise maxuserport more outbound ports available. hklm\system\currentcontrolset\services\tcpip\parameters\maxuserport = 65534">
+          <div class="item__name">Raise MaxUserPort
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">More outbound ports available.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\MaxUserPort = 65534</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable taskbar widgets removes the widgets button (frees a background process). hkcu\software\microsoft\windows\currentversion\explorer\advanced\taskbarda = 0">
+          <div class="item__name">Disable Taskbar Widgets
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Removes the Widgets button (frees a background process).</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDa = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable window animations snappier minimize/maximize. hkcu\control panel\desktop\windowmetrics\minanimate = 0">
+          <div class="item__name">Disable Window Animations
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Snappier minimize/maximize.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Desktop\WindowMetrics\MinAnimate = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable taskbar animations removes taskbar animation overhead. hkcu\software\microsoft\windows\currentversion\explorer\advanced\taskbaranimations = 0">
+          <div class="item__name">Disable Taskbar Animations
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Removes taskbar animation overhead.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAnimations = 0</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable sticky keys prompt no accidental shift x5 popup mid-game. hkcu\control panel\accessibility\stickykeys\flags = 506">
+          <div class="item__name">Disable Sticky Keys Prompt
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">No accidental Shift x5 popup mid-game.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\StickyKeys\Flags = 506</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="advanced" data-search="clear windows update cache frees space from old update downloads. clean up: windowsupdatecache">
+          <div class="item__name">Clear Windows Update Cache
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Frees space from old update downloads.</p>
+          <ul class="item__targets"><li>Clean up: windowsUpdateCache</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="clear thumbnail cache deletes cached explorer thumbnails. clean up: thumbnailcache">
+          <div class="item__name">Clear Thumbnail Cache
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Deletes cached Explorer thumbnails.</p>
+          <ul class="item__targets"><li>Clean up: thumbnailCache</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="enable dark mode dark theme for apps and system. hkcu\software\microsoft\windows\currentversion\themes\personalize\appsuselighttheme = 0 hkcu\software\microsoft\windows\currentversion\themes\personalize\systemuseslighttheme = 0">
+          <div class="item__name">Enable Dark Mode
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Dark theme for apps and system.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize\AppsUseLightTheme = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize\SystemUsesLightTheme = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable aero shake stops minimizing windows when you shake one. hkcu\software\microsoft\windows\currentversion\explorer\advanced\disallowshaking = 1">
+          <div class="item__name">Disable Aero Shake
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops minimizing windows when you shake one.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\DisallowShaking = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="show seconds in clock taskbar clock shows seconds. hkcu\software\microsoft\windows\currentversion\explorer\advanced\showsecondsinsystemclock = 1">
+          <div class="item__name">Show Seconds in Clock
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Taskbar clock shows seconds.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSecondsInSystemClock = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="show hidden files show hidden files and folders in explorer. hkcu\software\microsoft\windows\currentversion\explorer\advanced\hidden = 1">
+          <div class="item__name">Show Hidden Files
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Show hidden files and folders in Explorer.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable snap assist flyout no popup suggestions when snapping windows. hkcu\software\microsoft\windows\currentversion\explorer\advanced\enablesnapassistflyout = 0">
+          <div class="item__name">Disable Snap Assist Flyout
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">No popup suggestions when snapping windows.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\EnableSnapAssistFlyout = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable recent files tracking stops tracking recently opened documents. hkcu\software\microsoft\windows\currentversion\explorer\advanced\start_trackdocs = 0">
+          <div class="item__name">Disable Recent Files Tracking
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops tracking recently opened documents.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Start_TrackDocs = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable autoplay no autoplay prompts for drives/media. hkcu\software\microsoft\windows\currentversion\explorer\autoplayhandlers\disableautoplay = 1">
+          <div class="item__name">Disable AutoPlay
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">No AutoPlay prompts for drives/media.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\DisableAutoplay = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable startup sound no windows boot chime. hklm\software\microsoft\windows\currentversion\authentication\logonui\bootanimation\disablestartupsound = 1">
+          <div class="item__name">Disable Startup Sound
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">No Windows boot chime.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\BootAnimation\DisableStartupSound = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable error reporting stops windows error reporting popups/uploads. hklm\software\microsoft\windows\windows error reporting\disabled = 1">
+          <div class="item__name">Disable Error Reporting
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows Error Reporting popups/uploads.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting\Disabled = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="enable taskbar 'end task' adds end task to the taskbar right-click (win11). hkcu\software\microsoft\windows\currentversion\explorer\advanced\taskbardevelopersettings\taskbarendtask = 1">
+          <div class="item__name">Enable Taskbar 'End Task'
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Adds End Task to the taskbar right-click (Win11).</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings\TaskbarEndTask = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="verbose boot messages shows detailed status during boot/shutdown. hklm\software\microsoft\windows\currentversion\policies\system\verbosestatus = 1">
+          <div class="item__name">Verbose Boot Messages
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Shows detailed status during boot/shutdown.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\VerboseStatus = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable lock screen skips the lock screen (straight to login). hklm\software\policies\microsoft\windows\personalization\nolockscreen = 1">
+          <div class="item__name">Disable Lock Screen
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Skips the lock screen (straight to login).</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization\NoLockScreen = 1</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="classic right-click menu (win11) restores the full context menu. restart explorer after. hkcu\software\classes\clsid\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\inprocserver32\ = ">
+          <div class="item__name">Classic Right-Click Menu (Win11)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Restores the full context menu. Restart Explorer after.</p>
+          <ul class="item__targets"><li>HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32\ = </li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="no auto-reboot on updates windows won't force a restart while you're logged in. hklm\software\policies\microsoft\windows\windowsupdate\au\noautorebootwithloggedonusers = 1">
+          <div class="item__name">No Auto-Reboot on Updates
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Windows won't force a restart while you're logged in.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\NoAutoRebootWithLoggedOnUsers = 1</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable cortana turns off the cortana assistant. hklm\software\policies\microsoft\windows\windows search\allowcortana = 0">
+          <div class="item__name">Disable Cortana
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Turns off the Cortana assistant.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search\AllowCortana = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable start menu suggestions no suggested apps/ads in the start menu. hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\systempanesuggestionsenabled = 0">
+          <div class="item__name">Disable Start Menu Suggestions
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No suggested apps/ads in the Start menu.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SystemPaneSuggestionsEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable windows tips stops 'tips &amp; suggestions' popups. hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\softlandingenabled = 0">
+          <div class="item__name">Disable Windows Tips
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops 'tips &amp; suggestions' popups.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SoftLandingEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable lock screen ads no spotlight ads/tips on the lock screen. hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\rotatinglockscreenoverlayenabled = 0 hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\subscribedcontent-338387enabled = 0">
+          <div class="item__name">Disable Lock Screen Ads
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No Spotlight ads/tips on the lock screen.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\RotatingLockScreenOverlayEnabled = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-338387Enabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable settings suggestions no suggested content in the settings app. hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\subscribedcontent-338393enabled = 0 hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\subscribedcontent-353694enabled = 0 hkcu\software\microsoft\windows\currentversion\contentdeliverymanager\subscribedcontent-353696enabled = 0">
+          <div class="item__name">Disable Settings Suggestions
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No suggested content in the Settings app.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-338393Enabled = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-353694Enabled = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager\SubscribedContent-353696Enabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable cloud clipboard sync no clipboard syncing across devices. hklm\software\policies\microsoft\windows\system\allowcrossdeviceclipboard = 0">
+          <div class="item__name">Disable Cloud Clipboard Sync
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">No clipboard syncing across devices.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\AllowCrossDeviceClipboard = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable clipboard history turns off win+v clipboard history. hklm\software\policies\microsoft\windows\system\allowclipboardhistory = 0">
+          <div class="item__name">Disable Clipboard History
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Turns off Win+V clipboard history.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\AllowClipboardHistory = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable app diagnostics blocks apps from reading diagnostic info about other apps. hklm\software\microsoft\windows\currentversion\capabilityaccessmanager\consentstore\appdiagnostics\value = deny">
+          <div class="item__name">Disable App Diagnostics
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Blocks apps from reading diagnostic info about other apps.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics\Value = Deny</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable feedback requests stops windows asking for feedback. hkcu\software\microsoft\siuf\rules\numberofsiufinperiod = 0 hklm\software\policies\microsoft\windows\datacollection\donotshowfeedbacknotifications = 1">
+          <div class="item__name">Disable Feedback Requests
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows asking for feedback.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Siuf\Rules\NumberOfSIUFInPeriod = 0</li><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\DoNotShowFeedbackNotifications = 1</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable typing/inking collection stops windows learning from your typing/handwriting. hkcu\software\microsoft\personalization\settings\acceptedprivacypolicy = 0 hkcu\software\microsoft\inputpersonalization\restrictimplicittextcollection = 1 hkcu\software\microsoft\inputpersonalization\restrictimplicitinkcollection = 1">
+          <div class="item__name">Disable Typing/Inking Collection
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows learning from your typing/handwriting.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Personalization\Settings\AcceptedPrivacyPolicy = 0</li><li>HKCU\Software\Microsoft\InputPersonalization\RestrictImplicitTextCollection = 1</li><li>HKCU\Software\Microsoft\InputPersonalization\RestrictImplicitInkCollection = 1</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable handwriting sharing stops sharing handwriting error reports. hkcu\software\microsoft\windows\currentversion\policies\tabletpc\preventhandwritingdatasharing = 1">
+          <div class="item__name">Disable Handwriting Sharing
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops sharing handwriting error reports.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\TabletPC\PreventHandwritingDataSharing = 1</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="safe" data-search="disable ceip customer experience improvement program off. hklm\software\microsoft\sqmclient\windows\ceipenable = 0">
+          <div class="item__name">Disable CEIP
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Customer Experience Improvement Program off.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\SQMClient\Windows\CEIPEnable = 0</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry tasks disables the scheduled telemetry/appraiser tasks. task &quot;\microsoft\windows\application experience\microsoft compatibility appraiser&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\consolidator&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\usbceip&quot; → disabled">
+          <div class="item__name">Disable Telemetry Tasks
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Disables the scheduled telemetry/appraiser tasks.</p>
+          <ul class="item__targets"><li>Task &quot;\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser&quot; → disabled</li><li>Task &quot;\Microsoft\Windows\Customer Experience Improvement Program\Consolidator&quot; → disabled</li><li>Task &quot;\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable error reporting service stops the wersvc service. service &quot;wersvc&quot; → disabled">
+          <div class="item__name">Disable Error Reporting Service
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops the WerSvc service.</p>
+          <ul class="item__targets"><li>Service &quot;WerSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable maps broker stops the downloaded maps manager service. service &quot;mapsbroker&quot; → disabled">
+          <div class="item__name">Disable Maps Broker
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Stops the Downloaded Maps Manager service.</p>
+          <ul class="item__targets"><li>Service &quot;MapsBroker&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable remote registry blocks remote registry access (more secure). service &quot;remoteregistry&quot; → disabled">
+          <div class="item__name">Disable Remote Registry
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Privacy</span>
+            
+          </div>
+          <p class="item__desc">Blocks remote registry access (more secure).</p>
+          <ul class="item__targets"><li>Service &quot;RemoteRegistry&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable llmnr turns off link-local multicast name resolution. hklm\software\policies\microsoft\windows nt\dnsclient\enablemulticast = 0">
+          <div class="item__name">Disable LLMNR
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Turns off Link-Local Multicast Name Resolution.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast = 0</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="set default ttl 64 standard ttl value for outgoing packets. hklm\system\currentcontrolset\services\tcpip\parameters\defaultttl = 64">
+          <div class="item__name">Set Default TTL 64
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Standard TTL value for outgoing packets.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DefaultTTL = 64</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable network data usage (ndu) disables the ndu driver (can reduce a known ram leak). hklm\system\currentcontrolset\services\ndu\start = 4">
+          <div class="item__name">Disable Network Data Usage (Ndu)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Disables the Ndu driver (can reduce a known RAM leak).</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Ndu\Start = 4</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="clear crash dumps deletes crash dump and minidump files. clean up: crashdumps">
+          <div class="item__name">Clear Crash Dumps
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Deletes crash dump and minidump files.</p>
+          <ul class="item__targets"><li>Clean up: crashDumps</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="fast keyboard repeat no delay, max repeat rate (snappier typing/keys). hkcu\control panel\keyboard\keyboarddelay = 0 hkcu\control panel\keyboard\keyboardspeed = 31">
+          <div class="item__name">Fast Keyboard Repeat
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">No delay, max repeat rate (snappier typing/keys).</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Keyboard\KeyboardDelay = 0</li><li>HKCU\Control Panel\Keyboard\KeyboardSpeed = 31</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="mouse data queue size 20 smaller input buffer = fresher mouse data. reboot. hklm\system\currentcontrolset\services\mouclass\parameters\mousedataqueuesize = 20">
+          <div class="item__name">Mouse Data Queue Size 20
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Smaller input buffer = fresher mouse data. Reboot.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters\MouseDataQueueSize = 20</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="keyboard data queue size 20 smaller keyboard buffer for lower input delay. reboot. hklm\system\currentcontrolset\services\kbdclass\parameters\keyboarddataqueuesize = 20">
+          <div class="item__name">Keyboard Data Queue Size 20
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Smaller keyboard buffer for lower input delay. Reboot.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters\KeyboardDataQueueSize = 20</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="instant hover response tooltips/hover react immediately (400ms -&gt; 10ms). hkcu\control panel\mouse\mousehovertime = 10">
+          <div class="item__name">Instant Hover Response
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">Tooltips/hover react immediately (400ms -&gt; 10ms).</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseHoverTime = 10</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable filter keys prompt no popup when holding shift for 8 seconds. hkcu\control panel\accessibility\keyboard response\flags = 122">
+          <div class="item__name">Disable Filter Keys Prompt
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">No popup when holding Shift for 8 seconds.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\Keyboard Response\Flags = 122</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable toggle keys prompt no popup when holding num lock for 5 seconds. hkcu\control panel\accessibility\togglekeys\flags = 58">
+          <div class="item__name">Disable Toggle Keys Prompt
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">No popup when holding Num Lock for 5 seconds.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\ToggleKeys\Flags = 58</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable language hotkey no accidental alt+shift layout switch mid-game. hkcu\keyboard layout\toggle\language = 3 hkcu\keyboard layout\toggle\hotkey = 3 hkcu\keyboard layout\toggle\layout = 3">
+          <div class="item__name">Disable Language Hotkey
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">No accidental Alt+Shift layout switch mid-game.</p>
+          <ul class="item__targets"><li>HKCU\Keyboard Layout\Toggle\Language = 3</li><li>HKCU\Keyboard Layout\Toggle\Hotkey = 3</li><li>HKCU\Keyboard Layout\Toggle\Layout = 3</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable all accessibility popups mousekeys, stickykeys, filterkeys, togglekeys fully off. hkcu\control panel\accessibility\mousekeys\flags = 0 hkcu\control panel\accessibility\stickykeys\flags = 0 hkcu\control panel\accessibility\keyboard response\flags = 0 hkcu\control panel\accessibility\togglekeys\flags = 0">
+          <div class="item__name">Disable All Accessibility Popups
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\MouseKeys\Flags = 0</li><li>HKCU\Control Panel\Accessibility\StickyKeys\Flags = 0</li><li>HKCU\Control Panel\Accessibility\Keyboard Response\Flags = 0</li><li>HKCU\Control Panel\Accessibility\ToggleKeys\Flags = 0</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="mouse polish pack trails, beeps, snap-to-button &amp; window tracking off. hkcu\control panel\mouse\mousetrails = 0 hkcu\control panel\mouse\beep = no hkcu\control panel\mouse\extendedsounds = no hkcu\control panel\mouse\snaptodefaultbutton = 0 hkcu\control panel\mouse\activewindowtracking = 0">
+          <div class="item__name">Mouse Polish Pack
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">Trails, beeps, snap-to-button &amp; window tracking off.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseTrails = 0</li><li>HKCU\Control Panel\Mouse\Beep = No</li><li>HKCU\Control Panel\Mouse\ExtendedSounds = No</li><li>HKCU\Control Panel\Mouse\SnapToDefaultButton = 0</li><li>HKCU\Control Panel\Mouse\ActiveWindowTracking = 0</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="default sensitivity (6/11) resets windows pointer speed to the raw 6/11 notch. hkcu\control panel\mouse\mousesensitivity = 10">
+          <div class="item__name">Default Sensitivity (6/11)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">Resets Windows pointer speed to the raw 6/11 notch.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseSensitivity = 10</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="instant window focus foregroundlocktimeout 0 - windows take focus instantly. hkcu\control panel\desktop\foregroundlocktimeout = 0">
+          <div class="item__name">Instant Window Focus
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">ForegroundLockTimeout 0 - windows take focus instantly.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Desktop\ForegroundLockTimeout = 0</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="input driver thread priority mouclass/kbdclass threadpriority 31. community tweak - unproven, but harmless. reboot. hklm\system\currentcontrolset\services\mouclass\parameters\threadpriority = 31 hklm\system\currentcontrolset\services\kbdclass\parameters\threadpriority = 31">
+          <div class="item__name">Input Driver Thread Priority
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">mouclass/kbdclass ThreadPriority 31. Community tweak - unproven, but harmless. Reboot.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters\ThreadPriority = 31</li><li>HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters\ThreadPriority = 31</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="xbox button doesn't open game bar stops the xbox/guide button from opening the game bar mid-match. hkcu\software\microsoft\gamebar\usenexusforgamebarenabled = 0">
+          <div class="item__name">Xbox Button Doesn't Open Game Bar
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Gaming</span>
+            
+          </div>
+          <p class="item__desc">Stops the Xbox/Guide button from opening the Game Bar mid-match.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\GameBar\UseNexusForGameBarEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable audio ducking windows stops lowering game volume when someone talks in discord. hkcu\software\microsoft\multimedia\audio\userduckingpreference = 3">
+          <div class="item__name">Disable Audio Ducking
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Windows stops lowering game volume when someone talks in Discord.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Multimedia\Audio\UserDuckingPreference = 3</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="audio thread priority gives the audio engine higher scheduling priority (mmcss audio task). hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\sfio priority = high">
+          <div class="item__name">Audio Thread Priority
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Gives the audio engine higher scheduling priority (MMCSS Audio task).</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Priority = 6</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Scheduling Category = High</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\SFIO Priority = High</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable windows system sounds no dings and error beeps over your game audio. hkcu\appevents\schemes\ = .none">
+          <div class="item__name">Disable Windows System Sounds
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">No dings and error beeps over your game audio.</p>
+          <ul class="item__targets"><li>HKCU\AppEvents\Schemes\ = .None</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="directx game settings windowed-game optimizations on, variable refresh rate on, auto hdr off. hkcu\software\microsoft\directx\usergpupreferences\directxuserglobalsettings = swapeffectupgradeenable=1;vrroptimizeenable=1;autohdrenable=0;">
+          <div class="item__name">DirectX Game Settings
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Windowed-game optimizations ON, variable refresh rate ON, Auto HDR OFF.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\DirectX\UserGpuPreferences\DirectXUserGlobalSettings = SwapEffectUpgradeEnable=1;VRROptimizeEnable=1;AutoHDREnable=0;</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="disable dynamic lighting (rgb) turns off the windows 11 rgb controller running in the background. hklm\software\microsoft\lighting\ambientlightingenabled = 0">
+          <div class="item__name">Disable Dynamic Lighting (RGB)
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Turns off the Windows 11 RGB controller running in the background.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Lighting\AmbientLightingEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable notification popups no dms or system toasts popping up mid-stream or mid-recording. hkcu\software\microsoft\windows\currentversion\pushnotifications\toastenabled = 0">
+          <div class="item__name">Disable Notification Popups
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">No DMs or system toasts popping up mid-stream or mid-recording.</p>
+          <ul class="item__targets"><li>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications\ToastEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable background recording stops windows' own 'record last 30s' buffer fighting with obs. hkcu\software\microsoft\windows\currentversion\gamedvr\historicalcaptureenabled = 0">
+          <div class="item__name">Disable Background Recording
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows' own 'record last 30s' buffer fighting with OBS.</p>
+          <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="chrome: no background apps stops chrome running in the background after you close it. hklm\software\policies\google\chrome\backgroundmodeenabled = 0">
+          <div class="item__name">Chrome: No Background Apps
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Stops Chrome running in the background after you close it.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Google\Chrome\BackgroundModeEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="edge: no background apps stops edge staying alive in the background. hklm\software\policies\microsoft\edge\backgroundmodeenabled = 0">
+          <div class="item__name">Edge: No Background Apps
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Stops Edge staying alive in the background.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\BackgroundModeEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="edge: disable startup boost edge no longer preloads itself when windows starts. hklm\software\policies\microsoft\edge\startupboostenabled = 0">
+          <div class="item__name">Edge: Disable Startup Boost
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Edge no longer preloads itself when Windows starts.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\StartupBoostEnabled = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="edge: disable preloading stops edge preloading pages and tabs in the background. hklm\software\policies\microsoft\edge\startupboostenabled = 0 hkcu\software\microsoft\windows\currentversion\explorer\advanced\start_trackprogs = 0">
+          <div class="item__name">Edge: Disable Preloading
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Stops Edge preloading pages and tabs in the background.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\StartupBoostEnabled = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Start_TrackProgs = 0</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="games priority profile (mmcss) gives games top gpu/cpu scheduling priority. pairs with system responsiveness. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\gpu priority = 8 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\sfio priority = high">
+          <div class="item__name">Games Priority Profile (MMCSS)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Gives games top GPU/CPU scheduling priority. Pairs with System Responsiveness.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\GPU Priority = 8</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\Priority = 6</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\Scheduling Category = High</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\SFIO Priority = High</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="block driver updates via windows update stops windows overwriting your gpu driver with an older one. hklm\software\policies\microsoft\windows\windowsupdate\excludewudriversinqualityupdate = 1">
+          <div class="item__name">Block Driver Updates via Windows Update
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops Windows overwriting your GPU driver with an older one.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\ExcludeWUDriversInQualityUpdate = 1</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="global timer resolution makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). reboot required. hklm\system\currentcontrolset\control\session manager\kernel\globaltimerresolutionrequests = 1">
+          <div class="item__name">Global Timer Resolution
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). Reboot required.</p>
+          <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel\GlobalTimerResolutionRequests = 1</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="audio &amp; microphone no sound or microphone? puts the audio services back to their defaults and starts them. service &quot;audiosrv&quot; → auto service &quot;audioendpointbuilder&quot; → auto">
+          <div class="item__name">Audio &amp; Microphone
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">No sound or microphone? Puts the audio services back to their defaults and starts them.</p>
+          <ul class="item__targets"><li>Service &quot;Audiosrv&quot; → auto</li><li>Service &quot;AudioEndpointBuilder&quot; → auto</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="bluetooth bluetooth missing or not connecting? re-enables and starts the bluetooth support service. service &quot;bthserv&quot; → manual">
+          <div class="item__name">Bluetooth
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Bluetooth missing or not connecting? Re-enables and starts the Bluetooth support service.</p>
+          <ul class="item__targets"><li>Service &quot;bthserv&quot; → manual</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="windows search start menu search broken? re-enables the search service and its index. service &quot;wsearch&quot; → delayed-auto">
+          <div class="item__name">Windows Search
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Start menu search broken? Re-enables the search service and its index.</p>
+          <ul class="item__targets"><li>Service &quot;WSearch&quot; → delayed-auto</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="printing nothing prints? restores the print spooler and starts it. service &quot;spooler&quot; → auto">
+          <div class="item__name">Printing
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Nothing prints? Restores the print spooler and starts it.</p>
+          <ul class="item__targets"><li>Service &quot;Spooler&quot; → auto</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="xbox &amp; game pass game pass or the xbox app broken after tweaking? puts the xbox services back to their defaults. service &quot;xblauthmanager&quot; → manual service &quot;xblgamesave&quot; → manual service &quot;xboxnetapisvc&quot; → manual service &quot;xboxgipsvc&quot; → manual">
+          <div class="item__name">Xbox &amp; Game Pass
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Game Pass or the Xbox app broken after tweaking? Puts the Xbox services back to their defaults.</p>
+          <ul class="item__targets"><li>Service &quot;XblAuthManager&quot; → manual</li><li>Service &quot;XblGameSave&quot; → manual</li><li>Service &quot;XboxNetApiSvc&quot; → manual</li><li>Service &quot;XboxGipSvc&quot; → manual</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="admin prompts &amp; group policy programs refuse to run as administrator, or policies no longer apply? restores the two services responsible. service &quot;appinfo&quot; → manual service &quot;gpsvc&quot; → auto">
+          <div class="item__name">Admin Prompts &amp; Group Policy
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Programs refuse to run as administrator, or policies no longer apply? Restores the two services responsible.</p>
+          <ul class="item__targets"><li>Service &quot;AppInfo&quot; → manual</li><li>Service &quot;gpsvc&quot; → auto</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="windows security windows security shows nothing or complains it is unavailable? restores the security centre services. service &quot;wscsvc&quot; → auto service &quot;securityhealthservice&quot; → manual">
+          <div class="item__name">Windows Security
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Windows Security shows nothing or complains it is unavailable? Restores the security centre services.</p>
+          <ul class="item__targets"><li>Service &quot;wscsvc&quot; → auto</li><li>Service &quot;SecurityHealthService&quot; → manual</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="reset common services puts the services this app can disable back to the start types windows ships with. service &quot;audiosrv&quot; → auto service &quot;audioendpointbuilder&quot; → auto service &quot;wsearch&quot; → delayed-auto service &quot;spooler&quot; → auto service &quot;bthserv&quot; → manual service &quot;sysmain&quot; → auto service &quot;appinfo&quot; → manual service &quot;wersvc&quot; → manual">
+          <div class="item__name">Reset Common Services
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Puts the services this app can disable back to the start types Windows ships with.</p>
+          <ul class="item__targets"><li>Service &quot;Audiosrv&quot; → auto</li><li>Service &quot;AudioEndpointBuilder&quot; → auto</li><li>Service &quot;WSearch&quot; → delayed-auto</li><li>Service &quot;Spooler&quot; → auto</li><li>Service &quot;bthserv&quot; → manual</li><li>Service &quot;SysMain&quot; → auto</li><li>Service &quot;AppInfo&quot; → manual</li><li>Service &quot;WerSvc&quot; → manual</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="clipboard history win+v stopped working? removes the policy that switches clipboard history off. hklm\software\policies\microsoft\windows\system\allowclipboardhistory = 1">
+          <div class="item__name">Clipboard History
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Win+V stopped working? Removes the policy that switches clipboard history off.</p>
+          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\AllowClipboardHistory = 1</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="notifications no notifications arriving? switches toast notifications back on for your account. hkcu\software\microsoft\windows\currentversion\pushnotifications\toastenabled = 1">
+          <div class="item__name">Notifications
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">No notifications arriving? Switches toast notifications back on for your account.</p>
+          <ul class="item__targets"><li>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications\ToastEnabled = 1</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="internet &amp; network slow or no internet after tweaking? resets winsock, the tcp/ip stack, tcp auto-tuning and the dns cache. action: winsockreset action: ipreset action: tcpautotuningnormal action: flushdns">
+          <div class="item__name">Internet &amp; Network
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Slow or no internet after tweaking? Resets Winsock, the TCP/IP stack, TCP auto-tuning and the DNS cache.</p>
+          <ul class="item__targets"><li>Action: winsockReset</li><li>Action: ipReset</li><li>Action: tcpAutotuningNormal</li><li>Action: flushDns</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="dns cache a site resolves to the wrong address? clears the dns cache. harmless and instant. action: flushdns">
+          <div class="item__name">DNS Cache
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">A site resolves to the wrong address? Clears the DNS cache. Harmless and instant.</p>
+          <ul class="item__targets"><li>Action: flushDns</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="microsoft store store will not open or download? clears its cache. action: storereset">
+          <div class="item__name">Microsoft Store
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Store will not open or download? Clears its cache.</p>
+          <ul class="item__targets"><li>Action: storeReset</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="taskbar &amp; explorer taskbar frozen or icons missing? restarts explorer. your open windows stay, the desktop flickers once. action: restartexplorer">
+          <div class="item__name">Taskbar &amp; Explorer
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Taskbar frozen or icons missing? Restarts Explorer. Your open windows stay, the desktop flickers once.</p>
+          <ul class="item__targets"><li>Action: restartExplorer</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="corrupted system files repairs the component store and then checks every protected system file. this takes a long time — often 15 to 45 minutes. action: dismrestorehealth action: sfcscannow">
+          <div class="item__name">Corrupted System Files
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Repairs the component store and then checks every protected system file. This takes a long time — often 15 to 45 minutes.</p>
+          <ul class="item__targets"><li>Action: dismRestoreHealth</li><li>Action: sfcScanNow</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="windows update service windows update set to disabled cannot run or even be started by settings. puts it back to the start type windows ships with (manual) and starts it. nothing is downloaded and nothing is deleted. service &quot;wuauserv&quot; → manual service &quot;bits&quot; → manual">
+          <div class="item__name">Windows Update Service
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Windows Update set to Disabled cannot run or even be started by Settings. Puts it back to the start type Windows ships with (Manual) and starts it. Nothing is downloaded and nothing is deleted.</p>
+          <ul class="item__targets"><li>Service &quot;wuauserv&quot; → manual</li><li>Service &quot;BITS&quot; → manual</li></ul>
+        </article>
+        <article class="item" data-group="Repairs" data-risk="safe" data-search="windows update updates stuck or failing? stops the update services, clears the download cache and starts them again. service &quot;wuauserv&quot; → manual service &quot;bits&quot; → manual clean up: windowsupdatecache service &quot;wuauserv&quot; → manual service &quot;bits&quot; → delayed-auto">
+          <div class="item__name">Windows Update
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Repairs</span>
+            
+          </div>
+          <p class="item__desc">Updates stuck or failing? Stops the update services, clears the download cache and starts them again.</p>
+          <ul class="item__targets"><li>Service &quot;wuauserv&quot; → manual</li><li>Service &quot;bits&quot; → manual</li><li>Clean up: windowsUpdateCache</li><li>Service &quot;wuauserv&quot; → manual</li><li>Service &quot;bits&quot; → delayed-auto</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="microsoft news bing/msn news app. store package: bingnews">
+          <div class="item__name">Microsoft News
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Bing/MSN news app.</p>
+          <ul class="item__targets"><li>Store package: BingNews</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="msn weather weather app. store package: bingweather">
+          <div class="item__name">MSN Weather
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Weather app.</p>
+          <ul class="item__targets"><li>Store package: BingWeather</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="get help microsoft support app. store package: gethelp">
+          <div class="item__name">Get Help
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Microsoft support app.</p>
+          <ul class="item__targets"><li>Store package: GetHelp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="tips windows tips app. store package: getstarted">
+          <div class="item__name">Tips
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Windows tips app.</p>
+          <ul class="item__targets"><li>Store package: Getstarted</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="windows maps maps app. store package: windowsmaps">
+          <div class="item__name">Windows Maps
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Maps app.</p>
+          <ul class="item__targets"><li>Store package: WindowsMaps</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="solitaire collection ad-supported card games. store package: microsoftsolitairecollection">
+          <div class="item__name">Solitaire Collection
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Ad-supported card games.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftSolitaireCollection</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="feedback hub feedback app. store package: windowsfeedbackhub">
+          <div class="item__name">Feedback Hub
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Feedback app.</p>
+          <ul class="item__targets"><li>Store package: WindowsFeedbackHub</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="office hub get office promo app. store package: microsoftofficehub">
+          <div class="item__name">Office Hub
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Get Office promo app.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftOfficeHub</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="sway office sway. store package: office.sway">
+          <div class="item__name">Sway
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Office Sway.</p>
+          <ul class="item__targets"><li>Store package: Office.Sway</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="people contacts app. store package: microsoft.people">
+          <div class="item__name">People
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Contacts app.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.People</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="skype preinstalled skype. store package: skypeapp">
+          <div class="item__name">Skype
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Preinstalled Skype.</p>
+          <ul class="item__targets"><li>Store package: SkypeApp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="3d viewer 3d model viewer. store package: microsoft3dviewer">
+          <div class="item__name">3D Viewer
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">3D model viewer.</p>
+          <ul class="item__targets"><li>Store package: Microsoft3DViewer</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="paint 3d paint 3d (not classic paint). store package: mspaint">
+          <div class="item__name">Paint 3D
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Paint 3D (not classic Paint).</p>
+          <ul class="item__targets"><li>Store package: MSPaint</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="print 3d 3d printing app. store package: print3d">
+          <div class="item__name">Print 3D
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">3D printing app.</p>
+          <ul class="item__targets"><li>Store package: Print3D</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="mixed reality portal vr portal. store package: mixedreality.portal">
+          <div class="item__name">Mixed Reality Portal
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">VR portal.</p>
+          <ul class="item__targets"><li>Store package: MixedReality.Portal</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="sound recorder voice recorder. store package: windowssoundrecorder">
+          <div class="item__name">Sound Recorder
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Voice recorder.</p>
+          <ul class="item__targets"><li>Store package: WindowsSoundRecorder</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="clipchamp video editor. store package: clipchamp">
+          <div class="item__name">Clipchamp
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Video editor.</p>
+          <ul class="item__targets"><li>Store package: Clipchamp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="power automate automation tool. store package: powerautomatedesktop">
+          <div class="item__name">Power Automate
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Automation tool.</p>
+          <ul class="item__targets"><li>Store package: PowerAutomateDesktop</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="teams (chat) consumer teams / chat. store package: microsoftteams">
+          <div class="item__name">Teams (Chat)
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Consumer Teams / Chat.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftTeams</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="family safety family features. store package: microsoftfamily">
+          <div class="item__name">Family Safety
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Family features.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftFamily</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="phone link links your phone to the pc. store package: yourphone">
+          <div class="item__name">Phone Link
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Links your phone to the PC.</p>
+          <ul class="item__targets"><li>Store package: YourPhone</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="groove music music player. store package: zunemusic">
+          <div class="item__name">Groove Music
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Music player.</p>
+          <ul class="item__targets"><li>Store package: ZuneMusic</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="movies &amp; tv video player. store package: zunevideo">
+          <div class="item__name">Movies &amp; TV
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Video player.</p>
+          <ul class="item__targets"><li>Store package: ZuneVideo</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="onenote (store) note app. store package: office.onenote">
+          <div class="item__name">OneNote (Store)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Note app.</p>
+          <ul class="item__targets"><li>Store package: Office.OneNote</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="microsoft to do task list. store package: todos">
+          <div class="item__name">Microsoft To Do
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Task list.</p>
+          <ul class="item__targets"><li>Store package: Todos</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="sticky notes desktop notes. store package: microsoftstickynotes">
+          <div class="item__name">Sticky Notes
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Desktop notes.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftStickyNotes</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="photos default image viewer. store package: windows.photos">
+          <div class="item__name">Photos
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Default image viewer.</p>
+          <ul class="item__targets"><li>Store package: Windows.Photos</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox app xbox / game pass app. store package: gamingapp">
+          <div class="item__name">Xbox App
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Xbox / Game Pass app.</p>
+          <ul class="item__targets"><li>Store package: GamingApp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox game bar win+g overlay. store package: xboxgamingoverlay">
+          <div class="item__name">Xbox Game Bar
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Win+G overlay.</p>
+          <ul class="item__targets"><li>Store package: XboxGamingOverlay</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox game overlay overlay component. store package: xboxgameoverlay">
+          <div class="item__name">Xbox Game Overlay
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Overlay component.</p>
+          <ul class="item__targets"><li>Store package: XboxGameOverlay</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox speech-to-text overlay component. store package: xboxspeechtotextoverlay">
+          <div class="item__name">Xbox Speech-to-Text
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Overlay component.</p>
+          <ul class="item__targets"><li>Store package: XboxSpeechToTextOverlay</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="snipping tool the screenshot tool behind win+shift+s. store package: microsoft.screensketch">
+          <div class="item__name">Snipping Tool
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The screenshot tool behind Win+Shift+S.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.ScreenSketch</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="notepad the built-in text editor. store package: microsoft.windowsnotepad">
+          <div class="item__name">Notepad
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The built-in text editor.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.WindowsNotepad</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="calculator the built-in calculator. store package: microsoft.windowscalculator">
+          <div class="item__name">Calculator
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The built-in calculator.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.WindowsCalculator</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="paint the built-in image editor. store package: microsoft.paint">
+          <div class="item__name">Paint
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The built-in image editor.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.Paint</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="windows terminal the default console host for powershell and the command prompt. store package: microsoft.windowsterminal">
+          <div class="item__name">Windows Terminal
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The default console host for PowerShell and the command prompt.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.WindowsTerminal</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="camera the built-in camera app. store package: microsoft.windowscamera">
+          <div class="item__name">Camera
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The built-in camera app.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.WindowsCamera</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="microsoft edge the system browser. some windows features and help pages open in it. store package: microsoft.microsoftedge.stable">
+          <div class="item__name">Microsoft Edge
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The system browser. Some Windows features and help pages open in it.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.MicrosoftEdge.Stable</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="store purchase app handles purchases and installs in the microsoft store. store package: microsoft.storepurchaseapp">
+          <div class="item__name">Store Purchase App
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Handles purchases and installs in the Microsoft Store.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.StorePurchaseApp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="gaming services required to install and launch game pass titles. store package: microsoft.gamingservices">
+          <div class="item__name">Gaming Services
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Required to install and launch Game Pass titles.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.GamingServices</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox identity provider signs you in to games that use an xbox account. store package: microsoft.xboxidentityprovider">
+          <div class="item__name">Xbox Identity Provider
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Signs you in to games that use an Xbox account.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.XboxIdentityProvider</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="xbox live in-game ui in-game overlays some titles need to sign in. store package: microsoft.xbox.tcui">
+          <div class="item__name">Xbox Live In-Game UI
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">In-game overlays some titles need to sign in.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.Xbox.TCUI</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="bing web results in search web results in the start menu search box. local search keeps working without it. store package: microsoft.bingsearch">
+          <div class="item__name">Bing Web Results in Search
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Web results in the Start menu search box. Local search keeps working without it.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.BingSearch</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="edge game assist edge sidebar for games. store package: microsoft.edge.gameassist">
+          <div class="item__name">Edge Game Assist
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Edge sidebar for games.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.Edge.GameAssist</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="outlook (new) the new mail app windows preinstalls. store package: microsoft.outlookforwindows">
+          <div class="item__name">Outlook (new)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The new mail app Windows preinstalls.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.OutlookForWindows</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="quick assist remote help tool. keep it if someone helps you remotely. store package: microsoftcorporationii.quickassist">
+          <div class="item__name">Quick Assist
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Remote help tool. Keep it if someone helps you remotely.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftCorporationII.QuickAssist</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="dev home developer dashboard. useless unless you develop on this machine. store package: microsoft.windows.devhome">
+          <div class="item__name">Dev Home
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Developer dashboard. Useless unless you develop on this machine.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.Windows.DevHome</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="start menu recommendations feeds the recommendation strip in the start menu. store package: microsoft.startexperiencesapp">
+          <div class="item__name">Start Menu Recommendations
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Feeds the recommendation strip in the Start menu.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.StartExperiencesApp</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="microsoft teams the preinstalled teams client. store package: msteams">
+          <div class="item__name">Microsoft Teams
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The preinstalled Teams client.</p>
+          <ul class="item__targets"><li>Store package: MSTeams</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="cross device experience phone link and cross-device continuity. store package: microsoftwindows.crossdevice">
+          <div class="item__name">Cross Device Experience
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Phone Link and cross-device continuity.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftWindows.CrossDevice</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="widgets the widgets board on the taskbar. store package: microsoftwindows.client.widgetservice">
+          <div class="item__name">Widgets
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">The widgets board on the taskbar.</p>
+          <ul class="item__targets"><li>Store package: MicrosoftWindows.Client.WidgetService</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="advanced" data-search="app compatibility enhancements fixes windows applies to older applications. store package: microsoft.applicationcompatibilityenhancements">
+          <div class="item__name">App Compatibility Enhancements
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            
+          </div>
+          <p class="item__desc">Fixes Windows applies to older applications.</p>
+          <ul class="item__targets"><li>Store package: Microsoft.ApplicationCompatibilityEnhancements</li></ul>
+        </article>
+        <article class="item" data-group="Preinstalled apps" data-risk="safe" data-search="adobe notification client adobe's notification helper. not part of windows. store package: adobenotificationclient">
+          <div class="item__name">Adobe Notification Client
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Preinstalled apps</span>
+            <span class="badge badge--note">Suggested for removal</span>
+          </div>
+          <p class="item__desc">Adobe's notification helper. Not part of Windows.</p>
+          <ul class="item__targets"><li>Store package: AdobeNotificationClient</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="connected user experiences &amp; telemetry microsoft telemetry collector. service &quot;diagtrack&quot; → disabled">
+          <div class="item__name">Connected User Experiences &amp; Telemetry
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Microsoft telemetry collector.</p>
+          <ul class="item__targets"><li>Service &quot;DiagTrack&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="wap push message routing telemetry transport. service &quot;dmwappushservice&quot; → disabled">
+          <div class="item__name">WAP Push Message Routing
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Telemetry transport.</p>
+          <ul class="item__targets"><li>Service &quot;dmwappushservice&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="fax fax service - almost nobody uses it. service &quot;fax&quot; → disabled">
+          <div class="item__name">Fax
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Fax service - almost nobody uses it.</p>
+          <ul class="item__targets"><li>Service &quot;Fax&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="retail demo store demo mode. service &quot;retaildemo&quot; → disabled">
+          <div class="item__name">Retail Demo
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Store demo mode.</p>
+          <ul class="item__targets"><li>Service &quot;RetailDemo&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="downloaded maps manager offline maps - only needed by maps app. service &quot;mapsbroker&quot; → disabled">
+          <div class="item__name">Downloaded Maps Manager
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Offline maps - only needed by Maps app.</p>
+          <ul class="item__targets"><li>Service &quot;MapsBroker&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="windows error reporting sends crash reports to microsoft. service &quot;wersvc&quot; → disabled">
+          <div class="item__name">Windows Error Reporting
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Sends crash reports to Microsoft.</p>
+          <ul class="item__targets"><li>Service &quot;WerSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="remote registry remote registry access (safer off). service &quot;remoteregistry&quot; → disabled">
+          <div class="item__name">Remote Registry
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Remote registry access (safer OFF).</p>
+          <ul class="item__targets"><li>Service &quot;RemoteRegistry&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="wmp network sharing shares windows media player libraries. service &quot;wmpnetworksvc&quot; → disabled">
+          <div class="item__name">WMP Network Sharing
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Shares Windows Media Player libraries.</p>
+          <ul class="item__targets"><li>Service &quot;WMPNetworkSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="phone service phone/telephony features. service &quot;phonesvc&quot; → disabled">
+          <div class="item__name">Phone Service
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Phone/telephony features.</p>
+          <ul class="item__targets"><li>Service &quot;PhoneSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="parental controls family safety monitoring. service &quot;wpcmonsvc&quot; → disabled">
+          <div class="item__name">Parental Controls
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Family safety monitoring.</p>
+          <ul class="item__targets"><li>Service &quot;WpcMonSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="payments &amp; nfc tap-to-pay / nfc. service &quot;semgrsvc&quot; → disabled">
+          <div class="item__name">Payments &amp; NFC
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Tap-to-pay / NFC.</p>
+          <ul class="item__targets"><li>Service &quot;SEMgrSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="safe" data-search="geolocation service location tracking. service &quot;lfsvc&quot; → disabled">
+          <div class="item__name">Geolocation Service
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Services</span>
+            <span class="badge badge--note">Safe to disable</span>
+          </div>
+          <p class="item__desc">Location tracking.</p>
+          <ul class="item__targets"><li>Service &quot;lfsvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="sysmain (superfetch) preloads apps into ram. service &quot;sysmain&quot; → disabled">
+          <div class="item__name">SysMain (Superfetch)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Preloads apps into RAM.</p>
+          <ul class="item__targets"><li>Service &quot;SysMain&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="windows search search indexing (search gets slower). service &quot;wsearch&quot; → disabled">
+          <div class="item__name">Windows Search
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Search indexing (search gets slower).</p>
+          <ul class="item__targets"><li>Service &quot;WSearch&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="print spooler printing - disable only if no printer. service &quot;spooler&quot; → disabled">
+          <div class="item__name">Print Spooler
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Printing - disable only if no printer.</p>
+          <ul class="item__targets"><li>Service &quot;Spooler&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="xbox live auth manager xbox sign-in (needed for game pass). service &quot;xblauthmanager&quot; → disabled">
+          <div class="item__name">Xbox Live Auth Manager
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Xbox sign-in (needed for Game Pass).</p>
+          <ul class="item__targets"><li>Service &quot;XblAuthManager&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="xbox live game save xbox cloud saves. service &quot;xblgamesave&quot; → disabled">
+          <div class="item__name">Xbox Live Game Save
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Xbox cloud saves.</p>
+          <ul class="item__targets"><li>Service &quot;XblGameSave&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="xbox live networking xbox multiplayer networking. service &quot;xboxnetapisvc&quot; → disabled">
+          <div class="item__name">Xbox Live Networking
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Xbox multiplayer networking.</p>
+          <ul class="item__targets"><li>Service &quot;XboxNetApiSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="xbox accessory management xbox controller management. service &quot;xboxgipsvc&quot; → disabled">
+          <div class="item__name">Xbox Accessory Management
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Xbox controller management.</p>
+          <ul class="item__targets"><li>Service &quot;XboxGipSvc&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="touch keyboard &amp; handwriting on-screen keyboard / pen input. service &quot;tabletinputservice&quot; → disabled">
+          <div class="item__name">Touch Keyboard &amp; Handwriting
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">On-screen keyboard / pen input.</p>
+          <ul class="item__targets"><li>Service &quot;TabletInputService&quot; → disabled</li></ul>
+        </article>
+        <article class="item" data-group="Services" data-risk="advanced" data-search="bluetooth user support bluetooth - disable only if unused. service &quot;bluetoothuserservice&quot; → disabled">
+          <div class="item__name">Bluetooth User Support
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Services</span>
+            
+          </div>
+          <p class="item__desc">Bluetooth - disable only if unused.</p>
+          <ul class="item__targets"><li>Service &quot;BluetoothUserService&quot; → disabled</li></ul>
+        </article>
+      <div class="empty" id="empty" hidden>Nothing found.</div>
+    </div>
+
+    <div class="legend">
+      <div class="card"><span class="badge badge--safe">Safe</span>
+        <p style="margin-top:12px">No stated downside. Fine for anyone, and this is the majority.</p></div>
+      <div class="card"><span class="badge badge--advanced">Advanced</span>
+        <p style="margin-top:12px">Gains something, costs something else — or depends on your hardware. The description says which.</p></div>
+      <div class="card"><span class="badge badge--risky">Risky</span>
+        <p style="margin-top:12px">Can take away a feature you rely on. Hidden by default and never recommended automatically.</p></div>
+    </div>
+  </div></section>
+
+  <section id="safety" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">Safety</p>
+    <h2>What it is allowed to do —<br>and what it deliberately is not.</h2>
+    <div class="grid">
+      <div class="card"><h3>Starts without admin rights</h3>
+        <p>Analysis and every change inside your own user account run as a normal user.
+           Administrator rights are only requested when you apply something that needs them.</p></div>
+      <div class="card"><h3>Restore point</h3>
+        <p>On first launch the app offers a Windows restore point — and then checks whether it
+           was actually created.</p></div>
+      <div class="card"><h3>Risky is off by default</h3>
+        <p>3 changes count as risky. They stay hidden until you switch them on in the
+           settings, and they are never recommended automatically.</p></div>
+      <div class="card"><h3>System-critical is blocked</h3>
+        <p>The debloater has a hard block list. Packages Windows depends on cannot be selected
+           through the interface at all.</p></div>
+    </div>
+
+    <div class="honest" style="margin-top:24px">
+      <h3>The honest part: 41 tweaks are still missing</h3>
+      <p>The collection originally came from SlideTweaks, where every entry was a raw command
+         line. 41 of them — powershell, powercfg, bcdedit, netsh — have not been
+         translated into validated operations yet. They are marked unavailable inside the app and
+         appear neither in the number above nor in the list. Better one tweak fewer than one that
+         only pretends.</p>
+    </div>
+  </div></section>
+
+  <section id="start" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">Getting started</p>
+    <h2>Running in about a minute</h2>
+    <div class="steps">
+      <div class="step"><h3>Join the Discord</h3><p>The build lives in the download channel. No account setup beyond Discord itself, and nothing to pay.</p></div>
+      <div class="step"><h3>Run it</h3><p>One portable .exe — no installer, nothing added to startup. It starts without administrator rights and only asks for them when a change genuinely needs them.</p></div>
+      <div class="step"><h3>Analyse my PC</h3><p>One button. After that you can see what is worth doing on your machine — nothing is applied until you confirm.</p></div>
+    </div>
+  </div></section>
+
+  <section id="discord" style="padding-top:0"><div class="wrap"><div class="band">
+    <p class="eyebrow">Community</p>
+    <h2>Help, updates and<br>the source code</h2>
+    <p class="sub" style="text-align:left">Discord is the fastest way to an answer — and new
+      releases land there first.</p>
+    <div class="dcgrid">
+      <div><span class="ico">📥</span><b>The download</b><p>The official file, always the current version.</p></div>
+      <div><span class="ico">💬</span><b>Help</b><p>Something broken, or a question about a setting? Just ask.</p></div>
+      <div><span class="ico">📜</span><b>Source code</b><p>MIT licensed. Read every line before you run it.</p></div>
+      <div><span class="ico">🔔</span><b>New releases</b><p>New tweaks and fixes are announced there first.</p></div>
+    </div>
+    <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join the Discord</a>
+    <p class="handle">discord.gg/HNf6PNtQZ</p>
+  </div></div></section>
+
+  <section id="faq" style="padding-top:0"><div class="wrap">
+    <p class="eyebrow">Questions</p>
+    <h2>Straight answers</h2>
+    <div style="margin-top:36px">
+      <details><summary>Is it really free?</summary><p>Yes. MIT licensed, no account, no payment, no pro version, nothing behind a paywall. The source is open, so you can read what happens before you run it.</p></details>
+      <details><summary>Why does Windows say “unknown publisher”?</summary><p>Because the file is not code-signed. A signing certificate costs several hundred euros a year and this app is free. Click More info, then Run anyway.</p></details>
+      <details><summary>Does it need administrator rights?</summary><p>Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings.</p></details>
+      <details><summary>Can I undo everything?</summary><p>Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created.</p></details>
+      <details><summary>Where do I actually download it?</summary><p>In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing.</p></details>
+      <details><summary>Why 106 tweaks and not 147?</summary><p>Because 41 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 41 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
+      <details><summary>I am not technical. Can I use this?</summary><p>Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start.</p></details>
+      <details><summary>How much faster will my PC get?</summary><p>That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours.</p></details>
+    </div>
+  </div></section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>Panda Tweaks 0.1.0 · MIT licensed</span>
+    <span>Originally based on SlideTweaks 2.1.0 (MIT)</span>
+    <a class="sp" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">discord.gg/HNf6PNtQZ</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=document.getElementById('q'),g=document.getElementById('g'),r=document.getElementById('r'),
+      count=document.getElementById('count'),empty=document.getElementById('empty'),
+      items=[].slice.call(document.querySelectorAll('.item'));
+  function apply(){
+    var s=q.value.trim().toLowerCase(),gv=g.value,rv=r.value,n=0;
+    items.forEach(function(el){
+      var ok=(!s||el.dataset.search.indexOf(s)>-1)&&(!gv||el.dataset.group===gv)&&(!rv||el.dataset.risk===rv);
+      el.hidden=!ok; if(ok)n++;
+    });
+    empty.hidden=n>0;
+    count.textContent=n+' of '+items.length+' entries';
+  }
+  q.addEventListener('input',apply); g.addEventListener('change',apply); r.addEventListener('change',apply);
+  apply();
+})();
+</script>
+
+</body>
+</html>

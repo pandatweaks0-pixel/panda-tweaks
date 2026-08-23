@@ -1,0 +1,438 @@
+[
+  {
+    "id": "bloat_bingnews",
+    "package": "BingNews",
+    "name": "Microsoft News",
+    "description": "Bing/MSN news app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_weather",
+    "package": "BingWeather",
+    "name": "MSN Weather",
+    "description": "Weather app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_gethelp",
+    "package": "GetHelp",
+    "name": "Get Help",
+    "description": "Microsoft support app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_tips",
+    "package": "Getstarted",
+    "name": "Tips",
+    "description": "Windows tips app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_maps",
+    "package": "WindowsMaps",
+    "name": "Windows Maps",
+    "description": "Maps app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_solitaire",
+    "package": "MicrosoftSolitaireCollection",
+    "name": "Solitaire Collection",
+    "description": "Ad-supported card games.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_feedback",
+    "package": "WindowsFeedbackHub",
+    "name": "Feedback Hub",
+    "description": "Feedback app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_officehub",
+    "package": "MicrosoftOfficeHub",
+    "name": "Office Hub",
+    "description": "Get Office promo app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_sway",
+    "package": "Office.Sway",
+    "name": "Sway",
+    "description": "Office Sway.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_people",
+    "package": "Microsoft.People",
+    "name": "People",
+    "description": "Contacts app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_skype",
+    "package": "SkypeApp",
+    "name": "Skype",
+    "description": "Preinstalled Skype.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_3dviewer",
+    "package": "Microsoft3DViewer",
+    "name": "3D Viewer",
+    "description": "3D model viewer.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_paint3d",
+    "package": "MSPaint",
+    "name": "Paint 3D",
+    "description": "Paint 3D (not classic Paint).",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_print3d",
+    "package": "Print3D",
+    "name": "Print 3D",
+    "description": "3D printing app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_mixedreal",
+    "package": "MixedReality.Portal",
+    "name": "Mixed Reality Portal",
+    "description": "VR portal.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_soundrec",
+    "package": "WindowsSoundRecorder",
+    "name": "Sound Recorder",
+    "description": "Voice recorder.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_clipchamp",
+    "package": "Clipchamp",
+    "name": "Clipchamp",
+    "description": "Video editor.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_powerauto",
+    "package": "PowerAutomateDesktop",
+    "name": "Power Automate",
+    "description": "Automation tool.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_teams",
+    "package": "MicrosoftTeams",
+    "name": "Teams (Chat)",
+    "description": "Consumer Teams / Chat.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "bloat_family",
+    "package": "MicrosoftFamily",
+    "name": "Family Safety",
+    "description": "Family features.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "opt_yourphone",
+    "package": "YourPhone",
+    "name": "Phone Link",
+    "description": "Links your phone to the PC.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_music",
+    "package": "ZuneMusic",
+    "name": "Groove Music",
+    "description": "Music player.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_video",
+    "package": "ZuneVideo",
+    "name": "Movies & TV",
+    "description": "Video player.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_onenote",
+    "package": "Office.OneNote",
+    "name": "OneNote (Store)",
+    "description": "Note app.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_todos",
+    "package": "Todos",
+    "name": "Microsoft To Do",
+    "description": "Task list.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_stickynotes",
+    "package": "MicrosoftStickyNotes",
+    "name": "Sticky Notes",
+    "description": "Desktop notes.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "opt_photos",
+    "package": "Windows.Photos",
+    "name": "Photos",
+    "description": "Default image viewer.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "xbox_app",
+    "package": "GamingApp",
+    "name": "Xbox App",
+    "description": "Xbox / Game Pass app.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "xbox_gamebar",
+    "package": "XboxGamingOverlay",
+    "name": "Xbox Game Bar",
+    "description": "Win+G overlay.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "xbox_overlay",
+    "package": "XboxGameOverlay",
+    "name": "Xbox Game Overlay",
+    "description": "Overlay component.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "xbox_speech",
+    "package": "XboxSpeechToTextOverlay",
+    "name": "Xbox Speech-to-Text",
+    "description": "Overlay component.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_snippingtool",
+    "package": "Microsoft.ScreenSketch",
+    "name": "Snipping Tool",
+    "description": "The screenshot tool behind Win+Shift+S.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_notepad",
+    "package": "Microsoft.WindowsNotepad",
+    "name": "Notepad",
+    "description": "The built-in text editor.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_calculator",
+    "package": "Microsoft.WindowsCalculator",
+    "name": "Calculator",
+    "description": "The built-in calculator.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_paint",
+    "package": "Microsoft.Paint",
+    "name": "Paint",
+    "description": "The built-in image editor.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_terminal",
+    "package": "Microsoft.WindowsTerminal",
+    "name": "Windows Terminal",
+    "description": "The default console host for PowerShell and the command prompt.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_camera",
+    "package": "Microsoft.WindowsCamera",
+    "name": "Camera",
+    "description": "The built-in camera app.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_edge",
+    "package": "Microsoft.MicrosoftEdge.Stable",
+    "name": "Microsoft Edge",
+    "description": "The system browser. Some Windows features and help pages open in it.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_storepurchase",
+    "package": "Microsoft.StorePurchaseApp",
+    "name": "Store Purchase App",
+    "description": "Handles purchases and installs in the Microsoft Store.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_gamingservices",
+    "package": "Microsoft.GamingServices",
+    "name": "Gaming Services",
+    "description": "Required to install and launch Game Pass titles.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_xboxidentity",
+    "package": "Microsoft.XboxIdentityProvider",
+    "name": "Xbox Identity Provider",
+    "description": "Signs you in to games that use an Xbox account.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_xboxtcui",
+    "package": "Microsoft.Xbox.TCUI",
+    "name": "Xbox Live In-Game UI",
+    "description": "In-game overlays some titles need to sign in.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_bingsearch",
+    "package": "Microsoft.BingSearch",
+    "name": "Bing Web Results in Search",
+    "description": "Web results in the Start menu search box. Local search keeps working without it.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_gameassist",
+    "package": "Microsoft.Edge.GameAssist",
+    "name": "Edge Game Assist",
+    "description": "Edge sidebar for games.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "app_outlooknew",
+    "package": "Microsoft.OutlookForWindows",
+    "name": "Outlook (new)",
+    "description": "The new mail app Windows preinstalls.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_quickassist",
+    "package": "MicrosoftCorporationII.QuickAssist",
+    "name": "Quick Assist",
+    "description": "Remote help tool. Keep it if someone helps you remotely.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_devhome",
+    "package": "Microsoft.Windows.DevHome",
+    "name": "Dev Home",
+    "description": "Developer dashboard. Useless unless you develop on this machine.",
+    "recommended": false,
+    "risk": "safe"
+  },
+  {
+    "id": "app_startexp",
+    "package": "Microsoft.StartExperiencesApp",
+    "name": "Start Menu Recommendations",
+    "description": "Feeds the recommendation strip in the Start menu.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "id": "app_teams",
+    "package": "MSTeams",
+    "name": "Microsoft Teams",
+    "description": "The preinstalled Teams client.",
+    "recommended": false,
+    "risk": "safe"
+  },
+  {
+    "id": "app_crossdevice",
+    "package": "MicrosoftWindows.CrossDevice",
+    "name": "Cross Device Experience",
+    "description": "Phone Link and cross-device continuity.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_widgets",
+    "package": "MicrosoftWindows.Client.WidgetService",
+    "name": "Widgets",
+    "description": "The widgets board on the taskbar.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "id": "app_appcompat",
+    "package": "Microsoft.ApplicationCompatibilityEnhancements",
+    "name": "App Compatibility Enhancements",
+    "description": "Fixes Windows applies to older applications.",
+    "recommended": false,
+    "risk": "advanced",
+    "keep": true
+  },
+  {
+    "id": "app_adobenotify",
+    "package": "AdobeNotificationClient",
+    "name": "Adobe Notification Client",
+    "description": "Adobe's notification helper. Not part of Windows.",
+    "recommended": true,
+    "risk": "safe"
+  }
+]

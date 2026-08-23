@@ -1,0 +1,4284 @@
+[
+  {
+    "id": "win_game_mode",
+    "name": "Enable Game Mode",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Windows Game Mode on for better game scheduling.",
+    "detailedDescription": "Windows Game Mode on for better game scheduling.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\GameBar\\AutoGameModeEnabled": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\GameBar",
+        "name": "AutoGameModeEnabled",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AutoGameModeEnabled /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AutoGameModeEnabled /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_gamedvr_off",
+    "name": "Disable Xbox Game DVR",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Stops background recording (real FPS drain).",
+    "detailedDescription": "Stops background recording (real FPS drain).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\System\\GameConfigStore\\GameDVR_Enabled": "1",
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\\AllowGameDVR": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "System\\GameConfigStore",
+        "name": "GameDVR_Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR",
+        "name": "AllowGameDVR",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_Enabled /t REG_DWORD /d 0 /f & reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\" /v AllowGameDVR /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_Enabled /t REG_DWORD /d 1 /f & reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\" /v AllowGameDVR /f"
+  },
+  {
+    "id": "win_gamebar_off",
+    "name": "Disable Game Bar Capture",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Turns off Win+G background capture.",
+    "detailedDescription": "Turns off Win+G background capture.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\\AppCaptureEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+        "name": "AppCaptureEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\" /v AppCaptureEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\" /v AppCaptureEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_fso_off",
+    "name": "Disable Fullscreen Optimizations",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "advanced",
+    "description": "Global FSO off for lower input lag (test per game).",
+    "detailedDescription": "Global FSO off for lower input lag (test per game).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\System\\GameConfigStore\\GameDVR_FSEBehaviorMode": "(value removed)",
+      "HKCU\\System\\GameConfigStore\\GameDVR_HonorUserFSEBehaviorMode": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "System\\GameConfigStore",
+        "name": "GameDVR_FSEBehaviorMode",
+        "valueType": "REG_DWORD",
+        "value": "2"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "System\\GameConfigStore",
+        "name": "GameDVR_HonorUserFSEBehaviorMode",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_FSEBehaviorMode /t REG_DWORD /d 2 /f & reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_HonorUserFSEBehaviorMode /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKCU\\System\\GameConfigStore\" /v GameDVR_FSEBehaviorMode /f & reg delete \"HKCU\\System\\GameConfigStore\" /v GameDVR_HonorUserFSEBehaviorMode /f"
+  },
+  {
+    "id": "win_mouse_accel_off",
+    "name": "Disable Mouse Acceleration",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "Raw, consistent aim (turns off pointer precision).",
+    "detailedDescription": "Raw, consistent aim (turns off pointer precision).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Mouse\\MouseSpeed": "1",
+      "HKCU\\Control Panel\\Mouse\\MouseThreshold1": "6",
+      "HKCU\\Control Panel\\Mouse\\MouseThreshold2": "10"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseSpeed",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseThreshold1",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseThreshold2",
+        "valueType": "REG_SZ",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseSpeed /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold1 /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold2 /t REG_SZ /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseSpeed /t REG_SZ /d 1 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold1 /t REG_SZ /d 6 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold2 /t REG_SZ /d 10 /f"
+  },
+  {
+    "id": "win_visualfx",
+    "name": "Visual Effects: Performance",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Disables animations/shadows for a snappier desktop.",
+    "detailedDescription": "Disables animations/shadows for a snappier desktop.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\\VisualFXSetting": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects",
+        "name": "VisualFXSetting",
+        "valueType": "REG_DWORD",
+        "value": "2"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_transparency_off",
+    "name": "Disable Transparency",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Turns off transparency effects (tiny GPU/CPU save).",
+    "detailedDescription": "Turns off transparency effects (tiny GPU/CPU save).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\EnableTransparency": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "EnableTransparency",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v EnableTransparency /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v EnableTransparency /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_menu_delay",
+    "name": "Remove Menu Show Delay",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Menus open instantly instead of after 400ms.",
+    "detailedDescription": "Menus open instantly instead of after 400ms.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Desktop\\MenuShowDelay": "400"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Desktop",
+        "name": "MenuShowDelay",
+        "valueType": "REG_SZ",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Desktop\" /v MenuShowDelay /t REG_SZ /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Desktop\" /v MenuShowDelay /t REG_SZ /d 400 /f"
+  },
+  {
+    "id": "win_startup_delay",
+    "name": "Remove Startup Delay",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Autostart apps launch immediately.",
+    "detailedDescription": "Autostart apps launch immediately.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize\\StartupDelayInMSec": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize",
+        "name": "StartupDelayInMSec",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize\" /v StartupDelayInMSec /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize\" /v StartupDelayInMSec /f"
+  },
+  {
+    "id": "win_show_ext",
+    "name": "Show File Extensions",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Always show file extensions in Explorer.",
+    "detailedDescription": "Always show file extensions in Explorer.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\HideFileExt": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "HideFileExt",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v HideFileExt /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v HideFileExt /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_faststartup_off",
+    "name": "Disable Fast Startup",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "advanced",
+    "description": "Cleaner full shutdowns (fixes some driver quirks).",
+    "detailedDescription": "Cleaner full shutdowns (fixes some driver quirks).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power\\HiberbootEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power",
+        "name": "HiberbootEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power\" /v HiberbootEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power\" /v HiberbootEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_hvci_off",
+    "name": "Disable Core Isolation (HVCI)",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "risky",
+    "description": "RISKY: lowers security (memory integrity). Can raise FPS. Reboot.",
+    "detailedDescription": "RISKY: lowers security (memory integrity). Can raise FPS. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\\Enabled": "1"
+    },
+    "warnings": [
+      "Weakens a Windows security feature"
+    ],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity",
+        "name": "Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v Enabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v Enabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_vbs_off",
+    "name": "Disable VBS",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "risky",
+    "description": "RISKY: disables Virtualization-Based Security. Reboot.",
+    "detailedDescription": "RISKY: disables Virtualization-Based Security. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\EnableVirtualizationBasedSecurity": "1"
+    },
+    "warnings": [
+      "Weakens a Windows security feature"
+    ],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard",
+        "name": "EnableVirtualizationBasedSecurity",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "gpu_hags",
+    "name": "Hardware GPU Scheduling (HAGS)",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Reboot required. Can lower latency - test on your rig.",
+    "detailedDescription": "Reboot required. Can lower latency - test on your rig.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\\HwSchMode": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+        "name": "HwSchMode",
+        "valueType": "REG_DWORD",
+        "value": "2"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v HwSchMode /t REG_DWORD /d 2 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v HwSchMode /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "gpu_mpo_off",
+    "name": "Disable MPO",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Fixes flicker/stutter on some NVIDIA/AMD setups.",
+    "detailedDescription": "Fixes flicker/stutter on some NVIDIA/AMD setups.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm\\OverlayTestMode": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\Dwm",
+        "name": "OverlayTestMode",
+        "valueType": "REG_DWORD",
+        "value": "5"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm\" /v OverlayTestMode /t REG_DWORD /d 5 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm\" /v OverlayTestMode /f"
+  },
+  {
+    "id": "gpu_tdrdelay",
+    "name": "Increase TdrDelay",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Fewer 'display driver stopped responding' timeouts.",
+    "detailedDescription": "Fewer 'display driver stopped responding' timeouts.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\\TdrDelay": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+        "name": "TdrDelay",
+        "valueType": "REG_DWORD",
+        "value": "10"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v TdrDelay /t REG_DWORD /d 10 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v TdrDelay /f"
+  },
+  {
+    "id": "cpu_ultimate",
+    "name": "Ultimate Performance Plan",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Creates & activates the Ultimate Performance power plan.",
+    "detailedDescription": "Creates & activates the Ultimate Performance power plan.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"$o=powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61; $g=([regex]'([0-9a-fA-F-]{36})').Match($o).Value; if($g){powercfg -setactive $g}\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"$o=powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61; $g=([regex]'([0-9a-fA-F-]{36})').Match($o).Value; if($g){powercfg -setactive $g}\"",
+    "originalRevert": "powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e"
+  },
+  {
+    "id": "cpu_minstate100",
+    "name": "Min Processor State 100%",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Keeps CPU from downclocking (more consistent frames).",
+    "detailedDescription": "Keeps CPU from downclocking (more consistent frames).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "powercfg -setactive SCHEME_CURRENT",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100 & powercfg -setactive SCHEME_CURRENT",
+    "originalRevert": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 5 & powercfg -setactive SCHEME_CURRENT"
+  },
+  {
+    "id": "cpu_coreparking_off",
+    "name": "Disable Core Parking",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Keeps all cores active (core parking, not C-states).",
+    "detailedDescription": "Keeps all cores active (core parking, not C-states).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "powercfg -setactive SCHEME_CURRENT",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100 & powercfg -setactive SCHEME_CURRENT",
+    "originalRevert": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 0 & powercfg -setactive SCHEME_CURRENT"
+  },
+  {
+    "id": "cpu_powerthrottle_off",
+    "name": "Disable Power Throttling",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Stops Windows throttling the CPU under load.",
+    "detailedDescription": "Stops Windows throttling the CPU under load.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling\\PowerThrottlingOff": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling",
+        "name": "PowerThrottlingOff",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling\" /v PowerThrottlingOff /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling\" /v PowerThrottlingOff /f"
+  },
+  {
+    "id": "cpu_usb_suspend_off",
+    "name": "Disable USB Selective Suspend",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "No USB standby (mouse/keyboard lag).",
+    "detailedDescription": "No USB standby (mouse/keyboard lag).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg /SETACVALUEINDEX SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "powercfg -SETACTIVE SCHEME_CURRENT",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg /SETACVALUEINDEX SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0 & powercfg -SETACTIVE SCHEME_CURRENT",
+    "originalRevert": "powercfg /SETACVALUEINDEX SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1 & powercfg -SETACTIVE SCHEME_CURRENT"
+  },
+  {
+    "id": "cpu_priority",
+    "name": "Foreground Priority Boost",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Win32PrioritySeparation = 26 (favors the active app).",
+    "detailedDescription": "Win32PrioritySeparation = 26 (favors the active app).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl\\Win32PrioritySeparation": "2"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\PriorityControl",
+        "name": "Win32PrioritySeparation",
+        "valueType": "REG_DWORD",
+        "value": "26"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl\" /v Win32PrioritySeparation /t REG_DWORD /d 26 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl\" /v Win32PrioritySeparation /t REG_DWORD /d 2 /f"
+  },
+  {
+    "id": "cpu_mmcss",
+    "name": "System Responsiveness for Games",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Gives games more CPU headroom (MMCSS = 0).",
+    "detailedDescription": "Gives games more CPU headroom (MMCSS = 0).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\SystemResponsiveness": "20"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+        "name": "SystemResponsiveness",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\" /v SystemResponsiveness /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\" /v SystemResponsiveness /t REG_DWORD /d 20 /f"
+  },
+  {
+    "id": "cpu_pagingexec",
+    "name": "Keep Kernel in RAM",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "DisablePagingExecutive - needs plenty of RAM.",
+    "detailedDescription": "DisablePagingExecutive - needs plenty of RAM.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\DisablePagingExecutive": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+        "name": "DisablePagingExecutive",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v DisablePagingExecutive /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v DisablePagingExecutive /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "cpu_dyntick_off",
+    "name": "Disable Dynamic Tick",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Timer tweak that can smooth frame pacing.",
+    "detailedDescription": "Timer tweak that can smooth frame pacing.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "bcdedit /set disabledynamictick yes",
+        "reason": "\"bcdedit\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "bcdedit /set disabledynamictick yes",
+    "originalRevert": "bcdedit /set disabledynamictick no"
+  },
+  {
+    "id": "cpu_hpet_off",
+    "name": "HPET off (useplatformclock)",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "risky",
+    "description": "RISKY/TEST: can help or hurt - always benchmark.",
+    "detailedDescription": "RISKY/TEST: can help or hurt - always benchmark.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [
+      "Weakens a Windows security feature"
+    ],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "bcdedit /set useplatformclock false",
+        "reason": "\"bcdedit\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "bcdedit /set useplatformclock false",
+    "originalRevert": "bcdedit /deletevalue useplatformclock"
+  },
+  {
+    "id": "cpu_spectre_off",
+    "name": "Disable Spectre/Meltdown Mitigations",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "risky",
+    "description": "RISKY: turns off CPU security mitigations for small perf.",
+    "detailedDescription": "RISKY: turns off CPU security mitigations for small perf.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\FeatureSettingsOverride": "(value removed)"
+    },
+    "warnings": [
+      "Weakens a Windows security feature"
+    ],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+        "name": "FeatureSettingsOverride",
+        "valueType": "REG_DWORD",
+        "value": "3"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettingsOverride /f"
+  },
+  {
+    "id": "mem_background_off",
+    "name": "Disable Background Apps",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "safe",
+    "description": "Stops UWP apps running in the background.",
+    "detailedDescription": "Stops UWP apps running in the background.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\\GlobalUserDisabled": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications",
+        "name": "GlobalUserDisabled",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\" /v GlobalUserDisabled /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\" /v GlobalUserDisabled /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "mem_sysmain_off",
+    "name": "Disable SysMain (Superfetch)",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Can reduce disk churn (marginal on SSD).",
+    "detailedDescription": "Can reduce disk churn (marginal on SSD).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "service",
+        "name": "SysMain",
+        "startMode": "disabled"
+      }
+    ],
+    "originalCommand": "sc config SysMain start= disabled & sc stop SysMain",
+    "originalRevert": "sc config SysMain start= auto & sc start SysMain"
+  },
+  {
+    "id": "mem_prefetch_off",
+    "name": "Disable Prefetch (SSD only)",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Only for SSDs. Do NOT use on HDDs.",
+    "detailedDescription": "Only for SSDs. Do NOT use on HDDs.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters\\EnablePrefetcher": "3"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters",
+        "name": "EnablePrefetcher",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters\" /v EnablePrefetcher /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters\" /v EnablePrefetcher /t REG_DWORD /d 3 /f"
+  },
+  {
+    "id": "net_nagle_off",
+    "name": "Disable Nagle's Algorithm",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "TcpAckFrequency/TCPNoDelay on every interface.",
+    "detailedDescription": "TcpAckFrequency/TCPNoDelay on every interface.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' | ForEach-Object { Set-ItemProperty $_.PSPath -Name TcpAckFrequency -Value 1 -Type DWord -Force; Set-ItemProperty $_.PSPath -Name TCPNoDelay -Value 1 -Type DWord -Force }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' | ForEach-Object { Set-ItemProperty $_.PSPath -Name TcpAckFrequency -Value 1 -Type DWord -Force; Set-ItemProperty $_.PSPath -Name TCPNoDelay -Value 1 -Type DWord -Force }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' | ForEach-Object { Remove-ItemProperty $_.PSPath -Name TcpAckFrequency -EA 0; Remove-ItemProperty $_.PSPath -Name TCPNoDelay -EA 0 }\""
+  },
+  {
+    "id": "net_throttle_off",
+    "name": "Disable Network Throttling",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Lifts the 10ms multimedia network throttle.",
+    "detailedDescription": "Lifts the 10ms multimedia network throttle.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\NetworkThrottlingIndex": "10"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+        "name": "NetworkThrottlingIndex",
+        "valueType": "REG_DWORD",
+        "value": "4294967295"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\" /v NetworkThrottlingIndex /t REG_DWORD /d 10 /f"
+  },
+  {
+    "id": "net_qos_off",
+    "name": "Free QoS Reserved Bandwidth",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "safe",
+    "description": "Removes the 20% reserved bandwidth limit.",
+    "detailedDescription": "Removes the 20% reserved bandwidth limit.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\\NonBestEffortLimit": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\Psched",
+        "name": "NonBestEffortLimit",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\" /v NonBestEffortLimit /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\" /v NonBestEffortLimit /f"
+  },
+  {
+    "id": "net_tcp_optimize",
+    "name": "TCP Auto-Tuning + RSS",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "safe",
+    "description": "Balanced low-latency TCP settings.",
+    "detailedDescription": "Balanced low-latency TCP settings.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set global autotuninglevel=normal",
+        "reason": "\"netsh\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set global rss=enabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh int tcp set global autotuninglevel=normal & netsh int tcp set global rss=enabled",
+    "originalRevert": "netsh int tcp set global autotuninglevel=normal & netsh int tcp set global rss=enabled"
+  },
+  {
+    "id": "net_ecn_off",
+    "name": "Disable ECN",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Turns off Explicit Congestion Notification.",
+    "detailedDescription": "Turns off Explicit Congestion Notification.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set global ecncapability=disabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh int tcp set global ecncapability=disabled",
+    "originalRevert": "netsh int tcp set global ecncapability=enabled"
+  },
+  {
+    "id": "net_do_off",
+    "name": "Disable Delivery Optimization",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "safe",
+    "description": "Stops Windows Update P2P using your bandwidth.",
+    "detailedDescription": "Stops Windows Update P2P using your bandwidth.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\DODownloadMode": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+        "name": "DODownloadMode",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v DODownloadMode /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v DODownloadMode /f"
+  },
+  {
+    "id": "net_dns_cf",
+    "name": "DNS to Cloudflare (1.1.1.1)",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "safe",
+    "description": "OPTIONAL: sets DNS on all active adapters.",
+    "detailedDescription": "OPTIONAL: sets DNS on all active adapters.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-NetAdapter | ? Status -eq 'Up' | % { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ServerAddresses ('1.1.1.1','1.0.0.1') }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-NetAdapter | ? Status -eq 'Up' | % { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ServerAddresses ('1.1.1.1','1.0.0.1') }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-NetAdapter | ? Status -eq 'Up' | % { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ResetServerAddresses }\""
+  },
+  {
+    "id": "clean_temp",
+    "name": "Clean Temp Files",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Deletes %TEMP% and C:\\Windows\\Temp.",
+    "detailedDescription": "Deletes %TEMP% and C:\\Windows\\Temp.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "cleanup",
+        "target": "userTemp"
+      },
+      {
+        "type": "cleanup",
+        "target": "windowsTemp"
+      }
+    ],
+    "originalCommand": "cmd /c \"del /q /f /s %TEMP%\\* & del /q /f /s C:\\Windows\\Temp\\*\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_recycle",
+    "name": "Empty Recycle Bin",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Empties the Windows Recycle Bin.",
+    "detailedDescription": "Empties the Windows Recycle Bin.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_prefetch",
+    "name": "Clear Prefetch",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Removes cached prefetch files.",
+    "detailedDescription": "Removes cached prefetch files.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "cleanup",
+        "target": "prefetch"
+      }
+    ],
+    "originalCommand": "cmd /c \"del /q /f /s %SystemRoot%\\Prefetch\\*\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_dns",
+    "name": "Flush DNS Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "ipconfig /flushdns.",
+    "detailedDescription": "ipconfig /flushdns.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "ipconfig /flushdns",
+        "reason": "\"ipconfig\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "ipconfig /flushdns",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_reserved",
+    "name": "Disable Reserved Storage",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "advanced",
+    "description": "Frees ~7 GB reserved for updates.",
+    "detailedDescription": "Frees ~7 GB reserved for updates.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"DISM /Online /Set-ReservedStorageState /State:Disabled\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"DISM /Online /Set-ReservedStorageState /State:Disabled\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_hibernate",
+    "name": "Disable Hibernate (free space)",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "advanced",
+    "description": "Removes hiberfil.sys (= your RAM size in GB).",
+    "detailedDescription": "Removes hiberfil.sys (= your RAM size in GB).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg -h off",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg -h off",
+    "originalRevert": null
+  },
+  {
+    "id": "sec_adid_off",
+    "name": "Disable Advertising ID",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No personalized ad tracking.",
+    "detailedDescription": "No personalized ad tracking.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\\Enabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+        "name": "Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\" /v Enabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo\" /v Enabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_activity_off",
+    "name": "Disable Activity History",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops Windows Timeline / activity feed.",
+    "detailedDescription": "Stops Windows Timeline / activity feed.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\PublishUserActivities": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "PublishUserActivities",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v PublishUserActivities /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v PublishUserActivities /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_tailored_off",
+    "name": "Disable Tailored Experiences",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No suggestions based on diagnostic data.",
+    "detailedDescription": "No suggestions based on diagnostic data.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy\\TailoredExperiencesWithDiagnosticDataEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+        "name": "TailoredExperiencesWithDiagnosticDataEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy\" /v TailoredExperiencesWithDiagnosticDataEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy\" /v TailoredExperiencesWithDiagnosticDataEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_bingsearch_off",
+    "name": "Disable Web Search in Start",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Removes Bing/web results from Start search.",
+    "detailedDescription": "Removes Bing/web results from Start search.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\\BingSearchEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+        "name": "BingSearchEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\" /v BingSearchEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\" /v BingSearchEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_consumer_off",
+    "name": "Disable Consumer Features",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops auto-installed suggested/bloat apps.",
+    "detailedDescription": "Stops auto-installed suggested/bloat apps.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableWindowsConsumerFeatures": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+        "name": "DisableWindowsConsumerFeatures",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\" /v DisableWindowsConsumerFeatures /f"
+  },
+  {
+    "id": "sec_location_off",
+    "name": "Disable Location Services",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Turns off Windows location access.",
+    "detailedDescription": "Turns off Windows location access.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\\Value": "Allow"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location",
+        "name": "Value",
+        "valueType": "REG_SZ",
+        "value": "Deny"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\" /v Value /t REG_SZ /d Deny /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\" /v Value /t REG_SZ /d Allow /f"
+  },
+  {
+    "id": "sec_telemetry_off",
+    "name": "Disable Telemetry (DiagTrack)",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Stops and disables the telemetry service.",
+    "detailedDescription": "Stops and disables the telemetry service.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "name": "AllowTelemetry",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "service",
+        "name": "DiagTrack",
+        "startMode": "disabled"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" /v AllowTelemetry /t REG_DWORD /d 0 /f & sc stop DiagTrack & sc config DiagTrack start= disabled",
+    "originalRevert": "sc config DiagTrack start= auto & sc start DiagTrack"
+  },
+  {
+    "id": "cpu_pcie_aspm_off",
+    "name": "Disable PCIe Power Saving (ASPM)",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Stops PCIe links dropping to low power (GPU/NIC latency).",
+    "detailedDescription": "Stops PCIe links dropping to low power (GPU/NIC latency).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "powercfg -setactive SCHEME_CURRENT",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0 & powercfg -setactive SCHEME_CURRENT",
+    "originalRevert": "powercfg -setacvalueindex SCHEME_CURRENT 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 2 & powercfg -setactive SCHEME_CURRENT"
+  },
+  {
+    "id": "cpu_platformtick",
+    "name": "Force Platform Tick",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Uses the platform tick source (pairs with dynamic tick off).",
+    "detailedDescription": "Uses the platform tick source (pairs with dynamic tick off).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "bcdedit /set useplatformtick yes",
+        "reason": "\"bcdedit\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "bcdedit /set useplatformtick yes",
+    "originalRevert": "bcdedit /deletevalue useplatformtick"
+  },
+  {
+    "id": "cpu_idle_off",
+    "name": "Disable CPU Idle States",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Lowest latency, keeps CPU awake. More heat/power - desktops only.",
+    "detailedDescription": "Lowest latency, keeps CPU awake. More heat/power - desktops only.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      },
+      {
+        "type": "unsupported",
+        "command": "powercfg -setactive SCHEME_CURRENT",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1 & powercfg -setactive SCHEME_CURRENT",
+    "originalRevert": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 0 & powercfg -setactive SCHEME_CURRENT"
+  },
+  {
+    "id": "mem_clearpagefile",
+    "name": "Clear Pagefile at Shutdown",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Wipes the pagefile on shutdown (slower shutdown).",
+    "detailedDescription": "Wipes the pagefile on shutdown (slower shutdown).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\ClearPageFileAtShutdown": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+        "name": "ClearPageFileAtShutdown",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v ClearPageFileAtShutdown /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v ClearPageFileAtShutdown /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "net_timestamps_off",
+    "name": "Disable TCP Timestamps",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Slightly leaner packets.",
+    "detailedDescription": "Slightly leaner packets.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set global timestamps=disabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh int tcp set global timestamps=disabled",
+    "originalRevert": "netsh int tcp set global timestamps=enabled"
+  },
+  {
+    "id": "net_rsc_off",
+    "name": "Disable RSC (Receive Coalescing)",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Lower latency at a tiny CPU cost.",
+    "detailedDescription": "Lower latency at a tiny CPU cost.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set global rsc=disabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh int tcp set global rsc=disabled",
+    "originalRevert": "netsh int tcp set global rsc=enabled"
+  },
+  {
+    "id": "net_heuristics_off",
+    "name": "Disable TCP Window Heuristics",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Keeps your TCP window tuning from being overridden.",
+    "detailedDescription": "Keeps your TCP window tuning from being overridden.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh int tcp set heuristics disabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh int tcp set heuristics disabled",
+    "originalRevert": "netsh int tcp set heuristics enabled"
+  },
+  {
+    "id": "net_timedwait",
+    "name": "Lower TcpTimedWaitDelay",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Frees closed ports faster (helps many connections).",
+    "detailedDescription": "Frees closed ports faster (helps many connections).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\TcpTimedWaitDelay": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "name": "TcpTimedWaitDelay",
+        "valueType": "REG_DWORD",
+        "value": "30"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v TcpTimedWaitDelay /t REG_DWORD /d 30 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v TcpTimedWaitDelay /f"
+  },
+  {
+    "id": "net_maxuserport",
+    "name": "Raise MaxUserPort",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "More outbound ports available.",
+    "detailedDescription": "More outbound ports available.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\MaxUserPort": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "name": "MaxUserPort",
+        "valueType": "REG_DWORD",
+        "value": "65534"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v MaxUserPort /t REG_DWORD /d 65534 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v MaxUserPort /f"
+  },
+  {
+    "id": "win_widgets_off",
+    "name": "Disable Taskbar Widgets",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Removes the Widgets button (frees a background process).",
+    "detailedDescription": "Removes the Widgets button (frees a background process).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDa": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "TaskbarDa",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarDa /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarDa /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_window_anim_off",
+    "name": "Disable Window Animations",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Snappier minimize/maximize.",
+    "detailedDescription": "Snappier minimize/maximize.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Desktop\\WindowMetrics\\MinAnimate": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Desktop\\WindowMetrics",
+        "name": "MinAnimate",
+        "valueType": "REG_SZ",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Desktop\\WindowMetrics\" /v MinAnimate /t REG_SZ /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Desktop\\WindowMetrics\" /v MinAnimate /t REG_SZ /d 1 /f"
+  },
+  {
+    "id": "win_taskbar_anim_off",
+    "name": "Disable Taskbar Animations",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Removes taskbar animation overhead.",
+    "detailedDescription": "Removes taskbar animation overhead.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarAnimations": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "TaskbarAnimations",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAnimations /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAnimations /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_stickykeys_off",
+    "name": "Disable Sticky Keys Prompt",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "No accidental Shift x5 popup mid-game.",
+    "detailedDescription": "No accidental Shift x5 popup mid-game.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Accessibility\\StickyKeys\\Flags": "510"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\StickyKeys",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "506"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 506 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 510 /f"
+  },
+  {
+    "id": "clean_update_cache",
+    "name": "Clear Windows Update Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "advanced",
+    "description": "Frees space from old update downloads.",
+    "detailedDescription": "Frees space from old update downloads.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "cleanup",
+        "target": "windowsUpdateCache"
+      }
+    ],
+    "originalCommand": "cmd /c \"net stop wuauserv & del /q /f /s %SystemRoot%\\SoftwareDistribution\\Download\\* & net start wuauserv\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_thumbnails",
+    "name": "Clear Thumbnail Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Deletes cached Explorer thumbnails.",
+    "detailedDescription": "Deletes cached Explorer thumbnails.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "cleanup",
+        "target": "thumbnailCache",
+        "filePattern": "^thumbcache_.*\\.db$"
+      }
+    ],
+    "originalCommand": "cmd /c \"del /q /f /s %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_*.db\"",
+    "originalRevert": null
+  },
+  {
+    "id": "win_darkmode",
+    "name": "Enable Dark Mode",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Dark theme for apps and system.",
+    "detailedDescription": "Dark theme for apps and system.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\AppsUseLightTheme": "1",
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\SystemUsesLightTheme": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "AppsUseLightTheme",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "SystemUsesLightTheme",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme /t REG_DWORD /d 1 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v SystemUsesLightTheme /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_aeroshake_off",
+    "name": "Disable Aero Shake",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Stops minimizing windows when you shake one.",
+    "detailedDescription": "Stops minimizing windows when you shake one.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\DisallowShaking": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "DisallowShaking",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v DisallowShaking /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v DisallowShaking /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_show_seconds",
+    "name": "Show Seconds in Clock",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Taskbar clock shows seconds.",
+    "detailedDescription": "Taskbar clock shows seconds.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\ShowSecondsInSystemClock": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "ShowSecondsInSystemClock",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowSecondsInSystemClock /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowSecondsInSystemClock /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_show_hidden",
+    "name": "Show Hidden Files",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Show hidden files and folders in Explorer.",
+    "detailedDescription": "Show hidden files and folders in Explorer.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\Hidden": "2"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "Hidden",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Hidden /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Hidden /t REG_DWORD /d 2 /f"
+  },
+  {
+    "id": "win_snap_flyout_off",
+    "name": "Disable Snap Assist Flyout",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "No popup suggestions when snapping windows.",
+    "detailedDescription": "No popup suggestions when snapping windows.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\EnableSnapAssistFlyout": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "EnableSnapAssistFlyout",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v EnableSnapAssistFlyout /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v EnableSnapAssistFlyout /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_recent_docs_off",
+    "name": "Disable Recent Files Tracking",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Stops tracking recently opened documents.",
+    "detailedDescription": "Stops tracking recently opened documents.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\Start_TrackDocs": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "Start_TrackDocs",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackDocs /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackDocs /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "win_autoplay_off",
+    "name": "Disable AutoPlay",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "No AutoPlay prompts for drives/media.",
+    "detailedDescription": "No AutoPlay prompts for drives/media.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers\\DisableAutoplay": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers",
+        "name": "DisableAutoplay",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers\" /v DisableAutoplay /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AutoplayHandlers\" /v DisableAutoplay /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_startup_sound_off",
+    "name": "Disable Startup Sound",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "No Windows boot chime.",
+    "detailedDescription": "No Windows boot chime.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\BootAnimation\\DisableStartupSound": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\BootAnimation",
+        "name": "DisableStartupSound",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\BootAnimation\" /v DisableStartupSound /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI\\BootAnimation\" /v DisableStartupSound /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_error_reporting_off",
+    "name": "Disable Error Reporting",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Stops Windows Error Reporting popups/uploads.",
+    "detailedDescription": "Stops Windows Error Reporting popups/uploads.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting\\Disabled": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting",
+        "name": "Disabled",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting\" /v Disabled /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\Windows Error Reporting\" /v Disabled /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_end_task_taskbar",
+    "name": "Enable Taskbar 'End Task'",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Adds End Task to the taskbar right-click (Win11).",
+    "detailedDescription": "Adds End Task to the taskbar right-click (Win11).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\\TaskbarEndTask": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings",
+        "name": "TaskbarEndTask",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\" /v TaskbarEndTask /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\" /v TaskbarEndTask /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_verbose_status",
+    "name": "Verbose Boot Messages",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "advanced",
+    "description": "Shows detailed status during boot/shutdown.",
+    "detailedDescription": "Shows detailed status during boot/shutdown.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\VerboseStatus": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "name": "VerboseStatus",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v VerboseStatus /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v VerboseStatus /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_lockscreen_off",
+    "name": "Disable Lock Screen",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "advanced",
+    "description": "Skips the lock screen (straight to login).",
+    "detailedDescription": "Skips the lock screen (straight to login).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreen": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "name": "NoLockScreen",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\" /v NoLockScreen /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\" /v NoLockScreen /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "win_classic_context",
+    "name": "Classic Right-Click Menu (Win11)",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "advanced",
+    "description": "Restores the full context menu. Restart Explorer after.",
+    "detailedDescription": "Restores the full context menu. Restart Explorer after.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32",
+        "name": "",
+        "valueType": "REG_SZ",
+        "value": ""
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\" /ve /d \"\" /f",
+    "originalRevert": "reg delete \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\" /f"
+  },
+  {
+    "id": "win_no_autoreboot",
+    "name": "No Auto-Reboot on Updates",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Windows won't force a restart while you're logged in.",
+    "detailedDescription": "Windows won't force a restart while you're logged in.",
+    "recommended": true,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\\NoAutoRebootWithLoggedOnUsers": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU",
+        "name": "NoAutoRebootWithLoggedOnUsers",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "sec_cortana_off",
+    "name": "Disable Cortana",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Turns off the Cortana assistant.",
+    "detailedDescription": "Turns off the Cortana assistant.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowCortana": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "name": "AllowCortana",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_start_suggestions_off",
+    "name": "Disable Start Menu Suggestions",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No suggested apps/ads in the Start menu.",
+    "detailedDescription": "No suggested apps/ads in the Start menu.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\\SystemPaneSuggestionsEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SystemPaneSuggestionsEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_soft_landing_off",
+    "name": "Disable Windows Tips",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops 'tips & suggestions' popups.",
+    "detailedDescription": "Stops 'tips & suggestions' popups.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\\SoftLandingEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SoftLandingEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SoftLandingEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SoftLandingEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_lockscreen_ads_off",
+    "name": "Disable Lock Screen Ads",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No Spotlight ads/tips on the lock screen.",
+    "detailedDescription": "No Spotlight ads/tips on the lock screen.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\\RotatingLockScreenOverlayEnabled": "1",
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\\SubscribedContent-338387Enabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "RotatingLockScreenOverlayEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SubscribedContent-338387Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v RotatingLockScreenOverlayEnabled /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338387Enabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v RotatingLockScreenOverlayEnabled /t REG_DWORD /d 1 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338387Enabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_suggested_content_off",
+    "name": "Disable Settings Suggestions",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No suggested content in the Settings app.",
+    "detailedDescription": "No suggested content in the Settings app.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\\SubscribedContent-338393Enabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SubscribedContent-338393Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SubscribedContent-353694Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SubscribedContent-353696Enabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-353694Enabled /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-353696Enabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338393Enabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_cloud_clipboard_off",
+    "name": "Disable Cloud Clipboard Sync",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "No clipboard syncing across devices.",
+    "detailedDescription": "No clipboard syncing across devices.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\AllowCrossDeviceClipboard": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "AllowCrossDeviceClipboard",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v AllowCrossDeviceClipboard /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v AllowCrossDeviceClipboard /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_clipboard_history_off",
+    "name": "Disable Clipboard History",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Turns off Win+V clipboard history.",
+    "detailedDescription": "Turns off Win+V clipboard history.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\AllowClipboardHistory": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "AllowClipboardHistory",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v AllowClipboardHistory /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\" /v AllowClipboardHistory /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_app_diag_off",
+    "name": "Disable App Diagnostics",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Blocks apps from reading diagnostic info about other apps.",
+    "detailedDescription": "Blocks apps from reading diagnostic info about other apps.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics\\Value": "Allow"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics",
+        "name": "Value",
+        "valueType": "REG_SZ",
+        "value": "Deny"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics\" /v Value /t REG_SZ /d Deny /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics\" /v Value /t REG_SZ /d Allow /f"
+  },
+  {
+    "id": "sec_feedback_off",
+    "name": "Disable Feedback Requests",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops Windows asking for feedback.",
+    "detailedDescription": "Stops Windows asking for feedback.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Siuf\\Rules\\NumberOfSIUFInPeriod": "(value removed)",
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\DoNotShowFeedbackNotifications": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Siuf\\Rules",
+        "name": "NumberOfSIUFInPeriod",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "name": "DoNotShowFeedbackNotifications",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Siuf\\Rules\" /v NumberOfSIUFInPeriod /t REG_DWORD /d 0 /f & reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" /v DoNotShowFeedbackNotifications /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKCU\\Software\\Microsoft\\Siuf\\Rules\" /v NumberOfSIUFInPeriod /f & reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" /v DoNotShowFeedbackNotifications /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "sec_inking_off",
+    "name": "Disable Typing/Inking Collection",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops Windows learning from your typing/handwriting.",
+    "detailedDescription": "Stops Windows learning from your typing/handwriting.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\InputPersonalization\\RestrictImplicitTextCollection": "0",
+      "HKCU\\Software\\Microsoft\\InputPersonalization\\RestrictImplicitInkCollection": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Personalization\\Settings",
+        "name": "AcceptedPrivacyPolicy",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\InputPersonalization",
+        "name": "RestrictImplicitTextCollection",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\InputPersonalization",
+        "name": "RestrictImplicitInkCollection",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Personalization\\Settings\" /v AcceptedPrivacyPolicy /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\InputPersonalization\" /v RestrictImplicitTextCollection /t REG_DWORD /d 1 /f & reg add \"HKCU\\Software\\Microsoft\\InputPersonalization\" /v RestrictImplicitInkCollection /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\InputPersonalization\" /v RestrictImplicitTextCollection /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\InputPersonalization\" /v RestrictImplicitInkCollection /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "sec_handwriting_off",
+    "name": "Disable Handwriting Sharing",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Stops sharing handwriting error reports.",
+    "detailedDescription": "Stops sharing handwriting error reports.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\TabletPC\\PreventHandwritingDataSharing": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\TabletPC",
+        "name": "PreventHandwritingDataSharing",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\TabletPC\" /v PreventHandwritingDataSharing /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\TabletPC\" /v PreventHandwritingDataSharing /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "sec_ceip_off",
+    "name": "Disable CEIP",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "safe",
+    "description": "Customer Experience Improvement Program off.",
+    "detailedDescription": "Customer Experience Improvement Program off.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\SQMClient\\Windows\\CEIPEnable": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\SQMClient\\Windows",
+        "name": "CEIPEnable",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\SQMClient\\Windows\" /v CEIPEnable /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\SQMClient\\Windows\" /v CEIPEnable /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "sec_telemetry_tasks_off",
+    "name": "Disable Telemetry Tasks",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Disables the scheduled telemetry/appraiser tasks.",
+    "detailedDescription": "Disables the scheduled telemetry/appraiser tasks.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "scheduledTask",
+        "path": "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser",
+        "enabled": false
+      },
+      {
+        "type": "scheduledTask",
+        "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator",
+        "enabled": false
+      },
+      {
+        "type": "scheduledTask",
+        "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip",
+        "enabled": false
+      }
+    ],
+    "originalCommand": "schtasks /Change /TN \"\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser\" /Disable & schtasks /Change /TN \"\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator\" /Disable & schtasks /Change /TN \"\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip\" /Disable",
+    "originalRevert": "schtasks /Change /TN \"\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser\" /Enable & schtasks /Change /TN \"\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator\" /Enable & schtasks /Change /TN \"\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip\" /Enable"
+  },
+  {
+    "id": "sec_wer_service_off",
+    "name": "Disable Error Reporting Service",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Stops the WerSvc service.",
+    "detailedDescription": "Stops the WerSvc service.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "service",
+        "name": "WerSvc",
+        "startMode": "disabled"
+      }
+    ],
+    "originalCommand": "sc config WerSvc start= disabled & sc stop WerSvc",
+    "originalRevert": "sc config WerSvc start= demand"
+  },
+  {
+    "id": "sec_maps_service_off",
+    "name": "Disable Maps Broker",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Stops the Downloaded Maps Manager service.",
+    "detailedDescription": "Stops the Downloaded Maps Manager service.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "service",
+        "name": "MapsBroker",
+        "startMode": "disabled"
+      }
+    ],
+    "originalCommand": "sc config MapsBroker start= disabled & sc stop MapsBroker",
+    "originalRevert": "sc config MapsBroker start= demand"
+  },
+  {
+    "id": "sec_remote_registry_off",
+    "name": "Disable Remote Registry",
+    "category": "Privacy",
+    "sourceCategory": "Security",
+    "risk": "advanced",
+    "description": "Blocks remote registry access (more secure).",
+    "detailedDescription": "Blocks remote registry access (more secure).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "service",
+        "name": "RemoteRegistry",
+        "startMode": "disabled"
+      }
+    ],
+    "originalCommand": "sc config RemoteRegistry start= disabled & sc stop RemoteRegistry",
+    "originalRevert": "sc config RemoteRegistry start= demand"
+  },
+  {
+    "id": "net_llmnr_off",
+    "name": "Disable LLMNR",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Turns off Link-Local Multicast Name Resolution.",
+    "detailedDescription": "Turns off Link-Local Multicast Name Resolution.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\\EnableMulticast": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient",
+        "name": "EnableMulticast",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\" /v EnableMulticast /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\DNSClient\" /v EnableMulticast /f"
+  },
+  {
+    "id": "net_defaultttl",
+    "name": "Set Default TTL 64",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Standard TTL value for outgoing packets.",
+    "detailedDescription": "Standard TTL value for outgoing packets.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\DefaultTTL": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "name": "DefaultTTL",
+        "valueType": "REG_DWORD",
+        "value": "64"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v DefaultTTL /t REG_DWORD /d 64 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v DefaultTTL /f"
+  },
+  {
+    "id": "net_teredo_off",
+    "name": "Disable Teredo",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Turns off Teredo IPv6 tunneling.",
+    "detailedDescription": "Turns off Teredo IPv6 tunneling.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "netsh interface teredo set state disabled",
+        "reason": "\"netsh\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "netsh interface teredo set state disabled",
+    "originalRevert": "netsh interface teredo set state default"
+  },
+  {
+    "id": "mem_ndu_off",
+    "name": "Disable Network Data Usage (Ndu)",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Disables the Ndu driver (can reduce a known RAM leak).",
+    "detailedDescription": "Disables the Ndu driver (can reduce a known RAM leak).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Ndu\\Start": "2"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\Ndu",
+        "name": "Start",
+        "valueType": "REG_DWORD",
+        "value": "4"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Ndu\" /v Start /t REG_DWORD /d 4 /f",
+    "originalRevert": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Ndu\" /v Start /t REG_DWORD /d 2 /f"
+  },
+  {
+    "id": "clean_icon_cache",
+    "name": "Rebuild Icon Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Clears corrupted/blurry icon caches.",
+    "detailedDescription": "Clears corrupted/blurry icon caches.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "cmd /c \"del /q /f %LocalAppData%\\IconCache.db & del /q /f /s %LocalAppData%\\Microsoft\\Windows\\Explorer\\iconcache_*.db\"",
+        "reason": "\"cmd\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "cmd /c \"del /q /f %LocalAppData%\\IconCache.db & del /q /f /s %LocalAppData%\\Microsoft\\Windows\\Explorer\\iconcache_*.db\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_font_cache",
+    "name": "Clear Font Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "advanced",
+    "description": "Rebuilds the Windows font cache.",
+    "detailedDescription": "Rebuilds the Windows font cache.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "cmd /c \"net stop FontCache & del /q /f /s %WinDir%\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\* & net start FontCache\"",
+        "reason": "\"cmd\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "cmd /c \"net stop FontCache & del /q /f /s %WinDir%\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\* & net start FontCache\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_store_cache",
+    "name": "Reset Store Cache",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Runs wsreset to clear the Microsoft Store cache.",
+    "detailedDescription": "Runs wsreset to clear the Microsoft Store cache.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "wsreset.exe",
+        "reason": "\"wsreset\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "wsreset.exe",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_crash_dumps",
+    "name": "Clear Crash Dumps",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "safe",
+    "description": "Deletes crash dump and minidump files.",
+    "detailedDescription": "Deletes crash dump and minidump files.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "cleanup",
+        "target": "crashDumps"
+      }
+    ],
+    "originalCommand": "cmd /c \"del /q /f /s %LocalAppData%\\CrashDumps\\* & del /q /f /s %WinDir%\\Minidump\\*\"",
+    "originalRevert": null
+  },
+  {
+    "id": "clean_event_logs",
+    "name": "Clear Event Logs",
+    "category": "Debloat",
+    "sourceCategory": "Clean",
+    "risk": "advanced",
+    "description": "Wipes all Windows event logs.",
+    "detailedDescription": "Wipes all Windows event logs.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"wevtutil el | ForEach-Object { wevtutil cl \\\"$_\\\" }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"wevtutil el | ForEach-Object { wevtutil cl \\\"$_\\\" }\"",
+    "originalRevert": null
+  },
+  {
+    "id": "cpu_maxfps_plan",
+    "name": "Apply Max FPS Power Plan",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Creates & activates a custom 'SlideTweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
+    "detailedDescription": "Creates & activates a custom 'SlideTweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'SlideTweaks Max FPS' 'Max performance - SlideTweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'SlideTweaks Max FPS' 'Max performance - SlideTweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
+    "originalRevert": null
+  },
+  {
+    "id": "in_kbd_repeat",
+    "name": "Fast Keyboard Repeat",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "No delay, max repeat rate (snappier typing/keys).",
+    "detailedDescription": "No delay, max repeat rate (snappier typing/keys).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Keyboard\\KeyboardDelay": "1",
+      "HKCU\\Control Panel\\Keyboard\\KeyboardSpeed": "31"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Keyboard",
+        "name": "KeyboardDelay",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Keyboard",
+        "name": "KeyboardSpeed",
+        "valueType": "REG_SZ",
+        "value": "31"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Keyboard\" /v KeyboardDelay /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Keyboard\" /v KeyboardSpeed /t REG_SZ /d 31 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Keyboard\" /v KeyboardDelay /t REG_SZ /d 1 /f & reg add \"HKCU\\Control Panel\\Keyboard\" /v KeyboardSpeed /t REG_SZ /d 31 /f"
+  },
+  {
+    "id": "in_mouse_queue",
+    "name": "Mouse Data Queue Size 20",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Smaller input buffer = fresher mouse data. Reboot.",
+    "detailedDescription": "Smaller input buffer = fresher mouse data. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\\MouseDataQueueSize": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters",
+        "name": "MouseDataQueueSize",
+        "valueType": "REG_DWORD",
+        "value": "20"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\" /v MouseDataQueueSize /t REG_DWORD /d 20 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\" /v MouseDataQueueSize /f"
+  },
+  {
+    "id": "in_kbd_queue",
+    "name": "Keyboard Data Queue Size 20",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Smaller keyboard buffer for lower input delay. Reboot.",
+    "detailedDescription": "Smaller keyboard buffer for lower input delay. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\\KeyboardDataQueueSize": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters",
+        "name": "KeyboardDataQueueSize",
+        "valueType": "REG_DWORD",
+        "value": "20"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\" /v KeyboardDataQueueSize /t REG_DWORD /d 20 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\" /v KeyboardDataQueueSize /f"
+  },
+  {
+    "id": "in_hover_time",
+    "name": "Instant Hover Response",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "Tooltips/hover react immediately (400ms -> 10ms).",
+    "detailedDescription": "Tooltips/hover react immediately (400ms -> 10ms).",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Mouse\\MouseHoverTime": "400"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseHoverTime",
+        "valueType": "REG_SZ",
+        "value": "10"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseHoverTime /t REG_SZ /d 10 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseHoverTime /t REG_SZ /d 400 /f"
+  },
+  {
+    "id": "in_filterkeys_off",
+    "name": "Disable Filter Keys Prompt",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "No popup when holding Shift for 8 seconds.",
+    "detailedDescription": "No popup when holding Shift for 8 seconds.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Accessibility\\Keyboard Response\\Flags": "126"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\Keyboard Response",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "122"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Accessibility\\Keyboard Response\" /v Flags /t REG_SZ /d 122 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Accessibility\\Keyboard Response\" /v Flags /t REG_SZ /d 126 /f"
+  },
+  {
+    "id": "in_togglekeys_off",
+    "name": "Disable Toggle Keys Prompt",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "No popup when holding Num Lock for 5 seconds.",
+    "detailedDescription": "No popup when holding Num Lock for 5 seconds.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Accessibility\\ToggleKeys\\Flags": "62"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\ToggleKeys",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "58"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Accessibility\\ToggleKeys\" /v Flags /t REG_SZ /d 58 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Accessibility\\ToggleKeys\" /v Flags /t REG_SZ /d 62 /f"
+  },
+  {
+    "id": "in_langhotkey_off",
+    "name": "Disable Language Hotkey",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "No accidental Alt+Shift layout switch mid-game.",
+    "detailedDescription": "No accidental Alt+Shift layout switch mid-game.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Keyboard Layout\\Toggle\\Language": "1",
+      "HKCU\\Keyboard Layout\\Toggle\\Hotkey": "1",
+      "HKCU\\Keyboard Layout\\Toggle\\Layout": "2"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Keyboard Layout\\Toggle",
+        "name": "Language",
+        "valueType": "REG_SZ",
+        "value": "3"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Keyboard Layout\\Toggle",
+        "name": "Hotkey",
+        "valueType": "REG_SZ",
+        "value": "3"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Keyboard Layout\\Toggle",
+        "name": "Layout",
+        "valueType": "REG_SZ",
+        "value": "3"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Language Hotkey /t REG_SZ /d 3 /f & reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Hotkey /t REG_SZ /d 3 /f & reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Layout Hotkey /t REG_SZ /d 3 /f",
+    "originalRevert": "reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Language Hotkey /t REG_SZ /d 1 /f & reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Hotkey /t REG_SZ /d 1 /f & reg add \"HKCU\\Keyboard Layout\\Toggle\" /v Layout Hotkey /t REG_SZ /d 2 /f"
+  },
+  {
+    "id": "in_accessibility_off",
+    "name": "Disable All Accessibility Popups",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.",
+    "detailedDescription": "MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Accessibility\\MouseKeys\\Flags": "62",
+      "HKCU\\Control Panel\\Accessibility\\StickyKeys\\Flags": "510",
+      "HKCU\\Control Panel\\Accessibility\\Keyboard Response\\Flags": "126",
+      "HKCU\\Control Panel\\Accessibility\\ToggleKeys\\Flags": "62"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\MouseKeys",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\StickyKeys",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\Keyboard Response",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Accessibility\\ToggleKeys",
+        "name": "Flags",
+        "valueType": "REG_SZ",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Accessibility\\MouseKeys\" /v Flags /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Accessibility\\Keyboard Response\" /v Flags /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Accessibility\\ToggleKeys\" /v Flags /t REG_SZ /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Accessibility\\MouseKeys\" /v Flags /t REG_SZ /d 62 /f & reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 510 /f & reg add \"HKCU\\Control Panel\\Accessibility\\Keyboard Response\" /v Flags /t REG_SZ /d 126 /f & reg add \"HKCU\\Control Panel\\Accessibility\\ToggleKeys\" /v Flags /t REG_SZ /d 62 /f"
+  },
+  {
+    "id": "in_mouse_polish",
+    "name": "Mouse Polish Pack",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "Trails, beeps, snap-to-button & window tracking off.",
+    "detailedDescription": "Trails, beeps, snap-to-button & window tracking off.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Mouse\\MouseTrails": "0",
+      "HKCU\\Control Panel\\Mouse\\Beep": "No",
+      "HKCU\\Control Panel\\Mouse\\ExtendedSounds": "No",
+      "HKCU\\Control Panel\\Mouse\\SnapToDefaultButton": "0",
+      "HKCU\\Control Panel\\Mouse\\ActiveWindowTracking": "0"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseTrails",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "Beep",
+        "valueType": "REG_SZ",
+        "value": "No"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "ExtendedSounds",
+        "valueType": "REG_SZ",
+        "value": "No"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "SnapToDefaultButton",
+        "valueType": "REG_SZ",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "ActiveWindowTracking",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseTrails /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v Beep /t REG_SZ /d No /f & reg add \"HKCU\\Control Panel\\Mouse\" /v ExtendedSounds /t REG_SZ /d No /f & reg add \"HKCU\\Control Panel\\Mouse\" /v SnapToDefaultButton /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v ActiveWindowTracking /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseTrails /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v Beep /t REG_SZ /d No /f & reg add \"HKCU\\Control Panel\\Mouse\" /v ExtendedSounds /t REG_SZ /d No /f & reg add \"HKCU\\Control Panel\\Mouse\" /v SnapToDefaultButton /t REG_SZ /d 0 /f & reg add \"HKCU\\Control Panel\\Mouse\" /v ActiveWindowTracking /t REG_DWORD /d 0 /f"
+  },
+  {
+    "id": "in_default_sens",
+    "name": "Default Sensitivity (6/11)",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Resets Windows pointer speed to the raw 6/11 notch.",
+    "detailedDescription": "Resets Windows pointer speed to the raw 6/11 notch.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Mouse\\MouseSensitivity": "10"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Mouse",
+        "name": "MouseSensitivity",
+        "valueType": "REG_SZ",
+        "value": "10"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseSensitivity /t REG_SZ /d 10 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseSensitivity /t REG_SZ /d 10 /f"
+  },
+  {
+    "id": "in_fg_lock",
+    "name": "Instant Window Focus",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "ForegroundLockTimeout 0 - windows take focus instantly.",
+    "detailedDescription": "ForegroundLockTimeout 0 - windows take focus instantly.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Control Panel\\Desktop\\ForegroundLockTimeout": "200000"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Control Panel\\Desktop",
+        "name": "ForegroundLockTimeout",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Control Panel\\Desktop\" /v ForegroundLockTimeout /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Control Panel\\Desktop\" /v ForegroundLockTimeout /t REG_DWORD /d 200000 /f"
+  },
+  {
+    "id": "in_thread_priority",
+    "name": "Input Driver Thread Priority",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "mouclass/kbdclass ThreadPriority 31. Community tweak - unproven, but harmless. Reboot.",
+    "detailedDescription": "mouclass/kbdclass ThreadPriority 31. Community tweak - unproven, but harmless. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\\ThreadPriority": "(value removed)",
+      "HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\\ThreadPriority": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters",
+        "name": "ThreadPriority",
+        "valueType": "REG_DWORD",
+        "value": "31"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters",
+        "name": "ThreadPriority",
+        "valueType": "REG_DWORD",
+        "value": "31"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\" /v ThreadPriority /t REG_DWORD /d 31 /f & reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\" /v ThreadPriority /t REG_DWORD /d 31 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters\" /v ThreadPriority /f & reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\kbdclass\\Parameters\" /v ThreadPriority /f"
+  },
+  {
+    "id": "in_usb_epm_off",
+    "name": "USB Input Power Saving Off",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Disables Enhanced Power Management on mouse/keyboard USB devices. Reboot.",
+    "detailedDescription": "Disables Enhanced Power Management on mouse/keyboard USB devices. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -ErrorAction SilentlyContinue | Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { $dp = Join-Path $_.PSPath 'Device Parameters'; if (Test-Path $dp) { $svc=(Get-ItemProperty $_.PSPath -Name Service -ErrorAction SilentlyContinue).Service; if ($svc -match 'HidUsb|kbdhid|mouhid') { Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue } } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -ErrorAction SilentlyContinue | Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { $dp = Join-Path $_.PSPath 'Device Parameters'; if (Test-Path $dp) { $svc=(Get-ItemProperty $_.PSPath -Name Service -ErrorAction SilentlyContinue).Service; if ($svc -match 'HidUsb|kbdhid|mouhid') { Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue } } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -ErrorAction SilentlyContinue | Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { $dp = Join-Path $_.PSPath 'Device Parameters'; if (Test-Path $dp) { $svc=(Get-ItemProperty $_.PSPath -Name Service -ErrorAction SilentlyContinue).Service; if ($svc -match 'HidUsb|kbdhid|mouhid') { Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 1 -Type DWord -Force; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue } } }\""
+  },
+  {
+    "id": "cpu_timers_default",
+    "name": "Reset Boot Timers to Default",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "safe",
+    "description": "Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.",
+    "detailedDescription": "Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "cmd /c \"bcdedit /deletevalue useplatformtick >nul 2>&1 & bcdedit /deletevalue useplatformclock >nul 2>&1 & bcdedit /set disabledynamictick no\"",
+        "reason": "\"cmd\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "cmd /c \"bcdedit /deletevalue useplatformtick >nul 2>&1 & bcdedit /deletevalue useplatformclock >nul 2>&1 & bcdedit /set disabledynamictick no\"",
+    "originalRevert": null
+  },
+  {
+    "id": "gpu_msi_mode",
+    "name": "Enable MSI Mode (GPU)",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Message-Signaled Interrupts for your graphics card - can lower latency/stutter. Reboot required.",
+    "detailedDescription": "Message-Signaled Interrupts for your graphics card - can lower latency/stutter. Reboot required.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-CimInstance Win32_VideoController | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.PNPDeviceID+'\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name MSISupported -Value 1 -Type DWord -Force } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-CimInstance Win32_VideoController | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.PNPDeviceID+'\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name MSISupported -Value 1 -Type DWord -Force } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-CimInstance Win32_VideoController | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.PNPDeviceID+'\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name MSISupported -Value 0 -Type DWord -Force } }\""
+  },
+  {
+    "id": "mem_compression_off",
+    "name": "Disable Memory Compression",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Stops Windows compressing RAM (saves CPU). Best with 16 GB+.",
+    "detailedDescription": "Stops Windows compressing RAM (saves CPU). Best with 16 GB+.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Disable-MMAgent -mc\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Disable-MMAgent -mc\"",
+    "originalRevert": "powershell -NoProfile -Command \"Enable-MMAgent -mc\""
+  },
+  {
+    "id": "in_xbox_button_off",
+    "name": "Xbox Button Doesn't Open Game Bar",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "safe",
+    "description": "Stops the Xbox/Guide button from opening the Game Bar mid-match.",
+    "detailedDescription": "Stops the Xbox/Guide button from opening the Game Bar mid-match.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\GameBar\\UseNexusForGameBarEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\GameBar",
+        "name": "UseNexusForGameBarEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v UseNexusForGameBarEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v UseNexusForGameBarEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "in_controller_usb_power",
+    "name": "Controller USB Power Saving Off",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Stops Windows putting game controllers into power saving. Reboot.",
+    "detailedDescription": "Stops Windows putting game controllers into power saving. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -EA SilentlyContinue | Get-ChildItem -EA SilentlyContinue | ForEach-Object { $dp=Join-Path $_.PSPath 'Device Parameters'; if(Test-Path $dp){ $svc=(Get-ItemProperty $_.PSPath -Name Service -EA SilentlyContinue).Service; if($svc -match 'xusb22|WinUSB|HidUsb|BthUsb'){ Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -EA SilentlyContinue | Get-ChildItem -EA SilentlyContinue | ForEach-Object { $dp=Join-Path $_.PSPath 'Device Parameters'; if(Test-Path $dp){ $svc=(Get-ItemProperty $_.PSPath -Name Service -EA SilentlyContinue).Service; if($svc -match 'xusb22|WinUSB|HidUsb|BthUsb'){ Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -EA SilentlyContinue | Get-ChildItem -EA SilentlyContinue | ForEach-Object { $dp=Join-Path $_.PSPath 'Device Parameters'; if(Test-Path $dp){ $svc=(Get-ItemProperty $_.PSPath -Name Service -EA SilentlyContinue).Service; if($svc -match 'xusb22|WinUSB|HidUsb|BthUsb'){ Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 1 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 1 -Type DWord -Force -EA SilentlyContinue } } }\""
+  },
+  {
+    "id": "in_bt_power_off",
+    "name": "Bluetooth Power Saving Off",
+    "category": "Gaming",
+    "sourceCategory": "Input",
+    "risk": "advanced",
+    "description": "Keeps wireless controllers/headsets awake (helps stutter & dropouts). Reboot.",
+    "detailedDescription": "Keeps wireless controllers/headsets awake (helps stutter & dropouts). Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-PnpDevice -Class Bluetooth -EA SilentlyContinue | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.InstanceId+'\\Device Parameters'; if(Test-Path $p){ Set-ItemProperty $p -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-PnpDevice -Class Bluetooth -EA SilentlyContinue | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.InstanceId+'\\Device Parameters'; if(Test-Path $p){ Set-ItemProperty $p -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-PnpDevice -Class Bluetooth -EA SilentlyContinue | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.InstanceId+'\\Device Parameters'; if(Test-Path $p){ Set-ItemProperty $p -Name EnhancedPowerManagementEnabled -Value 1 -Type DWord -Force -EA SilentlyContinue } }\""
+  },
+  {
+    "id": "aud_ducking_off",
+    "name": "Disable Audio Ducking",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "Windows stops lowering game volume when someone talks in Discord.",
+    "detailedDescription": "Windows stops lowering game volume when someone talks in Discord.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Multimedia\\Audio\\UserDuckingPreference": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Multimedia\\Audio",
+        "name": "UserDuckingPreference",
+        "valueType": "REG_DWORD",
+        "value": "3"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Multimedia\\Audio\" /v UserDuckingPreference /t REG_DWORD /d 3 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Multimedia\\Audio\" /v UserDuckingPreference /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "aud_enhancements_off",
+    "name": "Disable Audio Enhancements",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "Turns off Windows audio effects on all playback devices (cleaner, lower latency).",
+    "detailedDescription": "Turns off Windows audio effects on all playback devices (cleaner, lower latency).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'FxProperties'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -Value 1 -Type DWord -Force -EA SilentlyContinue }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'FxProperties'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -Value 1 -Type DWord -Force -EA SilentlyContinue }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'FxProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -Value 0 -Type DWord -Force -EA SilentlyContinue } }\""
+  },
+  {
+    "id": "aud_mmcss",
+    "name": "Audio Thread Priority",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "advanced",
+    "description": "Gives the audio engine higher scheduling priority (MMCSS Audio task).",
+    "detailedDescription": "Gives the audio engine higher scheduling priority (MMCSS Audio task).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\\Priority": "6",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\\Scheduling Category": "Medium",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\\SFIO Priority": "Normal"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio",
+        "name": "Priority",
+        "valueType": "REG_DWORD",
+        "value": "6"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio",
+        "name": "Scheduling Category",
+        "valueType": "REG_SZ",
+        "value": "High"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio",
+        "name": "SFIO Priority",
+        "valueType": "REG_SZ",
+        "value": "High"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v Priority /t REG_DWORD /d 6 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v \"Scheduling Category\" /t REG_SZ /d High /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v \"SFIO Priority\" /t REG_SZ /d High /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v Priority /t REG_DWORD /d 6 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v \"Scheduling Category\" /t REG_SZ /d Medium /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Audio\" /v \"SFIO Priority\" /t REG_SZ /d Normal /f"
+  },
+  {
+    "id": "aud_exclusive_off",
+    "name": "Block Exclusive Audio Control",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "advanced",
+    "description": "Stops apps taking exclusive control of your audio device (fixes muted game audio).",
+    "detailedDescription": "Stops apps taking exclusive control of your audio device (fixes muted game audio).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'Properties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{b3f8fa53-0004-438e-9003-51a46e139bfc},3' -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'Properties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{b3f8fa53-0004-438e-9003-51a46e139bfc},3' -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'Properties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{b3f8fa53-0004-438e-9003-51a46e139bfc},3' -Value 1 -Type DWord -Force -EA SilentlyContinue } }\""
+  },
+  {
+    "id": "aud_system_sounds_off",
+    "name": "Disable Windows System Sounds",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "No dings and error beeps over your game audio.",
+    "detailedDescription": "No dings and error beeps over your game audio.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\AppEvents\\Schemes\\": ".Default"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "AppEvents\\Schemes",
+        "name": "",
+        "valueType": "REG_SZ",
+        "value": ".None"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\AppEvents\\Schemes\" /ve /t REG_SZ /d \".None\" /f",
+    "originalRevert": "reg add \"HKCU\\AppEvents\\Schemes\" /ve /t REG_SZ /d \".Default\" /f"
+  },
+  {
+    "id": "dsp_dx_settings",
+    "name": "DirectX Game Settings",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "safe",
+    "description": "Windowed-game optimizations ON, variable refresh rate ON, Auto HDR OFF.",
+    "detailedDescription": "Windowed-game optimizations ON, variable refresh rate ON, Auto HDR OFF.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences\\DirectXUserGlobalSettings": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\DirectX\\UserGpuPreferences",
+        "name": "DirectXUserGlobalSettings",
+        "valueType": "REG_SZ",
+        "value": "SwapEffectUpgradeEnable=1;VRROptimizeEnable=1;AutoHDREnable=0;"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences\" /v DirectXUserGlobalSettings /t REG_SZ /d \"SwapEffectUpgradeEnable=1;VRROptimizeEnable=1;AutoHDREnable=0;\" /f",
+    "originalRevert": "reg delete \"HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences\" /v DirectXUserGlobalSettings /f"
+  },
+  {
+    "id": "dsp_dynamic_lighting_off",
+    "name": "Disable Dynamic Lighting (RGB)",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "safe",
+    "description": "Turns off the Windows 11 RGB controller running in the background.",
+    "detailedDescription": "Turns off the Windows 11 RGB controller running in the background.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Lighting\\AmbientLightingEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Lighting",
+        "name": "AmbientLightingEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Lighting\" /v AmbientLightingEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Lighting\" /v AmbientLightingEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "dsp_never_sleep",
+    "name": "Never Turn Off Display",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "safe",
+    "description": "Screen won't sleep mid-cutscene or while idling in a lobby.",
+    "detailedDescription": "Screen won't sleep mid-cutscene or while idling in a lobby.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powercfg /change monitor-timeout-ac 0",
+        "reason": "\"powercfg\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powercfg /change monitor-timeout-ac 0",
+    "originalRevert": "powercfg /change monitor-timeout-ac 10"
+  },
+  {
+    "id": "dsp_open_settings",
+    "name": "Open Refresh Rate Settings",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "safe",
+    "description": "Opens Windows display settings so you can pick your monitor's highest Hz.",
+    "detailedDescription": "Opens Windows display settings so you can pick your monitor's highest Hz.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": true,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "cmd /c start ms-settings:display-advanced",
+        "reason": "\"cmd\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "cmd /c start ms-settings:display-advanced",
+    "originalRevert": null
+  },
+  {
+    "id": "str_obs_priority",
+    "name": "OBS High CPU Priority",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "advanced",
+    "description": "Gives OBS / Streamlabs high priority so recordings stop dropping frames.",
+    "detailedDescription": "Gives OBS / Streamlabs high priority so recordings stop dropping frames.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name CpuPriorityClass -Value 3 -Type DWord -Force }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name CpuPriorityClass -Value 3 -Type DWord -Force }\"",
+    "originalRevert": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(Test-Path $p){ Remove-ItemProperty $p -Name CpuPriorityClass -EA SilentlyContinue } }\""
+  },
+  {
+    "id": "str_obs_gpu",
+    "name": "OBS on High Performance GPU",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "Forces OBS to use your dedicated GPU (important on laptops).",
+    "detailedDescription": "Forces OBS to use your dedicated GPU (important on laptops).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; foreach($n in 'C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe','C:\\Program Files (x86)\\obs-studio\\bin\\64bit\\obs64.exe'){ Set-ItemProperty $p -Name $n -Value 'GpuPreference=2;' -Force -EA SilentlyContinue }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; foreach($n in 'C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe','C:\\Program Files (x86)\\obs-studio\\bin\\64bit\\obs64.exe'){ Set-ItemProperty $p -Name $n -Value 'GpuPreference=2;' -Force -EA SilentlyContinue }\"",
+    "originalRevert": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences'; foreach($n in 'C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe','C:\\Program Files (x86)\\obs-studio\\bin\\64bit\\obs64.exe'){ Remove-ItemProperty $p -Name $n -EA SilentlyContinue }\""
+  },
+  {
+    "id": "str_notifications_off",
+    "name": "Disable Notification Popups",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "No DMs or system toasts popping up mid-stream or mid-recording.",
+    "detailedDescription": "No DMs or system toasts popping up mid-stream or mid-recording.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\\ToastEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+        "name": "ToastEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" /v ToastEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" /v ToastEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "str_historical_capture_off",
+    "name": "Disable Background Recording",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "safe",
+    "description": "Stops Windows' own 'record last 30s' buffer fighting with OBS.",
+    "detailedDescription": "Stops Windows' own 'record last 30s' buffer fighting with OBS.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\\HistoricalCaptureEnabled": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+        "name": "HistoricalCaptureEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\" /v HistoricalCaptureEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR\" /v HistoricalCaptureEnabled /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "str_obs_qos",
+    "name": "Priority Upload for OBS",
+    "category": "Windows",
+    "sourceCategory": "Audio",
+    "risk": "advanced",
+    "description": "QoS rule that tags OBS traffic as priority - steadier live streams.",
+    "detailedDescription": "QoS rule that tags OBS traffic as priority - steadier live streams.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'SlideTweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'SlideTweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'SlideTweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'SlideTweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Remove-NetQosPolicy -Name 'SlideTweaks OBS' -Confirm:$false -EA SilentlyContinue\""
+  },
+  {
+    "id": "app_chrome_bg_off",
+    "name": "Chrome: No Background Apps",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "safe",
+    "description": "Stops Chrome running in the background after you close it.",
+    "detailedDescription": "Stops Chrome running in the background after you close it.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Google\\Chrome\\BackgroundModeEnabled": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Google\\Chrome",
+        "name": "BackgroundModeEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Google\\Chrome\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Google\\Chrome\" /v BackgroundModeEnabled /f"
+  },
+  {
+    "id": "app_edge_bg_off",
+    "name": "Edge: No Background Apps",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "safe",
+    "description": "Stops Edge staying alive in the background.",
+    "detailedDescription": "Stops Edge staying alive in the background.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\BackgroundModeEnabled": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Edge",
+        "name": "BackgroundModeEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v BackgroundModeEnabled /f"
+  },
+  {
+    "id": "app_edge_boost_off",
+    "name": "Edge: Disable Startup Boost",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "safe",
+    "description": "Edge no longer preloads itself when Windows starts.",
+    "detailedDescription": "Edge no longer preloads itself when Windows starts.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\StartupBoostEnabled": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Edge",
+        "name": "StartupBoostEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /f"
+  },
+  {
+    "id": "app_edge_preload_off",
+    "name": "Edge: Disable Preloading",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "safe",
+    "description": "Stops Edge preloading pages and tabs in the background.",
+    "detailedDescription": "Stops Edge preloading pages and tabs in the background.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\Start_TrackProgs": "1"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Edge",
+        "name": "StartupBoostEnabled",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "Start_TrackProgs",
+        "valueType": "REG_DWORD",
+        "value": "0"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 0 /f",
+    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 1 /f"
+  },
+  {
+    "id": "cpu_mmcss_games",
+    "name": "Games Priority Profile (MMCSS)",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Gives games top GPU/CPU scheduling priority. Pairs with System Responsiveness.",
+    "detailedDescription": "Gives games top GPU/CPU scheduling priority. Pairs with System Responsiveness.",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\\GPU Priority": "8",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\\Priority": "2",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\\Scheduling Category": "Medium",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\\SFIO Priority": "Normal"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+        "name": "GPU Priority",
+        "valueType": "REG_DWORD",
+        "value": "8"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+        "name": "Priority",
+        "valueType": "REG_DWORD",
+        "value": "6"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+        "name": "Scheduling Category",
+        "valueType": "REG_SZ",
+        "value": "High"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+        "name": "SFIO Priority",
+        "valueType": "REG_SZ",
+        "value": "High"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"GPU Priority\" /t REG_DWORD /d 8 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v Priority /t REG_DWORD /d 6 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"Scheduling Category\" /t REG_SZ /d High /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"SFIO Priority\" /t REG_SZ /d High /f",
+    "originalRevert": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"GPU Priority\" /t REG_DWORD /d 8 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v Priority /t REG_DWORD /d 2 /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"Scheduling Category\" /t REG_SZ /d Medium /f & reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games\" /v \"SFIO Priority\" /t REG_SZ /d Normal /f"
+  },
+  {
+    "id": "win_no_driver_updates",
+    "name": "Block Driver Updates via Windows Update",
+    "category": "Windows",
+    "sourceCategory": "Windows",
+    "risk": "safe",
+    "description": "Stops Windows overwriting your GPU driver with an older one.",
+    "detailedDescription": "Stops Windows overwriting your GPU driver with an older one.",
+    "recommended": true,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\ExcludeWUDriversInQualityUpdate": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+        "name": "ExcludeWUDriversInQualityUpdate",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v ExcludeWUDriversInQualityUpdate /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v ExcludeWUDriversInQualityUpdate /f"
+  },
+  {
+    "id": "net_wifi_power_off",
+    "name": "Wi-Fi Power Saving Off",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "Laptops: stops Windows throttling the Wi-Fi card (better ping).",
+    "detailedDescription": "Laptops: stops Windows throttling the Wi-Fi card (better ping).",
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-NetAdapter -Physical | Where-Object { $_.MediaType -match '802.11' -or $_.Name -match 'Wi-Fi|WLAN|Wireless' } | ForEach-Object { Disable-NetAdapterPowerManagement -Name $_.Name -NoRestart -EA SilentlyContinue }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-NetAdapter -Physical | Where-Object { $_.MediaType -match '802.11' -or $_.Name -match 'Wi-Fi|WLAN|Wireless' } | ForEach-Object { Disable-NetAdapterPowerManagement -Name $_.Name -NoRestart -EA SilentlyContinue }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-NetAdapter -Physical | Where-Object { $_.MediaType -match '802.11' -or $_.Name -match 'Wi-Fi|WLAN|Wireless' } | ForEach-Object { Enable-NetAdapterPowerManagement -Name $_.Name -NoRestart -EA SilentlyContinue }\""
+  },
+  {
+    "id": "gpu_powermizer_off",
+    "name": "NVIDIA PowerMizer Off (Laptop)",
+    "category": "Performance",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Keeps an NVIDIA laptop GPU at full clocks instead of throttling down. Reboot.",
+    "detailedDescription": "Keeps an NVIDIA laptop GPU at full clocks instead of throttling down. Reboot.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "unsupported",
+        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}' -EA SilentlyContinue | Where-Object { $_.PSChildName -match '^[0-9]{4}$' } | ForEach-Object { $d=(Get-ItemProperty $_.PSPath -Name DriverDesc -EA SilentlyContinue).DriverDesc; if($d -match 'NVIDIA'){ Set-ItemProperty $_.PSPath -Name PerfLevelSrc -Value 0x2222 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerEnable -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerLevel -Value 1 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerLevelAC -Value 1 -Type DWord -Force -EA SilentlyContinue } }\"",
+        "reason": "\"powershell\" operations are not implemented yet"
+      }
+    ],
+    "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}' -EA SilentlyContinue | Where-Object { $_.PSChildName -match '^[0-9]{4}$' } | ForEach-Object { $d=(Get-ItemProperty $_.PSPath -Name DriverDesc -EA SilentlyContinue).DriverDesc; if($d -match 'NVIDIA'){ Set-ItemProperty $_.PSPath -Name PerfLevelSrc -Value 0x2222 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerEnable -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerLevel -Value 1 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $_.PSPath -Name PowerMizerLevelAC -Value 1 -Type DWord -Force -EA SilentlyContinue } }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}' -EA SilentlyContinue | Where-Object { $_.PSChildName -match '^[0-9]{4}$' } | ForEach-Object { foreach($v in 'PerfLevelSrc','PowerMizerEnable','PowerMizerLevel','PowerMizerLevelAC'){ Remove-ItemProperty $_.PSPath -Name $v -EA SilentlyContinue } }\""
+  },
+  {
+    "id": "cpu_global_timer",
+    "name": "Global Timer Resolution",
+    "category": "Performance",
+    "sourceCategory": "CPU",
+    "risk": "advanced",
+    "description": "Makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). Reboot required.",
+    "detailedDescription": "Makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). Reboot required.",
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\\GlobalTimerResolutionRequests": "(value removed)"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
+        "name": "GlobalTimerResolutionRequests",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ],
+    "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v GlobalTimerResolutionRequests /t REG_DWORD /d 1 /f",
+    "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v GlobalTimerResolutionRequests /f"
+  }
+]

@@ -1,0 +1,354 @@
+[
+  {
+    "id": "fix_audio",
+    "name": "Audio & Microphone",
+    "description": "No sound or microphone? Puts the audio services back to their defaults and starts them.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "Audiosrv",
+        "startMode": "auto",
+        "stop": false,
+        "start": true
+      },
+      {
+        "type": "service",
+        "name": "AudioEndpointBuilder",
+        "startMode": "auto",
+        "stop": false,
+        "start": true
+      }
+    ]
+  },
+  {
+    "id": "fix_bluetooth",
+    "name": "Bluetooth",
+    "description": "Bluetooth missing or not connecting? Re-enables and starts the Bluetooth support service.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "bthserv",
+        "startMode": "manual",
+        "stop": false,
+        "start": true
+      }
+    ]
+  },
+  {
+    "id": "fix_search",
+    "name": "Windows Search",
+    "description": "Start menu search broken? Re-enables the search service and its index.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "WSearch",
+        "startMode": "delayed-auto",
+        "stop": false,
+        "start": true
+      }
+    ]
+  },
+  {
+    "id": "fix_printing",
+    "name": "Printing",
+    "description": "Nothing prints? Restores the print spooler and starts it.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "Spooler",
+        "startMode": "auto",
+        "stop": false,
+        "start": true
+      }
+    ]
+  },
+  {
+    "id": "fix_xbox",
+    "name": "Xbox & Game Pass",
+    "description": "Game Pass or the Xbox app broken after tweaking? Puts the Xbox services back to their defaults.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "XblAuthManager",
+        "startMode": "manual",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "XblGameSave",
+        "startMode": "manual",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "XboxNetApiSvc",
+        "startMode": "manual",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "XboxGipSvc",
+        "startMode": "manual",
+        "stop": false
+      }
+    ]
+  },
+  {
+    "id": "fix_uac_prompt",
+    "name": "Admin Prompts & Group Policy",
+    "description": "Programs refuse to run as administrator, or policies no longer apply? Restores the two services responsible.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "AppInfo",
+        "startMode": "manual",
+        "stop": false,
+        "start": true
+      },
+      {
+        "type": "service",
+        "name": "gpsvc",
+        "startMode": "auto",
+        "stop": false
+      }
+    ]
+  },
+  {
+    "id": "fix_security_center",
+    "name": "Windows Security",
+    "description": "Windows Security shows nothing or complains it is unavailable? Restores the security centre services.",
+    "risk": "advanced",
+    "operations": [
+      {
+        "type": "service",
+        "name": "wscsvc",
+        "startMode": "auto",
+        "stop": false,
+        "start": true
+      },
+      {
+        "type": "service",
+        "name": "SecurityHealthService",
+        "startMode": "manual",
+        "stop": false
+      }
+    ]
+  },
+  {
+    "id": "fix_services_default",
+    "name": "Reset Common Services",
+    "description": "Puts the services this app can disable back to the start types Windows ships with.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "Audiosrv",
+        "startMode": "auto",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "AudioEndpointBuilder",
+        "startMode": "auto",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "WSearch",
+        "startMode": "delayed-auto",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "Spooler",
+        "startMode": "auto",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "bthserv",
+        "startMode": "manual",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "SysMain",
+        "startMode": "auto",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "AppInfo",
+        "startMode": "manual",
+        "stop": false
+      },
+      {
+        "type": "service",
+        "name": "WerSvc",
+        "startMode": "manual",
+        "stop": false
+      }
+    ]
+  },
+  {
+    "id": "fix_clipboard",
+    "name": "Clipboard History",
+    "description": "Win+V stopped working? Removes the policy that switches clipboard history off.",
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "AllowClipboardHistory",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ]
+  },
+  {
+    "id": "fix_notifications",
+    "name": "Notifications",
+    "description": "No notifications arriving? Switches toast notifications back on for your account.",
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+        "name": "ToastEnabled",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ]
+  },
+  {
+    "id": "fix_network",
+    "name": "Internet & Network",
+    "description": "Slow or no internet after tweaking? Resets Winsock, the TCP/IP stack, TCP auto-tuning and the DNS cache.",
+    "requiresRestart": true,
+    "operations": [
+      {
+        "type": "command",
+        "command": "winsockReset"
+      },
+      {
+        "type": "command",
+        "command": "ipReset"
+      },
+      {
+        "type": "command",
+        "command": "tcpAutotuningNormal"
+      },
+      {
+        "type": "command",
+        "command": "flushDns"
+      }
+    ]
+  },
+  {
+    "id": "fix_dns",
+    "name": "DNS Cache",
+    "description": "A site resolves to the wrong address? Clears the DNS cache. Harmless and instant.",
+    "operations": [
+      {
+        "type": "command",
+        "command": "flushDns"
+      }
+    ]
+  },
+  {
+    "id": "fix_store",
+    "name": "Microsoft Store",
+    "description": "Store will not open or download? Clears its cache.",
+    "operations": [
+      {
+        "type": "command",
+        "command": "storeReset"
+      }
+    ]
+  },
+  {
+    "id": "fix_explorer",
+    "name": "Taskbar & Explorer",
+    "description": "Taskbar frozen or icons missing? Restarts Explorer. Your open windows stay, the desktop flickers once.",
+    "operations": [
+      {
+        "type": "command",
+        "command": "restartExplorer"
+      }
+    ]
+  },
+  {
+    "id": "fix_sysfiles",
+    "name": "Corrupted System Files",
+    "description": "Repairs the component store and then checks every protected system file. This takes a long time — often 15 to 45 minutes.",
+    "risk": "advanced",
+    "operations": [
+      {
+        "type": "command",
+        "command": "dismRestoreHealth"
+      },
+      {
+        "type": "command",
+        "command": "sfcScanNow"
+      }
+    ]
+  },
+  {
+    "id": "fix_update_service",
+    "name": "Windows Update Service",
+    "description": "Windows Update set to Disabled cannot run or even be started by Settings. Puts it back to the start type Windows ships with (Manual) and starts it. Nothing is downloaded and nothing is deleted.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "wuauserv",
+        "startMode": "manual",
+        "stop": false,
+        "start": true
+      },
+      {
+        "type": "service",
+        "name": "BITS",
+        "startMode": "manual",
+        "stop": false
+      }
+    ]
+  },
+  {
+    "id": "fix_update",
+    "name": "Windows Update",
+    "description": "Updates stuck or failing? Stops the update services, clears the download cache and starts them again.",
+    "operations": [
+      {
+        "type": "service",
+        "name": "wuauserv",
+        "startMode": "manual",
+        "stop": true
+      },
+      {
+        "type": "service",
+        "name": "bits",
+        "startMode": "manual",
+        "stop": true
+      },
+      {
+        "type": "cleanup",
+        "target": "windowsUpdateCache"
+      },
+      {
+        "type": "service",
+        "name": "wuauserv",
+        "startMode": "manual",
+        "stop": false,
+        "start": true
+      },
+      {
+        "type": "service",
+        "name": "bits",
+        "startMode": "delayed-auto",
+        "stop": false,
+        "start": true
+      }
+    ]
+  }
+]

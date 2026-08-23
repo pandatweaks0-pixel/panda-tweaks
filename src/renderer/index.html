@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- No remote content is ever loaded, so everything except our own files is
+         blocked outright. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+    <title>Panda Tweaks</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-theme="dark">
+
+<!-- Start experience: covers the window until the app has loaded. -->
+<div class="splash" id="splash">
+    <canvas class="splash-rain" id="splash-rain"></canvas>
+    <div class="splash-glow" aria-hidden="true"></div>
+    <div class="splash-inner">
+        <div class="splash-logo-wrap">
+            <div class="splash-ring" aria-hidden="true"></div>
+            <img class="splash-logo" src="assets/logo.png" alt="">
+        </div>
+        <div class="splash-name">PANDA <span>TWEAKS</span></div>
+        <div class="splash-tag" id="splash-tag">Free Windows tweaking &middot; <b>nothing hidden</b></div>
+        <div class="splash-barwrap"><div class="splash-bar"></div></div>
+    </div>
+</div>
+
+<header class="titlebar">
+    <div class="titlebar__brand">
+        <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.1"
+                 stroke-linecap="round">
+                <path d="M4 7h9M18 7h2M4 12h4M13 12h7M4 17h9M18 17h2"></path>
+                <circle cx="15.5" cy="7" r="2.2" fill="currentColor" stroke="none"></circle>
+                <circle cx="10.5" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
+                <circle cx="15.5" cy="17" r="2.2" fill="currentColor" stroke="none"></circle>
+            </svg>
+        </span>
+        <span class="brand-name">Panda Tweaks</span>
+        <span class="badge badge--muted" id="admin-badge" hidden></span>
+    </div>
+    <div class="titlebar__spacer"></div>
+    <div class="titlebar__controls">
+        <button class="winbtn" id="btn-min" aria-label="Minimize">&#xE921;</button>
+        <button class="winbtn" id="btn-max" aria-label="Maximize">&#xE922;</button>
+        <button class="winbtn winbtn--close" id="btn-close" aria-label="Close">&#xE8BB;</button>
+    </div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar" aria-label="Main"></nav>
+    <main class="content" id="view" tabindex="-1"></main>
+</div>
+
+<div class="modal-root" id="modal-root" hidden></div>
+<div class="toast-root" id="toast-root" aria-live="polite"></div>
+
+<script src="splash.js"></script>
+<script src="i18n.js"></script>
+<script src="ui.js"></script>
+<script src="views.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

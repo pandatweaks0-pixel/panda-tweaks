@@ -1,0 +1,149 @@
+[
+  {
+    "name": "DiagTrack",
+    "label": "Connected User Experiences & Telemetry",
+    "description": "Microsoft telemetry collector.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "dmwappushservice",
+    "label": "WAP Push Message Routing",
+    "description": "Telemetry transport.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "Fax",
+    "label": "Fax",
+    "description": "Fax service - almost nobody uses it.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "RetailDemo",
+    "label": "Retail Demo",
+    "description": "Store demo mode.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "MapsBroker",
+    "label": "Downloaded Maps Manager",
+    "description": "Offline maps - only needed by Maps app.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "WerSvc",
+    "label": "Windows Error Reporting",
+    "description": "Sends crash reports to Microsoft.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "RemoteRegistry",
+    "label": "Remote Registry",
+    "description": "Remote registry access (safer OFF).",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "WMPNetworkSvc",
+    "label": "WMP Network Sharing",
+    "description": "Shares Windows Media Player libraries.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "PhoneSvc",
+    "label": "Phone Service",
+    "description": "Phone/telephony features.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "WpcMonSvc",
+    "label": "Parental Controls",
+    "description": "Family safety monitoring.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "SEMgrSvc",
+    "label": "Payments & NFC",
+    "description": "Tap-to-pay / NFC.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "lfsvc",
+    "label": "Geolocation Service",
+    "description": "Location tracking.",
+    "recommended": true,
+    "risk": "safe"
+  },
+  {
+    "name": "SysMain",
+    "label": "SysMain (Superfetch)",
+    "description": "Preloads apps into RAM.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "WSearch",
+    "label": "Windows Search",
+    "description": "Search indexing (search gets slower).",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "Spooler",
+    "label": "Print Spooler",
+    "description": "Printing - disable only if no printer.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "XblAuthManager",
+    "label": "Xbox Live Auth Manager",
+    "description": "Xbox sign-in (needed for Game Pass).",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "XblGameSave",
+    "label": "Xbox Live Game Save",
+    "description": "Xbox cloud saves.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "XboxNetApiSvc",
+    "label": "Xbox Live Networking",
+    "description": "Xbox multiplayer networking.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "XboxGipSvc",
+    "label": "Xbox Accessory Management",
+    "description": "Xbox controller management.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "TabletInputService",
+    "label": "Touch Keyboard & Handwriting",
+    "description": "On-screen keyboard / pen input.",
+    "recommended": false,
+    "risk": "advanced"
+  },
+  {
+    "name": "BluetoothUserService",
+    "label": "Bluetooth User Support",
+    "description": "Bluetooth - disable only if unused.",
+    "recommended": false,
+    "risk": "advanced"
+  }
+]

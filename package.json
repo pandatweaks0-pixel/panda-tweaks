@@ -1,0 +1,58 @@
+{
+  "name": "panda-tweaks",
+  "productName": "Panda Tweaks",
+  "version": "0.1.0",
+  "description": "Free, transparent Windows tweaking and debloat utility",
+  "main": "src/main/main.js",
+  "license": "MIT",
+  "author": "Panda Tweaks",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "test": "node --test \"test/**/*.test.js\"",
+    "convert-data": "node tools/convert-slidetweaks.js",
+    "build:site": "node tools/build-site.js",
+    "build": "electron-builder --win portable",
+    "build:setup": "electron-builder --win nsis",
+    "build:all": "electron-builder --win portable nsis"
+  },
+  "devDependencies": {
+    "electron": "43.4.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.pandatweaks.app",
+    "productName": "Panda Tweaks",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "LICENSE",
+      "NOTICE.md",
+      "!**/*.map"
+    ],
+    "asarUnpack": [
+      "src/main/ps/**"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "src/renderer/assets/logo.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "PandaTweaks-${version}-portable.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Panda Tweaks",
+      "artifactName": "PandaTweaks-${version}-setup.exe"
+    }
+  }
+}
