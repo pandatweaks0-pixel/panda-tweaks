@@ -82,9 +82,15 @@ const STREAMING = ["cpu_pagingexec", "mem_sysmain_off", "mem_prefetch_off", "mem
 // Browsers left running in the background during a session.
 const BROWSERS = ["app_chrome_bg_off", "app_edge_bg_off", "app_edge_boost_off", "app_edge_preload_off"];
 
+// Teredo is deliberately absent. Turning it off is a fine tweak on its own, but
+// Xbox networking and party chat lean on it, so a preset that silently killed
+// someone's multiplayer would be the kind of surprise these are meant to avoid.
+// It stays applicable by hand.
 const NET = [
     "net_throttle_off", "net_qos_off", "net_do_off", "net_timedwait",
     "net_maxuserport", "net_llmnr_off", "net_defaultttl",
+    "net_tcp_optimize", "net_rsc_off", "net_ecn_off", "net_timestamps_off",
+    "net_heuristics_off",
 ];
 
 const FSO = ["win_fso_off"];

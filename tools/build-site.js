@@ -40,7 +40,18 @@ const CONFIG = {
     // nowhere else, so there is deliberately no download URL here to configure.
     // If that ever changes, a download button goes back into the hero and the
     // "Why is there no download button" section below comes out.
-    discord: "https://discord.gg/HNf6PNtQZ",
+    //
+    // Must be an invite set to never expire, and pointing at a channel that
+    // will still exist next year. The first one here expired quietly a few
+    // weeks after it went up, which on a Discord-only site means every button
+    // on every page leads nowhere and nobody can reach the app at all - and
+    // nothing reports it, because the page still builds and still serves.
+    //
+    // This one is verified permanent (the invite API returns expires_at: null)
+    // and points at the welcome channel. Before replacing it, check the
+    // replacement the same way:
+    //   curl -s https://discord.com/api/v10/invites/<code>
+    discord: "https://discord.gg/nV7m45NcBn",
 };
 
 const pkg = require(path.join(ROOT, "package.json"));

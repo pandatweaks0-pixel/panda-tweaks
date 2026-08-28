@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panda Tweaks — the free Windows optimizer you can read</title>
-<meta name="description" content="113 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
+<meta name="description" content="119 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
 <meta property="og:title" content="Panda Tweaks">
 <meta property="og:description" content="Make Windows faster — and read every change before it happens.">
 <meta property="og:type" content="website">
@@ -205,7 +205,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
     <a class="link" href="#analysis">Analysis</a>
     <a class="link" href="#catalogue">All tweaks</a>
     <a class="link" href="#faq">FAQ</a>
-    <a class="btn btn--dc" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join the Discord</a>
+    <a class="btn btn--dc" href="https://discord.gg/nV7m45NcBn" target="_blank" rel="noopener">Join the Discord</a>
   </div>
 </header>
 
@@ -219,7 +219,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
         touched. Panda Tweaks reads your PC first, suggests only what actually helps on your
         machine — and shows the exact registry key behind every single change.</p>
       <div class="cta">
-        <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join Discord &amp; download</a>
+        <a class="btn btn--dc btn--lg" href="https://discord.gg/nV7m45NcBn" target="_blank" rel="noopener">Join Discord &amp; download</a>
         <a class="btn btn--lg" href="#catalogue">See every change first</a>
       </div>
       <p class="fine">The download lives in our Discord — that is the only place to get it.<br>
@@ -236,7 +236,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section style="padding-bottom:0"><div class="wrap">
     <div class="stats">
-      <div class="stat"><b>113</b><span>tweaks</span></div>
+      <div class="stat"><b>119</b><span>tweaks</span></div>
       <div class="stat"><b>17</b><span>repairs</span></div>
       <div class="stat"><b>53</b><span>removable apps</span></div>
       <div class="stat"><b>21</b><span>services</span></div>
@@ -251,8 +251,8 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       nowhere else. One official file, one place to ask when something goes wrong, and no
       reuploads on some download portal with an installer bolted onto them. It is free either
       way — joining is the whole price.</p>
-    <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Open the Discord</a>
-    <p class="handle">discord.gg/HNf6PNtQZ</p>
+    <a class="btn btn--dc btn--lg" href="https://discord.gg/nV7m45NcBn" target="_blank" rel="noopener">Open the Discord</a>
+    <p class="handle">discord.gg/nV7m45NcBn</p>
   </div></div></section>
 
   <section id="features" style="padding-top:0"><div class="wrap">
@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section id="catalogue" style="padding-top:0"><div class="wrap">
     <p class="eyebrow">Full control</p>
-    <h2>204 entries, every one explained</h2>
+    <h2>210 entries, every one explained</h2>
     <p class="sub">No hidden scripts. This is the same list the app uses — generated from the same
       data, so it cannot drift away from it. Under every entry is exactly what gets touched.</p>
 
@@ -580,6 +580,24 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Removes the 20% reserved bandwidth limit.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched\NonBestEffortLimit = 0</li></ul>
         </article>
+        <article class="item" data-group="Network" data-risk="safe" data-search="tcp auto-tuning + rss balanced low-latency tcp settings. netsh netsh">
+          <div class="item__name">TCP Auto-Tuning + RSS
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Balanced low-latency TCP settings.</p>
+          <ul class="item__targets"><li>netsh</li><li>netsh</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable ecn turns off explicit congestion notification. netsh">
+          <div class="item__name">Disable ECN
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Turns off Explicit Congestion Notification.</p>
+          <ul class="item__targets"><li>netsh</li></ul>
+        </article>
         <article class="item" data-group="Network" data-risk="safe" data-search="disable delivery optimization stops windows update p2p using your bandwidth. hklm\software\policies\microsoft\windows\deliveryoptimization\dodownloadmode = 0">
           <div class="item__name">Disable Delivery Optimization
             <span class="badge badge--safe">Safe</span>
@@ -705,6 +723,33 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Wipes the pagefile on shutdown (slower shutdown).</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown = 1</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp timestamps slightly leaner packets. netsh">
+          <div class="item__name">Disable TCP Timestamps
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Slightly leaner packets.</p>
+          <ul class="item__targets"><li>netsh</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable rsc (receive coalescing) lower latency at a tiny cpu cost. netsh">
+          <div class="item__name">Disable RSC (Receive Coalescing)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Lower latency at a tiny CPU cost.</p>
+          <ul class="item__targets"><li>netsh</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp window heuristics keeps your tcp window tuning from being overridden. netsh">
+          <div class="item__name">Disable TCP Window Heuristics
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Keeps your TCP window tuning from being overridden.</p>
+          <ul class="item__targets"><li>netsh</li></ul>
         </article>
         <article class="item" data-group="Network" data-risk="advanced" data-search="lower tcptimedwaitdelay frees closed ports faster (helps many connections). hklm\system\currentcontrolset\services\tcpip\parameters\tcptimedwaitdelay = 30">
           <div class="item__name">Lower TcpTimedWaitDelay
@@ -1065,6 +1110,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Standard TTL value for outgoing packets.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DefaultTTL = 64</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable teredo turns off teredo ipv6 tunneling. netsh">
+          <div class="item__name">Disable Teredo
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            
+          </div>
+          <p class="item__desc">Turns off Teredo IPv6 tunneling.</p>
+          <ul class="item__targets"><li>netsh</li></ul>
         </article>
         <article class="item" data-group="Performance" data-risk="advanced" data-search="disable network data usage (ndu) disables the ndu driver (can reduce a known ram leak). hklm\system\currentcontrolset\services\ndu\start = 4">
           <div class="item__name">Disable Network Data Usage (Ndu)
@@ -2187,9 +2241,9 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
     </div>
 
     <div class="honest" style="margin-top:24px">
-      <h3>The honest part: 34 tweaks are still missing</h3>
+      <h3>The honest part: 28 tweaks are still missing</h3>
       <p>The collection originally came from SlideTweaks, where every entry was a raw command
-         line. 34 of them — powershell, powercfg, bcdedit, netsh — have not been
+         line. 28 of them — powershell, powercfg, bcdedit, netsh — have not been
          translated into validated operations yet. They are marked unavailable inside the app and
          appear neither in the number above nor in the list. Better one tweak fewer than one that
          only pretends.</p>
@@ -2217,8 +2271,8 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       <div><span class="ico">📜</span><b>Source code</b><p>MIT licensed. Read every line before you run it.</p></div>
       <div><span class="ico">🔔</span><b>New releases</b><p>New tweaks and fixes are announced there first.</p></div>
     </div>
-    <a class="btn btn--dc btn--lg" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">Join the Discord</a>
-    <p class="handle">discord.gg/HNf6PNtQZ</p>
+    <a class="btn btn--dc btn--lg" href="https://discord.gg/nV7m45NcBn" target="_blank" rel="noopener">Join the Discord</a>
+    <p class="handle">discord.gg/nV7m45NcBn</p>
   </div></div></section>
 
   <section id="faq" style="padding-top:0"><div class="wrap">
@@ -2230,7 +2284,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       <details><summary>Does it need administrator rights?</summary><p>Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings.</p></details>
       <details><summary>Can I undo everything?</summary><p>Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created.</p></details>
       <details><summary>Where do I actually download it?</summary><p>In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing.</p></details>
-      <details><summary>Why 113 tweaks and not 147?</summary><p>Because 34 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 34 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
+      <details><summary>Why 119 tweaks and not 147?</summary><p>Because 28 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 28 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
       <details><summary>I am not technical. Can I use this?</summary><p>Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start.</p></details>
       <details><summary>How much faster will my PC get?</summary><p>That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours.</p></details>
     </div>
@@ -2242,7 +2296,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
   <div class="wrap foot">
     <span>Panda Tweaks 0.1.0 · MIT licensed</span>
     <span>Originally based on SlideTweaks 2.1.0 (MIT)</span>
-    <a class="sp" href="https://discord.gg/HNf6PNtQZ" target="_blank" rel="noopener">discord.gg/HNf6PNtQZ</a>
+    <a class="sp" href="https://discord.gg/nV7m45NcBn" target="_blank" rel="noopener">discord.gg/nV7m45NcBn</a>
   </div>
 </footer>
 

@@ -974,14 +974,14 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set global autotuninglevel=normal",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "autotuninglevel",
+        "value": "normal"
       },
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set global rss=enabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "rss",
+        "value": "enabled"
       }
     ],
     "originalCommand": "netsh int tcp set global autotuninglevel=normal & netsh int tcp set global rss=enabled",
@@ -1002,9 +1002,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set global ecncapability=disabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "ecncapability",
+        "value": "disabled"
       }
     ],
     "originalCommand": "netsh int tcp set global ecncapability=disabled",
@@ -1523,9 +1523,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set global timestamps=disabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "timestamps",
+        "value": "disabled"
       }
     ],
     "originalCommand": "netsh int tcp set global timestamps=disabled",
@@ -1546,9 +1546,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set global rsc=disabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "rsc",
+        "value": "disabled"
       }
     ],
     "originalCommand": "netsh int tcp set global rsc=disabled",
@@ -1569,9 +1569,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh int tcp set heuristics disabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "heuristics",
+        "value": "disabled"
       }
     ],
     "originalCommand": "netsh int tcp set heuristics disabled",
@@ -2790,9 +2790,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "netsh interface teredo set state disabled",
-        "reason": "\"netsh\" operations are not implemented yet"
+        "type": "netsh",
+        "setting": "teredo",
+        "value": "disabled"
       }
     ],
     "originalCommand": "netsh interface teredo set state disabled",

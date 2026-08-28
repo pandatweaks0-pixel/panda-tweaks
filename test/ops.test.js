@@ -5,7 +5,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { OPS, validateOp, normalizeRegValue, isProtectedPackage, regWriteError } = require("../src/main/ops");
+const { OPS, validateOp, normalizeRegValue, isProtectedPackage, regWriteError, NET_SETTINGS } = require("../src/main/ops");
 const { run } = require("../src/main/shell");
 
 const KEY = "Software\\PandaTweaks\\__test__";
@@ -347,5 +347,87 @@ test("the powercfg output parser finds a real current value on this machine", as
     for (const rail of ["ac", "dc"]) {
         assert.equal(Number.isInteger(state[rail]), true, `${rail} should be a whole number`);
         assert.ok(state[rail] >= 0 && state[rail] <= 100, `${rail} was ${state[rail]}, which is not a percentage`);
+    }
+});
+
+// ---------------------------------------------------------------------------
+// Global TCP settings
+// ---------------------------------------------------------------------------
+//
+// Nothing here writes. The capture test only reads, and it exists because the
+// reader is the fragile part: "netsh int tcp show global" is translated into
+// every Windows language, so the values come from PowerShell cmdlets instead,
+// and a rename on Microsoft's side would silently return nothing at all.
+
+test("a network setting outside the allowlist never becomes an operation", () => {
+    assert.throws(() => validateOp({ type: "netsh", setting: "whatever", value: "disabled" }), /Unknown network setting/);
+    // The point of the allowlist: no operation can carry a netsh command line.
+    assert.throws(
+        () => validateOp({ type: "netsh", setting: "int tcp set global rss=disabled", value: "disabled" }),
+        /Unknown network setting/
+    );
+});
+
+test("each setting only accepts the values it actually has", () => {
+    // "normal" is meaningful for auto-tuning and meaningless for ECN.
+    assert.equal(validateOp({ type: "netsh", setting: "autotuninglevel", value: "normal" }).value, "normal");
+    assert.throws(() => validateOp({ type: "netsh", setting: "ecncapability", value: "normal" }), /Invalid value/);
+    assert.throws(() => validateOp({ type: "netsh", setting: "rss", value: "yes" }), /Invalid value/);
+    // Casing is the user's business, not netsh's.
+    assert.equal(validateOp({ type: "netsh", setting: "teredo", value: "DISABLED" }).value, "disabled");
+});
+
+test("a network setting is judged on the read value, and an unread one is unknown", () => {
+    const n = OPS.netsh;
+    const op = validateOp({ type: "netsh", setting: "rsc", value: "disabled" });
+
+    assert.equal(n.isApplied(op, { value: "disabled" }), true);
+    assert.equal(n.isApplied(op, { value: "enabled" }), false);
+    assert.equal(n.isApplied(op, { readFailed: true }), null, "a failed read is not a verdict");
+    assert.equal(n.isApplied(op, null), null);
+});
+
+test("undo refuses a value netsh would not accept back", async () => {
+    const n = OPS.netsh;
+    const op = validateOp({ type: "netsh", setting: "teredo", value: "disabled" });
+
+    // Windows can report a state that is not a valid argument to set it again.
+    const res = await n.restore(op, { value: "offline" });
+    assert.equal(res.ok, false);
+    assert.match(res.error, /does not accept/i);
+
+    assert.equal((await n.restore(op, { readFailed: true })).ok, false, "no captured state means no undo");
+});
+
+test("describe() names the setting in words, not in netsh syntax", () => {
+    const d = OPS.netsh.describe(validateOp({ type: "netsh", setting: "autotuninglevel", value: "normal" }));
+    assert.match(d, /auto-tuning/i);
+    assert.match(d, /normal/);
+    assert.doesNotMatch(d, /int tcp|set global/, "the user should not be shown a command line");
+});
+
+test("the TCP reader returns real values for every setting on this machine", async () => {
+    const n = OPS.netsh;
+    const ops = ["autotuninglevel", "ecncapability", "timestamps", "heuristics", "rss", "rsc", "teredo"].map((s) =>
+        validateOp({ type: "netsh", setting: s, value: NET_SETTINGS[s].values[0] })
+    );
+
+    const state = await n.capture(ops);
+    assert.equal(state.size, ops.length, "capture must answer for every operation it was given");
+
+    for (const op of ops) {
+        const cur = state.get(op);
+        if (cur.readFailed) {
+            // A machine without the Net cmdlets is a legitimate outcome; a
+            // parser that silently returns nothing is not, so say which it was.
+            assert.match(cur.error, /read|reading/i);
+            continue;
+        }
+        // Anything the reader returns has to be a value netsh could also be
+        // given back — otherwise undo cannot restore what capture recorded.
+        assert.ok(
+            NET_SETTINGS[op.setting].values.includes(cur.value),
+            `${op.setting} read as "${cur.value}", which is not one of: ${NET_SETTINGS[op.setting].values.join(", ")}`
+        );
     }
 });

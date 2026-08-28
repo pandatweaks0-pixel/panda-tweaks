@@ -795,6 +795,121 @@ function formatBytes(n) {
 }
 
 // ---------------------------------------------------------------------------
+// Global TCP settings (netsh)
+// ---------------------------------------------------------------------------
+
+// Allowlisted like every other type: a tweak names "ecncapability", never a
+// netsh command line. Each entry builds its own arguments because netsh is not
+// consistent with itself - most settings are "set global name=value", window
+// scaling heuristics takes no "global" and a space instead of "=", and Teredo
+// lives under a different subcommand entirely.
+//
+// Writes go through netsh; reads do not. See read-nettcp.ps1 for why.
+const NET_SETTINGS = {
+    autotuninglevel: {
+        label: "TCP receive window auto-tuning",
+        values: ["disabled", "highlyrestricted", "restricted", "normal", "experimental"],
+        args: (v) => ["int", "tcp", "set", "global", `autotuninglevel=${v}`],
+    },
+    ecncapability: {
+        label: "ECN capability",
+        values: ["enabled", "disabled"],
+        args: (v) => ["int", "tcp", "set", "global", `ecncapability=${v}`],
+    },
+    timestamps: {
+        label: "RFC 1323 timestamps",
+        values: ["enabled", "disabled"],
+        args: (v) => ["int", "tcp", "set", "global", `timestamps=${v}`],
+    },
+    heuristics: {
+        label: "TCP window scaling heuristics",
+        values: ["enabled", "disabled", "default"],
+        args: (v) => ["int", "tcp", "set", "heuristics", v],
+    },
+    rss: {
+        label: "Receive-side scaling",
+        values: ["enabled", "disabled"],
+        args: (v) => ["int", "tcp", "set", "global", `rss=${v}`],
+    },
+    rsc: {
+        label: "Receive segment coalescing",
+        values: ["enabled", "disabled"],
+        args: (v) => ["int", "tcp", "set", "global", `rsc=${v}`],
+    },
+    teredo: {
+        label: "Teredo IPv6 tunnelling",
+        values: ["disabled", "default", "client", "server", "enterpriseclient"],
+        args: (v) => ["interface", "teredo", "set", "state", v],
+    },
+};
+
+function validateNetsh(op) {
+    const setting = String(op.setting || "");
+    const entry = NET_SETTINGS[setting];
+    if (!entry) throw new Error(`Unknown network setting: ${op.setting}`);
+    const value = String(op.value || "").toLowerCase();
+    if (!entry.values.includes(value)) {
+        throw new Error(`Invalid value for ${setting}: ${op.value} (expected ${entry.values.join(", ")})`);
+    }
+    return { setting, value };
+}
+
+// One script run covers every setting, however many operations ask for one.
+async function captureNetsh(ops) {
+    const out = new Map();
+    if (!ops.length) return out;
+    const res = await runPsJson(path.join(PS_DIR, "read-nettcp.ps1"), [], {});
+    for (const op of ops) {
+        if (!res.ok || !res.data) {
+            out.set(op, { readFailed: true, error: res.error || "network settings could not be read" });
+            continue;
+        }
+        const value = res.data[op.setting];
+        // Absent means the script could not read that one, not that it is off.
+        if (value === undefined || value === null) {
+            out.set(op, { readFailed: true, error: `no reading for ${op.setting}` });
+        } else {
+            out.set(op, { value: String(value).toLowerCase() });
+        }
+    }
+    return out;
+}
+
+function netshIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    return cur.value === op.value;
+}
+
+async function runNetsh(setting, value) {
+    const res = await run("netsh.exe", NET_SETTINGS[setting].args(value));
+    // netsh reports failure in its output as often as in its exit code, and
+    // "Ok." is the one thing it prints on success in every language.
+    if (!res.ok) return { ok: false, error: res.stderr || res.stdout || `netsh exited ${res.code}` };
+    return { ok: true };
+}
+
+const applyNetsh = (op) => runNetsh(op.setting, op.value);
+
+async function restoreNetsh(op, prev) {
+    if (!prev || prev.readFailed) return { ok: false, error: "No captured state for this network setting" };
+    if (!NET_SETTINGS[op.setting].values.includes(prev.value)) {
+        // Windows can report a state netsh will not accept back verbatim.
+        return { ok: false, error: `Cannot restore "${prev.value}" - netsh does not accept it as a value` };
+    }
+    return runNetsh(op.setting, prev.value);
+}
+
+const describeNetsh = (op) => `Set ${NET_SETTINGS[op.setting].label} to ${op.value}`;
+
+const explainNetsh = (op, cur) => ({
+    kind: "Network",
+    target: NET_SETTINGS[op.setting].label,
+    type: "",
+    now: cur && !cur.readFailed ? cur.value : null,
+    after: op.value,
+});
+
+// ---------------------------------------------------------------------------
 // Power scheme settings (powercfg)
 // ---------------------------------------------------------------------------
 
@@ -1000,6 +1115,17 @@ const OPS = {
         requiresAdmin: () => false, // per-user removal
         undoable: false,
     },
+    netsh: {
+        validate: validateNetsh,
+        capture: captureNetsh,
+        isApplied: netshIsApplied,
+        apply: applyNetsh,
+        restore: restoreNetsh,
+        describe: describeNetsh,
+        explain: explainNetsh,
+        requiresAdmin: () => true,
+        undoable: true,
+    },
     powercfg: {
         validate: validatePowerCfg,
         capture: capturePowerCfg,
@@ -1088,6 +1214,7 @@ module.exports = {
     validateOp,
     normalizeRegValue,
     POWER_SETTINGS,
+    NET_SETTINGS,
     CLEANUP_ROOTS,
     cleanupScan,
     listInstalledApps,
