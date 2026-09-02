@@ -1,7 +1,7 @@
 {
   "name": "panda-tweaks",
   "productName": "Panda Tweaks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Free, transparent Windows tweaking and debloat utility",
   "main": "src/main/main.js",
   "license": "MIT",
@@ -44,7 +44,7 @@
       "requestedExecutionLevel": "asInvoker"
     },
     "portable": {
-      "artifactName": "PandaTweaks-${version}-portable.exe"
+      "artifactName": "PandaTweaks-${version}.exe"
     },
     "nsis": {
       "oneClick": false,
