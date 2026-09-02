@@ -339,5 +339,8 @@
   "skipped.needsSsd": "Your system drive is a hard disk — prefetching actually helps there",
   "skipped.driveUnknown": "Cannot tell whether your system drive is an SSD, and this hurts on a hard disk",
   "skipped.needsRam": "Not enough RAM for this to be a good trade",
-  "skipped.ramUnknown": "Cannot read how much RAM this PC has"
+  "skipped.ramUnknown": "Cannot read how much RAM this PC has",
+  "admin.neededTitle": "Administrator rights needed",
+  "apply.adminTrimmed": "{count} left out: these need administrator rights.",
+  "apply.allNeedAdmin": "All {count} of these need administrator rights. Restart the app as administrator and try again."
 }

@@ -339,5 +339,8 @@
   "skipped.needsSsd": "Deine Systemplatte ist eine Festplatte — dort hilft Prefetching tatsächlich",
   "skipped.driveUnknown": "Ob deine Systemplatte eine SSD ist, lässt sich nicht feststellen, und auf einer Festplatte schadet das",
   "skipped.needsRam": "Zu wenig RAM, als dass sich das lohnen würde",
-  "skipped.ramUnknown": "Wie viel RAM dieser PC hat, lässt sich nicht auslesen"
+  "skipped.ramUnknown": "Wie viel RAM dieser PC hat, lässt sich nicht auslesen",
+  "admin.neededTitle": "Administratorrechte nötig",
+  "apply.adminTrimmed": "{count} weggelassen: dafür braucht es Administratorrechte.",
+  "apply.allNeedAdmin": "Alle {count} brauchen Administratorrechte. Starte die App als Administrator neu und versuch es nochmal."
 }

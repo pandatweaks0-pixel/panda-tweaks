@@ -356,9 +356,27 @@ const App = {
         // these stays applicable that way.
         const unfitById = new Map((State.scan?.unfit || []).map((u) => [u.id, u]));
         const misfits = explicitIds ? available.filter((x) => unfitById.has(x.id)) : [];
-        const chosen = available.filter((x) => !misfits.includes(x));
+        const fitting = available.filter((x) => !misfits.includes(x));
+
+        // Without elevation these cannot succeed: the engine refuses them before
+        // it touches anything, so running them produced a result dialog saying
+        // "2 applied, 5 failed" with no reason given and nothing in the log -
+        // the refusal happens before the first line is written. Held back here
+        // instead, with the one button that actually fixes it.
+        const blockedByAdmin = State.appInfo.isAdmin ? [] : fitting.filter((x) => x.requiresAdmin);
+        const chosen = fitting.filter((x) => !blockedByAdmin.includes(x));
 
         if (!chosen.length) {
+            if (blockedByAdmin.length) {
+                // Nothing left at all, so the only useful thing is the offer.
+                const go = await confirmModal({
+                    title: t("admin.neededTitle"),
+                    message: t("apply.allNeedAdmin", { count: blockedByAdmin.length }),
+                    confirmLabel: t("admin.restartAsAdmin"),
+                });
+                if (go) await this.requestAdmin();
+                return;
+            }
             toast(t(all.length && !available.length ? "apply.noneAvailable" : "apply.noneFit"), "warn");
             return;
         }
@@ -367,7 +385,6 @@ const App = {
             advanced: chosen.filter((x) => x.risk === "advanced").length,
             risky: chosen.filter((x) => x.risk === "risky").length,
         };
-        const needAdmin = chosen.filter((x) => x.requiresAdmin).length;
 
         if (State.settings.confirmBeforeApply) {
             const body = h(
@@ -390,8 +407,17 @@ const App = {
                       )
                     : null,
                 counts.risky ? h("div.notice.notice--bad.mt-4", { text: t("apply.riskyWarning") }) : null,
-                needAdmin && !State.appInfo.isAdmin
-                    ? h("div.notice.notice--warn.mt-3", { text: t("apply.needsAdminWarning", { count: needAdmin }) })
+                blockedByAdmin.length
+                    ? h(
+                          "div.notice.notice--warn.mt-3",
+                          null,
+                          h("b", { text: t("apply.adminTrimmed", { count: blockedByAdmin.length }) }),
+                          ...blockedByAdmin.map((x) => h("div.small.mt-1", { text: x.name })),
+                          h("button.btn.btn--sm.mt-2", {
+                              text: t("admin.restartAsAdmin"),
+                              onclick: () => this.requestAdmin(),
+                          })
+                      )
                     : null,
                 h("div.notice.mt-3", { text: t("apply.restoreRecommended") }),
                 h(

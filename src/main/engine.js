@@ -341,6 +341,11 @@ async function applyOne(tweak, { isAdmin }) {
         return { tweakId: tweak.id, status: "failed", error: tweak.unavailable, entryId: null };
     }
     if (tweak.requiresAdmin && !isAdmin) {
+        // Logged, because this refusal happens before any operation runs and so
+        // before anything else here writes a line. A run that failed five of
+        // seven tweaks for this reason left a log with nothing in it at all,
+        // which made it look like the failures had no cause.
+        logger.warn("Tweak refused: needs administrator rights", { tweak: tweak.id });
         return {
             tweakId: tweak.id,
             status: "failed",
