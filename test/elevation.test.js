@@ -114,3 +114,47 @@ test("an empty argument list is left out entirely", () => {
 
     assert.ok(!command.includes("-ArgumentList"), "Start-Process rejects -ArgumentList without a value");
 });
+
+// The portable build extracts itself into a temp folder and deletes that folder
+// when it exits, so relaunching process.execPath starts a copy that loses its
+// own files moments later. Windows still returns a process id, so the old code
+// believed it had succeeded and quit — the app closed and never came back.
+const PORTABLE_EXE = "C:\\Users\\x\\Desktop\\panda tweaks free\\dist\\PandaTweaks-0.1.2.exe";
+const TEMP_COPY = "C:\\Users\\x\\AppData\\Local\\Temp\\7ZipSfx.000\\PandaTweaks.exe";
+
+test("a portable build relaunches the real .exe, not its temp copy", () => {
+    const r = buildRelaunch({
+        execPath: TEMP_COPY,
+        argv: [],
+        appPath: "C:\\Users\\x\\AppData\\Local\\Temp\\7ZipSfx.000\\resources\\app.asar",
+        packaged: true,
+        portableExe: PORTABLE_EXE,
+    });
+
+    assert.equal(r.exe, PORTABLE_EXE, "relaunching the temp copy is what made the app vanish");
+    assert.doesNotMatch(r.exe, /Temp/i);
+    assert.equal(r.workingDirectory, path.dirname(PORTABLE_EXE), "and it starts next to that file, not in the temp folder");
+    assert.deepEqual(r.args, ["--elevated"], "a portable exe is self-contained and needs no app argument");
+});
+
+test("an installed build is unaffected — there is no portable path to prefer", () => {
+    const installed = "C:\\Program Files\\Panda Tweaks\\Panda Tweaks.exe";
+    for (const portableExe of [null, undefined, ""]) {
+        const r = buildRelaunch({
+            execPath: installed,
+            argv: [],
+            appPath: "C:\\Program Files\\Panda Tweaks\\resources\\app.asar",
+            packaged: true,
+            portableExe,
+        });
+        assert.equal(r.exe, installed, `${JSON.stringify(portableExe)} must fall back to execPath`);
+        assert.equal(r.workingDirectory, path.dirname(installed));
+    }
+});
+
+test("a development run still resolves its app path, portable or not", () => {
+    const r = buildRelaunch({ execPath: DEV_EXE, argv: ["."], appPath: APP, packaged: false, portableExe: null });
+    assert.equal(r.exe, DEV_EXE);
+    assert.ok(r.args.includes(APP), "the bare dot still has to become an absolute path");
+    assert.equal(r.workingDirectory, APP);
+});

@@ -34,7 +34,20 @@ function isAdmin() {
 // resolves somewhere else entirely and Electron comes up with no app to load.
 // The process starts, and nothing appears. Every path is made absolute before
 // it is handed over.
-function buildRelaunch({ execPath, argv, appPath, packaged }) {
+//
+// The second trap is the portable build. It extracts itself into a temp folder
+// and runs from there, so process.execPath points at that copy - and the folder
+// is deleted when the app exits. Relaunching execPath therefore starts a
+// process that has its own files removed from under it moments later: Windows
+// hands back a process id, the elevated window never appears, and the instance
+// the user was working in has already quit. From the outside the app simply
+// closes and does not come back.
+//
+// electron-builder sets PORTABLE_EXECUTABLE_FILE to the .exe the user actually
+// double-clicked, which is the one that survives. It is empty for installed and
+// development builds, where execPath is already the right answer.
+function buildRelaunch({ execPath, argv, appPath, packaged, portableExe = null }) {
+    const exe = portableExe || execPath;
     const args = [];
     for (const arg of argv) {
         if (arg === "--elevated") continue;
@@ -51,11 +64,11 @@ function buildRelaunch({ execPath, argv, appPath, packaged }) {
     args.push("--elevated");
 
     return {
-        exe: execPath,
+        exe,
         args,
         // Start the new instance where the app lives rather than wherever the
         // shell happened to be.
-        workingDirectory: packaged ? path.dirname(execPath) : appPath,
+        workingDirectory: packaged ? path.dirname(exe) : appPath,
     };
 }
 
@@ -125,6 +138,8 @@ async function elevate() {
         argv: process.argv.slice(1),
         appPath: app.getAppPath(),
         packaged: app.isPackaged,
+        // Set only by the portable build; see buildRelaunch.
+        portableExe: process.env.PORTABLE_EXECUTABLE_FILE || null,
     });
 
     const command = buildElevateCommand({ exe, args, workingDirectory });
