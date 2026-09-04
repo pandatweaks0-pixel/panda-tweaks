@@ -409,13 +409,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Always show file extensions in Explorer.</p>
           <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt = 0</li></ul>
         </article>
-        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable fast startup cleaner full shutdowns (fixes some driver quirks). hklm\system\currentcontrolset\control\session manager\power\hiberbootenabled = 0">
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable fast startup cleaner full shutdowns (fixes some driver quirks). booting takes longer, because windows starts cold instead of resuming a saved kernel. hklm\system\currentcontrolset\control\session manager\power\hiberbootenabled = 0">
           <div class="item__name">Disable Fast Startup
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Windows</span>
             
           </div>
-          <p class="item__desc">Cleaner full shutdowns (fixes some driver quirks).</p>
+          <p class="item__desc">Cleaner full shutdowns (fixes some driver quirks). Booting takes longer, because Windows starts cold instead of resuming a saved kernel.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power\HiberbootEnabled = 0</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="risky" data-search="disable core isolation (hvci) risky: lowers security (memory integrity). can raise fps. reboot. hklm\system\currentcontrolset\control\deviceguard\scenarios\hypervisorenforcedcodeintegrity\enabled = 0">
@@ -445,76 +445,76 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Reboot required. Can lower latency - test on your rig.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\HwSchMode = 2</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable mpo fixes flicker/stutter on some nvidia/amd setups. hklm\software\microsoft\windows\dwm\overlaytestmode = 5">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable mpo fixes flicker/stutter on some nvidia/amd setups. driver-dependent: on setups where the overlay was working it can introduce the stutter it fixes elsewhere. undo it if the picture gets worse. hklm\software\microsoft\windows\dwm\overlaytestmode = 5">
           <div class="item__name">Disable MPO
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Fixes flicker/stutter on some NVIDIA/AMD setups.</p>
+          <p class="item__desc">Fixes flicker/stutter on some NVIDIA/AMD setups. Driver-dependent: on setups where the overlay was working it can introduce the stutter it fixes elsewhere. Undo it if the picture gets worse.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\Dwm\OverlayTestMode = 5</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="increase tdrdelay fewer 'display driver stopped responding' timeouts. hklm\system\currentcontrolset\control\graphicsdrivers\tdrdelay = 10">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="increase tdrdelay fewer 'display driver stopped responding' timeouts. if the gpu really does hang, you now stare at a frozen screen for ten seconds instead of two before windows resets the driver. hklm\system\currentcontrolset\control\graphicsdrivers\tdrdelay = 10">
           <div class="item__name">Increase TdrDelay
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Fewer 'display driver stopped responding' timeouts.</p>
+          <p class="item__desc">Fewer 'display driver stopped responding' timeouts. If the GPU really does hang, you now stare at a frozen screen for ten seconds instead of two before Windows resets the driver.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\TdrDelay = 10</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="min processor state 100% keeps cpu from downclocking (more consistent frames). powercfg">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="min processor state 100% keeps cpu from downclocking (more consistent frames). the cpu never clocks down, so it runs hotter, draws more power at idle and the fans stay louder. powercfg">
           <div class="item__name">Min Processor State 100%
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Keeps CPU from downclocking (more consistent frames).</p>
+          <p class="item__desc">Keeps CPU from downclocking (more consistent frames). The CPU never clocks down, so it runs hotter, draws more power at idle and the fans stay louder.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable core parking keeps all cores active (core parking, not c-states). powercfg">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable core parking keeps all cores active (core parking, not c-states). every core stays awake, which costs idle power and heat for a gain most games will not notice. powercfg">
           <div class="item__name">Disable Core Parking
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Keeps all cores active (core parking, not C-states).</p>
+          <p class="item__desc">Keeps all cores active (core parking, not C-states). Every core stays awake, which costs idle power and heat for a gain most games will not notice.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable power throttling stops windows throttling the cpu under load. hklm\system\currentcontrolset\control\power\powerthrottling\powerthrottlingoff = 1">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable power throttling stops windows throttling the cpu under load. higher power draw and more heat under load, and on a laptop noticeably less battery. hklm\system\currentcontrolset\control\power\powerthrottling\powerthrottlingoff = 1">
           <div class="item__name">Disable Power Throttling
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Stops Windows throttling the CPU under load.</p>
+          <p class="item__desc">Stops Windows throttling the CPU under load. Higher power draw and more heat under load, and on a laptop noticeably less battery.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling\PowerThrottlingOff = 1</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable usb selective suspend no usb standby (mouse/keyboard lag). powercfg">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable usb selective suspend no usb standby (mouse/keyboard lag). usb devices are kept powered at all times, which costs a little idle power and battery. powercfg">
           <div class="item__name">Disable USB Selective Suspend
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">No USB standby (mouse/keyboard lag).</p>
+          <p class="item__desc">No USB standby (mouse/keyboard lag). USB devices are kept powered at all times, which costs a little idle power and battery.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="foreground priority boost win32priorityseparation = 26 (favors the active app). hklm\system\currentcontrolset\control\prioritycontrol\win32priorityseparation = 26">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="foreground priority boost win32priorityseparation = 26 (favors the active app). background work is starved while a game is in focus: downloads, encodes and compiles slow down. hklm\system\currentcontrolset\control\prioritycontrol\win32priorityseparation = 26">
           <div class="item__name">Foreground Priority Boost
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Win32PrioritySeparation = 26 (favors the active app).</p>
+          <p class="item__desc">Win32PrioritySeparation = 26 (favors the active app). Background work is starved while a game is in focus: downloads, encodes and compiles slow down.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl\Win32PrioritySeparation = 26</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="system responsiveness for games gives games more cpu headroom (mmcss = 0). hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\systemresponsiveness = 0">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="system responsiveness for games gives games more cpu headroom (mmcss = 0). nothing is held back for background services any more, so heavy load can make recording or voice chat stutter. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\systemresponsiveness = 0">
           <div class="item__name">System Responsiveness for Games
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Gives games more CPU headroom (MMCSS = 0).</p>
+          <p class="item__desc">Gives games more CPU headroom (MMCSS = 0). Nothing is held back for background services any more, so heavy load can make recording or voice chat stutter.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\SystemResponsiveness = 0</li></ul>
         </article>
         <article class="item" data-group="Performance" data-risk="advanced" data-search="keep kernel in ram disablepagingexecutive - needs plenty of ram. hklm\system\currentcontrolset\control\session manager\memory management\disablepagingexecutive = 1">
@@ -562,13 +562,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Only for SSDs. Do NOT use on HDDs.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher = 0</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable network throttling lifts the 10ms multimedia network throttle. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\networkthrottlingindex = 4294967295">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable network throttling lifts the 10ms multimedia network throttle. removes the throttle that protects audio and video playback from network interrupt load; under heavy traffic playback can stutter. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\networkthrottlingindex = 4294967295">
           <div class="item__name">Disable Network Throttling
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Lifts the 10ms multimedia network throttle.</p>
+          <p class="item__desc">Lifts the 10ms multimedia network throttle. Removes the throttle that protects audio and video playback from network interrupt load; under heavy traffic playback can stutter.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\NetworkThrottlingIndex = 4294967295</li></ul>
         </article>
         <article class="item" data-group="Network" data-risk="safe" data-search="free qos reserved bandwidth removes the 20% reserved bandwidth limit. hklm\software\policies\microsoft\windows\psched\nonbesteffortlimit = 0">
@@ -589,13 +589,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Balanced low-latency TCP settings.</p>
           <ul class="item__targets"><li>netsh</li><li>netsh</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable ecn turns off explicit congestion notification. netsh">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable ecn turns off explicit congestion notification. congestion is then signalled by dropped packets instead of a marker, which on a busy line can be the worse trade. netsh">
           <div class="item__name">Disable ECN
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Turns off Explicit Congestion Notification.</p>
+          <p class="item__desc">Turns off Explicit Congestion Notification. Congestion is then signalled by dropped packets instead of a marker, which on a busy line can be the worse trade.</p>
           <ul class="item__targets"><li>netsh</li></ul>
         </article>
         <article class="item" data-group="Network" data-risk="safe" data-search="disable delivery optimization stops windows update p2p using your bandwidth. hklm\software\policies\microsoft\windows\deliveryoptimization\dodownloadmode = 0">
@@ -625,13 +625,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Removes cached prefetch files.</p>
           <ul class="item__targets"><li>Clean up: prefetch</li></ul>
         </article>
-        <article class="item" data-group="Debloat" data-risk="advanced" data-search="disable hibernate (free space) removes hiberfil.sys (= your ram size in gb). powercfg">
+        <article class="item" data-group="Debloat" data-risk="advanced" data-search="disable hibernate (free space) removes hiberfil.sys (= your ram size in gb). hibernation and fast startup stop working. the space comes back the moment you re-enable it. powercfg">
           <div class="item__name">Disable Hibernate (free space)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Debloat</span>
             
           </div>
-          <p class="item__desc">Removes hiberfil.sys (= your RAM size in GB).</p>
+          <p class="item__desc">Removes hiberfil.sys (= your RAM size in GB). Hibernation and Fast Startup stop working. The space comes back the moment you re-enable it.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
         <article class="item" data-group="Privacy" data-risk="safe" data-search="disable advertising id no personalized ad tracking. hkcu\software\microsoft\windows\currentversion\advertisinginfo\enabled = 0">
@@ -688,31 +688,31 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Turns off Windows location access.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location\Value = Deny</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry (diagtrack) stops and disables the telemetry service. hklm\software\policies\microsoft\windows\datacollection\allowtelemetry = 0 service &quot;diagtrack&quot; → disabled">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry (diagtrack) stops and disables the telemetry service. feedback hub and some store and update diagnostics stop working. company-managed pcs may switch it back on. hklm\software\policies\microsoft\windows\datacollection\allowtelemetry = 0 service &quot;diagtrack&quot; → disabled">
           <div class="item__name">Disable Telemetry (DiagTrack)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Stops and disables the telemetry service.</p>
+          <p class="item__desc">Stops and disables the telemetry service. Feedback Hub and some Store and Update diagnostics stop working. Company-managed PCs may switch it back on.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\AllowTelemetry = 0</li><li>Service &quot;DiagTrack&quot; → disabled</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable pcie power saving (aspm) stops pcie links dropping to low power (gpu/nic latency). powercfg">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable pcie power saving (aspm) stops pcie links dropping to low power (gpu/nic latency). pcie links stay at full power, so idle power draw and heat go up. powercfg">
           <div class="item__name">Disable PCIe Power Saving (ASPM)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Stops PCIe links dropping to low power (GPU/NIC latency).</p>
+          <p class="item__desc">Stops PCIe links dropping to low power (GPU/NIC latency). PCIe links stay at full power, so idle power draw and heat go up.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable cpu idle states lowest latency, keeps cpu awake. more heat/power - desktops only. powercfg">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable cpu idle states lowest latency, keeps cpu awake. more heat/power - desktops only. the cpu never idles: markedly more heat and power, and fans that never spin down. desktops only. powercfg">
           <div class="item__name">Disable CPU Idle States
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Lowest latency, keeps CPU awake. More heat/power - desktops only.</p>
+          <p class="item__desc">Lowest latency, keeps CPU awake. More heat/power - desktops only. The CPU never idles: markedly more heat and power, and fans that never spin down. Desktops only.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
         </article>
         <article class="item" data-group="Performance" data-risk="advanced" data-search="clear pagefile at shutdown wipes the pagefile on shutdown (slower shutdown). hklm\system\currentcontrolset\control\session manager\memory management\clearpagefileatshutdown = 1">
@@ -724,13 +724,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Wipes the pagefile on shutdown (slower shutdown).</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\ClearPageFileAtShutdown = 1</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp timestamps slightly leaner packets. netsh">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp timestamps slightly leaner packets. timestamps help tcp judge round-trip time on long or fast links; without them throughput can drop there. netsh">
           <div class="item__name">Disable TCP Timestamps
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Slightly leaner packets.</p>
+          <p class="item__desc">Slightly leaner packets. Timestamps help TCP judge round-trip time on long or fast links; without them throughput can drop there.</p>
           <ul class="item__targets"><li>netsh</li></ul>
         </article>
         <article class="item" data-group="Network" data-risk="advanced" data-search="disable rsc (receive coalescing) lower latency at a tiny cpu cost. netsh">
@@ -742,31 +742,31 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Lower latency at a tiny CPU cost.</p>
           <ul class="item__targets"><li>netsh</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp window heuristics keeps your tcp window tuning from being overridden. netsh">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable tcp window heuristics keeps your tcp window tuning from being overridden. windows can no longer adjust the receive window for unusual connections by itself. netsh">
           <div class="item__name">Disable TCP Window Heuristics
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Keeps your TCP window tuning from being overridden.</p>
+          <p class="item__desc">Keeps your TCP window tuning from being overridden. Windows can no longer adjust the receive window for unusual connections by itself.</p>
           <ul class="item__targets"><li>netsh</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="lower tcptimedwaitdelay frees closed ports faster (helps many connections). hklm\system\currentcontrolset\services\tcpip\parameters\tcptimedwaitdelay = 30">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="lower tcptimedwaitdelay frees closed ports faster (helps many connections). closed ports are reused sooner, so on a flaky line a late packet from an old connection can land on a new one. hklm\system\currentcontrolset\services\tcpip\parameters\tcptimedwaitdelay = 30">
           <div class="item__name">Lower TcpTimedWaitDelay
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Frees closed ports faster (helps many connections).</p>
+          <p class="item__desc">Frees closed ports faster (helps many connections). Closed ports are reused sooner, so on a flaky line a late packet from an old connection can land on a new one.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\TcpTimedWaitDelay = 30</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="raise maxuserport more outbound ports available. hklm\system\currentcontrolset\services\tcpip\parameters\maxuserport = 65534">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="raise maxuserport more outbound ports available. costs a little memory for the larger connection table, and changes nothing unless you open thousands of connections. hklm\system\currentcontrolset\services\tcpip\parameters\maxuserport = 65534">
           <div class="item__name">Raise MaxUserPort
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">More outbound ports available.</p>
+          <p class="item__desc">More outbound ports available. Costs a little memory for the larger connection table, and changes nothing unless you open thousands of connections.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\MaxUserPort = 65534</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="disable taskbar widgets removes the widgets button (frees a background process). hkcu\software\microsoft\windows\currentversion\explorer\advanced\taskbarda = 0">
@@ -805,13 +805,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">No accidental Shift x5 popup mid-game.</p>
           <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\StickyKeys\Flags = 506</li></ul>
         </article>
-        <article class="item" data-group="Debloat" data-risk="advanced" data-search="clear windows update cache frees space from old update downloads. clean up: windowsupdatecache">
+        <article class="item" data-group="Debloat" data-risk="advanced" data-search="clear windows update cache frees space from old update downloads. recently installed updates can no longer be uninstalled afterwards, and windows re-downloads whatever it still needs. clean up: windowsupdatecache">
           <div class="item__name">Clear Windows Update Cache
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Debloat</span>
             
           </div>
-          <p class="item__desc">Frees space from old update downloads.</p>
+          <p class="item__desc">Frees space from old update downloads. Recently installed updates can no longer be uninstalled afterwards, and Windows re-downloads whatever it still needs.</p>
           <ul class="item__targets"><li>Clean up: windowsUpdateCache</li></ul>
         </article>
         <article class="item" data-group="Debloat" data-risk="safe" data-search="clear thumbnail cache deletes cached explorer thumbnails. clean up: thumbnailcache">
@@ -913,31 +913,31 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Adds End Task to the taskbar right-click (Win11).</p>
           <ul class="item__targets"><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings\TaskbarEndTask = 1</li></ul>
         </article>
-        <article class="item" data-group="Windows" data-risk="advanced" data-search="verbose boot messages shows detailed status during boot/shutdown. hklm\software\microsoft\windows\currentversion\policies\system\verbosestatus = 1">
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="verbose boot messages shows detailed status during boot/shutdown. boot and shutdown show technical status text instead of the plain spinner, which looks alarming if you are not expecting it. hklm\software\microsoft\windows\currentversion\policies\system\verbosestatus = 1">
           <div class="item__name">Verbose Boot Messages
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Windows</span>
             
           </div>
-          <p class="item__desc">Shows detailed status during boot/shutdown.</p>
+          <p class="item__desc">Shows detailed status during boot/shutdown. Boot and shutdown show technical status text instead of the plain spinner, which looks alarming if you are not expecting it.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\VerboseStatus = 1</li></ul>
         </article>
-        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable lock screen skips the lock screen (straight to login). hklm\software\policies\microsoft\windows\personalization\nolockscreen = 1">
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="disable lock screen skips the lock screen (straight to login). you lose the lock screen with its clock, notifications and background - straight to the password prompt. hklm\software\policies\microsoft\windows\personalization\nolockscreen = 1">
           <div class="item__name">Disable Lock Screen
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Windows</span>
             
           </div>
-          <p class="item__desc">Skips the lock screen (straight to login).</p>
+          <p class="item__desc">Skips the lock screen (straight to login). You lose the lock screen with its clock, notifications and background - straight to the password prompt.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization\NoLockScreen = 1</li></ul>
         </article>
-        <article class="item" data-group="Windows" data-risk="advanced" data-search="classic right-click menu (win11) restores the full context menu. restart explorer after. hkcu\software\classes\clsid\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\inprocserver32\ = ">
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="classic right-click menu (win11) restores the full context menu. restart explorer after. the windows 11 menu is gone, including the app entries only it shows. explorer has to be restarted. hkcu\software\classes\clsid\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\inprocserver32\ = ">
           <div class="item__name">Classic Right-Click Menu (Win11)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Windows</span>
             <span class="badge badge--note">Restart needed</span>
           </div>
-          <p class="item__desc">Restores the full context menu. Restart Explorer after.</p>
+          <p class="item__desc">Restores the full context menu. Restart Explorer after. The Windows 11 menu is gone, including the app entries only it shows. Explorer has to be restarted.</p>
           <ul class="item__targets"><li>HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32\ = </li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="no auto-reboot on updates windows won't force a restart while you're logged in. hklm\software\policies\microsoft\windows\windowsupdate\au\noautorebootwithloggedonusers = 1">
@@ -1003,13 +1003,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">No clipboard syncing across devices.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\AllowCrossDeviceClipboard = 0</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable clipboard history turns off win+v clipboard history. hklm\software\policies\microsoft\windows\system\allowclipboardhistory = 0">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable clipboard history turns off win+v clipboard history. win+v stops working, and nothing is kept beyond the single item you copied last. hklm\software\policies\microsoft\windows\system\allowclipboardhistory = 0">
           <div class="item__name">Disable Clipboard History
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Turns off Win+V clipboard history.</p>
+          <p class="item__desc">Turns off Win+V clipboard history. Win+V stops working, and nothing is kept beyond the single item you copied last.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\System\AllowClipboardHistory = 0</li></ul>
         </article>
         <article class="item" data-group="Privacy" data-risk="safe" data-search="disable app diagnostics blocks apps from reading diagnostic info about other apps. hklm\software\microsoft\windows\currentversion\capabilityaccessmanager\consentstore\appdiagnostics\value = deny">
@@ -1057,76 +1057,76 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Customer Experience Improvement Program off.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\SQMClient\Windows\CEIPEnable = 0</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry tasks disables the scheduled telemetry/appraiser tasks. task &quot;\microsoft\windows\application experience\microsoft compatibility appraiser&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\consolidator&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\usbceip&quot; → disabled">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable telemetry tasks disables the scheduled telemetry/appraiser tasks. compatibility data stops being collected, so windows may no longer warn you about a known-incompatible program before a feature update. task &quot;\microsoft\windows\application experience\microsoft compatibility appraiser&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\consolidator&quot; → disabled task &quot;\microsoft\windows\customer experience improvement program\usbceip&quot; → disabled">
           <div class="item__name">Disable Telemetry Tasks
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Disables the scheduled telemetry/appraiser tasks.</p>
+          <p class="item__desc">Disables the scheduled telemetry/appraiser tasks. Compatibility data stops being collected, so Windows may no longer warn you about a known-incompatible program before a feature update.</p>
           <ul class="item__targets"><li>Task &quot;\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser&quot; → disabled</li><li>Task &quot;\Microsoft\Windows\Customer Experience Improvement Program\Consolidator&quot; → disabled</li><li>Task &quot;\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip&quot; → disabled</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable error reporting service stops the wersvc service. service &quot;wersvc&quot; → disabled">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable error reporting service stops the wersvc service. crash reports are no longer collected, and a few programs use that service for their own crash dialog. service &quot;wersvc&quot; → disabled">
           <div class="item__name">Disable Error Reporting Service
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Stops the WerSvc service.</p>
+          <p class="item__desc">Stops the WerSvc service. Crash reports are no longer collected, and a few programs use that service for their own crash dialog.</p>
           <ul class="item__targets"><li>Service &quot;WerSvc&quot; → disabled</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable maps broker stops the downloaded maps manager service. service &quot;mapsbroker&quot; → disabled">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable maps broker stops the downloaded maps manager service. offline maps stop downloading and updating in the maps app. service &quot;mapsbroker&quot; → disabled">
           <div class="item__name">Disable Maps Broker
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Stops the Downloaded Maps Manager service.</p>
+          <p class="item__desc">Stops the Downloaded Maps Manager service. Offline maps stop downloading and updating in the Maps app.</p>
           <ul class="item__targets"><li>Service &quot;MapsBroker&quot; → disabled</li></ul>
         </article>
-        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable remote registry blocks remote registry access (more secure). service &quot;remoteregistry&quot; → disabled">
+        <article class="item" data-group="Privacy" data-risk="advanced" data-search="disable remote registry blocks remote registry access (more secure). remote administration tools that reach the registry over the network stop working - almost never used at home. service &quot;remoteregistry&quot; → disabled">
           <div class="item__name">Disable Remote Registry
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Privacy</span>
             
           </div>
-          <p class="item__desc">Blocks remote registry access (more secure).</p>
+          <p class="item__desc">Blocks remote registry access (more secure). Remote administration tools that reach the registry over the network stop working - almost never used at home.</p>
           <ul class="item__targets"><li>Service &quot;RemoteRegistry&quot; → disabled</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable llmnr turns off link-local multicast name resolution. hklm\software\policies\microsoft\windows nt\dnsclient\enablemulticast = 0">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable llmnr turns off link-local multicast name resolution. local devices without a dns entry may stop being reachable by name, which some printers and nas boxes rely on. hklm\software\policies\microsoft\windows nt\dnsclient\enablemulticast = 0">
           <div class="item__name">Disable LLMNR
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Turns off Link-Local Multicast Name Resolution.</p>
+          <p class="item__desc">Turns off Link-Local Multicast Name Resolution. Local devices without a DNS entry may stop being reachable by name, which some printers and NAS boxes rely on.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient\EnableMulticast = 0</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="set default ttl 64 standard ttl value for outgoing packets. hklm\system\currentcontrolset\services\tcpip\parameters\defaultttl = 64">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="set default ttl 64 standard ttl value for outgoing packets. this only restores the standard value; expect no measurable change in speed or latency. hklm\system\currentcontrolset\services\tcpip\parameters\defaultttl = 64">
           <div class="item__name">Set Default TTL 64
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Standard TTL value for outgoing packets.</p>
+          <p class="item__desc">Standard TTL value for outgoing packets. This only restores the standard value; expect no measurable change in speed or latency.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DefaultTTL = 64</li></ul>
         </article>
-        <article class="item" data-group="Network" data-risk="advanced" data-search="disable teredo turns off teredo ipv6 tunneling. netsh">
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable teredo turns off teredo ipv6 tunneling. xbox networking and party chat rely on teredo, so multiplayer through the xbox app can stop working. netsh">
           <div class="item__name">Disable Teredo
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Network</span>
             
           </div>
-          <p class="item__desc">Turns off Teredo IPv6 tunneling.</p>
+          <p class="item__desc">Turns off Teredo IPv6 tunneling. Xbox networking and party chat rely on Teredo, so multiplayer through the Xbox app can stop working.</p>
           <ul class="item__targets"><li>netsh</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable network data usage (ndu) disables the ndu driver (can reduce a known ram leak). hklm\system\currentcontrolset\services\ndu\start = 4">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="disable network data usage (ndu) disables the ndu driver (can reduce a known ram leak). task manager and settings stop reporting per-app network usage. hklm\system\currentcontrolset\services\ndu\start = 4">
           <div class="item__name">Disable Network Data Usage (Ndu)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Disables the Ndu driver (can reduce a known RAM leak).</p>
+          <p class="item__desc">Disables the Ndu driver (can reduce a known RAM leak). Task Manager and Settings stop reporting per-app network usage.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Ndu\Start = 4</li></ul>
         </article>
         <article class="item" data-group="Debloat" data-risk="safe" data-search="clear crash dumps deletes crash dump and minidump files. clean up: crashdumps">
@@ -1147,22 +1147,22 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">No delay, max repeat rate (snappier typing/keys).</p>
           <ul class="item__targets"><li>HKCU\Control Panel\Keyboard\KeyboardDelay = 0</li><li>HKCU\Control Panel\Keyboard\KeyboardSpeed = 31</li></ul>
         </article>
-        <article class="item" data-group="Gaming" data-risk="advanced" data-search="mouse data queue size 20 smaller input buffer = fresher mouse data. reboot. hklm\system\currentcontrolset\services\mouclass\parameters\mousedataqueuesize = 20">
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="mouse data queue size 20 smaller input buffer = fresher mouse data. reboot. a community tweak with no measured benefit: a very small buffer can in theory drop input under extreme load. reboot required. hklm\system\currentcontrolset\services\mouclass\parameters\mousedataqueuesize = 20">
           <div class="item__name">Mouse Data Queue Size 20
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Gaming</span>
             <span class="badge badge--note">Restart needed</span>
           </div>
-          <p class="item__desc">Smaller input buffer = fresher mouse data. Reboot.</p>
+          <p class="item__desc">Smaller input buffer = fresher mouse data. Reboot. A community tweak with no measured benefit: a very small buffer can in theory drop input under extreme load. Reboot required.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters\MouseDataQueueSize = 20</li></ul>
         </article>
-        <article class="item" data-group="Gaming" data-risk="advanced" data-search="keyboard data queue size 20 smaller keyboard buffer for lower input delay. reboot. hklm\system\currentcontrolset\services\kbdclass\parameters\keyboarddataqueuesize = 20">
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="keyboard data queue size 20 smaller keyboard buffer for lower input delay. reboot. same caveat as the mouse buffer - unproven, and a very small buffer can drop input under extreme load. reboot required. hklm\system\currentcontrolset\services\kbdclass\parameters\keyboarddataqueuesize = 20">
           <div class="item__name">Keyboard Data Queue Size 20
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Gaming</span>
             <span class="badge badge--note">Restart needed</span>
           </div>
-          <p class="item__desc">Smaller keyboard buffer for lower input delay. Reboot.</p>
+          <p class="item__desc">Smaller keyboard buffer for lower input delay. Reboot. Same caveat as the mouse buffer - unproven, and a very small buffer can drop input under extreme load. Reboot required.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters\KeyboardDataQueueSize = 20</li></ul>
         </article>
         <article class="item" data-group="Gaming" data-risk="safe" data-search="instant hover response tooltips/hover react immediately (400ms -&gt; 10ms). hkcu\control panel\mouse\mousehovertime = 10">
@@ -1219,22 +1219,22 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Trails, beeps, snap-to-button &amp; window tracking off.</p>
           <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseTrails = 0</li><li>HKCU\Control Panel\Mouse\Beep = No</li><li>HKCU\Control Panel\Mouse\ExtendedSounds = No</li><li>HKCU\Control Panel\Mouse\SnapToDefaultButton = 0</li><li>HKCU\Control Panel\Mouse\ActiveWindowTracking = 0</li></ul>
         </article>
-        <article class="item" data-group="Gaming" data-risk="advanced" data-search="default sensitivity (6/11) resets windows pointer speed to the raw 6/11 notch. hkcu\control panel\mouse\mousesensitivity = 10">
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="default sensitivity (6/11) resets windows pointer speed to the raw 6/11 notch. overwrites your own pointer speed, so a sensitivity you had deliberately tuned is reset. hkcu\control panel\mouse\mousesensitivity = 10">
           <div class="item__name">Default Sensitivity (6/11)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Gaming</span>
             
           </div>
-          <p class="item__desc">Resets Windows pointer speed to the raw 6/11 notch.</p>
+          <p class="item__desc">Resets Windows pointer speed to the raw 6/11 notch. Overwrites your own pointer speed, so a sensitivity you had deliberately tuned is reset.</p>
           <ul class="item__targets"><li>HKCU\Control Panel\Mouse\MouseSensitivity = 10</li></ul>
         </article>
-        <article class="item" data-group="Gaming" data-risk="advanced" data-search="instant window focus foregroundlocktimeout 0 - windows take focus instantly. hkcu\control panel\desktop\foregroundlocktimeout = 0">
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="instant window focus foregroundlocktimeout 0 - windows take focus instantly. any program can then pull focus instantly, including out of a running game. hkcu\control panel\desktop\foregroundlocktimeout = 0">
           <div class="item__name">Instant Window Focus
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Gaming</span>
             
           </div>
-          <p class="item__desc">ForegroundLockTimeout 0 - windows take focus instantly.</p>
+          <p class="item__desc">ForegroundLockTimeout 0 - windows take focus instantly. Any program can then pull focus instantly, including out of a running game.</p>
           <ul class="item__targets"><li>HKCU\Control Panel\Desktop\ForegroundLockTimeout = 0</li></ul>
         </article>
         <article class="item" data-group="Gaming" data-risk="advanced" data-search="input driver thread priority mouclass/kbdclass threadpriority 31. community tweak - unproven, but harmless. reboot. hklm\system\currentcontrolset\services\mouclass\parameters\threadpriority = 31 hklm\system\currentcontrolset\services\kbdclass\parameters\threadpriority = 31">
@@ -1264,13 +1264,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Windows stops lowering game volume when someone talks in Discord.</p>
           <ul class="item__targets"><li>HKCU\Software\Microsoft\Multimedia\Audio\UserDuckingPreference = 3</li></ul>
         </article>
-        <article class="item" data-group="Windows" data-risk="advanced" data-search="audio thread priority gives the audio engine higher scheduling priority (mmcss audio task). hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\sfio priority = high">
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="audio thread priority gives the audio engine higher scheduling priority (mmcss audio task). audio outranks other work, which on a weak cpu can cost frames. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\sfio priority = high">
           <div class="item__name">Audio Thread Priority
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Windows</span>
             
           </div>
-          <p class="item__desc">Gives the audio engine higher scheduling priority (MMCSS Audio task).</p>
+          <p class="item__desc">Gives the audio engine higher scheduling priority (MMCSS Audio task). Audio outranks other work, which on a weak CPU can cost frames.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Priority = 6</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Scheduling Category = High</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\SFIO Priority = High</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="disable windows system sounds no dings and error beeps over your game audio. hkcu\appevents\schemes\ = .none">
@@ -1354,13 +1354,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Edge no longer preloads itself when Windows starts.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\StartupBoostEnabled = 0</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="games priority profile (mmcss) gives games top gpu/cpu scheduling priority. pairs with system responsiveness. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\gpu priority = 8 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\sfio priority = high">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="games priority profile (mmcss) gives games top gpu/cpu scheduling priority. pairs with system responsiveness. games outrank everything else, so recording, streaming and voice chat get whatever is left. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\gpu priority = 8 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\sfio priority = high">
           <div class="item__name">Games Priority Profile (MMCSS)
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             
           </div>
-          <p class="item__desc">Gives games top GPU/CPU scheduling priority. Pairs with System Responsiveness.</p>
+          <p class="item__desc">Gives games top GPU/CPU scheduling priority. Pairs with System Responsiveness. Games outrank everything else, so recording, streaming and voice chat get whatever is left.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\GPU Priority = 8</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\Priority = 6</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\Scheduling Category = High</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games\SFIO Priority = High</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="block driver updates via windows update stops windows overwriting your gpu driver with an older one. hklm\software\policies\microsoft\windows\windowsupdate\excludewudriversinqualityupdate = 1">
@@ -1372,13 +1372,13 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Stops Windows overwriting your GPU driver with an older one.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\ExcludeWUDriversInQualityUpdate = 1</li></ul>
         </article>
-        <article class="item" data-group="Performance" data-risk="advanced" data-search="global timer resolution makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). reboot required. hklm\system\currentcontrolset\control\session manager\kernel\globaltimerresolutionrequests = 1">
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="global timer resolution makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). reboot required. a system-wide high-resolution timer raises power draw and hurts standby on battery. reboot required. hklm\system\currentcontrolset\control\session manager\kernel\globaltimerresolutionrequests = 1">
           <div class="item__name">Global Timer Resolution
             <span class="badge badge--advanced">Advanced</span>
             <span class="badge badge--group">Performance</span>
             <span class="badge badge--note">Restart needed</span>
           </div>
-          <p class="item__desc">Makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). Reboot required.</p>
+          <p class="item__desc">Makes a game's high-resolution timer request apply system-wide again (pre-2004 behaviour). Reboot required. A system-wide high-resolution timer raises power draw and hurts standby on battery. Reboot required.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel\GlobalTimerResolutionRequests = 1</li></ul>
         </article>
         <article class="item" data-group="Repairs" data-risk="safe" data-search="audio &amp; microphone no sound or microphone? puts the audio services back to their defaults and starts them. service &quot;audiosrv&quot; → auto service &quot;audioendpointbuilder&quot; → auto">
