@@ -7,6 +7,28 @@ No telemetry, no account, no network calls. Everything stays on your PC.
 
 ---
 
+## Checking what a tweak really does
+
+You do not have to read the whole repository. Every tweak lives in one file:
+
+**[`src/data/tweaks.json`](src/data/tweaks.json)**
+
+Search it for the name shown in the app and read its `operations`. That is the
+exact registry key, service or power setting the app will touch — there is no
+second place where something else happens, and no free-form command anywhere in
+the app that could run something not listed there.
+
+The rest of the folders exist to support that one:
+
+| | |
+|---|---|
+| `src/` | the application itself — this is what ships in the .exe |
+| `test/` | 88 automated checks that run against the catalogue and the operations layer |
+| `tools/` | generators: the website, the game presets, the one-shot optimizer |
+| `site/` | the public website, generated from the same data the app uses |
+
+---
+
 ## What it does
 
 - **Analyses your system first.** Windows version, hardware, security state,
