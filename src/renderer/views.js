@@ -1212,6 +1212,23 @@ Views.settings = () =>
 
 // --- about -------------------------------------------------------------------
 
+// The two addresses the app itself points at. Kept together so there is one
+// place to change them, and both are https because the main process refuses
+// anything else through openExternal.
+const LINKS = {
+    discord: "https://discord.gg/nV7m45NcBn",
+    source: "https://github.com/pandatweaks0-pixel/panda-tweaks",
+};
+
+const linkButton = (label, url, cls = "") =>
+    h(`button.btn${cls}`, {
+        text: label,
+        onclick: async () => {
+            const res = await window.panda.app.openExternal(url);
+            if (!res?.ok) toast(res?.error || t("error.generic"), "bad");
+        },
+    });
+
 Views.about = () =>
     h(
         "div.page",
@@ -1231,6 +1248,19 @@ Views.about = () =>
                 h("dd.mono", { text: State.appInfo.dataPath || "—" })
             ),
             h("p.mt-4", { text: t("about.free") })
+        ),
+        h(
+            "div.card.mt-4",
+            null,
+            h("h2", { text: t("about.communityTitle") }),
+            h("p.muted.mt-2", { text: t("about.communityBody") }),
+            h(
+                "div.row.row--wrap.mt-4",
+                null,
+                linkButton(t("about.joinDiscord"), LINKS.discord, ".btn--primary"),
+                linkButton(t("about.viewSource"), LINKS.source)
+            ),
+            h("p.small.faint.mt-3", { text: LINKS.source.replace(/^https:\/\//, "") })
         ),
         h(
             "div.card.mt-4",

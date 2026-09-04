@@ -342,5 +342,9 @@
   "skipped.ramUnknown": "Cannot read how much RAM this PC has",
   "admin.neededTitle": "Administrator rights needed",
   "apply.adminTrimmed": "{count} left out: these need administrator rights.",
-  "apply.allNeedAdmin": "All {count} of these need administrator rights. Restart the app as administrator and try again."
+  "apply.allNeedAdmin": "All {count} of these need administrator rights. Restart the app as administrator and try again.",
+  "about.communityTitle": "Community and source code",
+  "about.communityBody": "The build is handed out through Discord and nowhere else — one official file, one place to ask when something goes wrong. The full source is public: every tweak, every registry key and every command is plain text you can read before you run it.",
+  "about.joinDiscord": "Join the Discord",
+  "about.viewSource": "View the source code"
 }

@@ -342,5 +342,9 @@
   "skipped.ramUnknown": "Wie viel RAM dieser PC hat, lässt sich nicht auslesen",
   "admin.neededTitle": "Administratorrechte nötig",
   "apply.adminTrimmed": "{count} weggelassen: dafür braucht es Administratorrechte.",
-  "apply.allNeedAdmin": "Alle {count} brauchen Administratorrechte. Starte die App als Administrator neu und versuch es nochmal."
+  "apply.allNeedAdmin": "Alle {count} brauchen Administratorrechte. Starte die App als Administrator neu und versuch es nochmal.",
+  "about.communityTitle": "Community und Quellcode",
+  "about.communityBody": "Die App wird ausschließlich über Discord verteilt — eine offizielle Datei, eine Stelle zum Nachfragen, wenn etwas klemmt. Der vollständige Quellcode ist öffentlich: jeder Tweak, jeder Registry-Schlüssel und jeder Befehl steht im Klartext da, bevor du ihn ausführst.",
+  "about.joinDiscord": "Discord beitreten",
+  "about.viewSource": "Quellcode ansehen"
 }
