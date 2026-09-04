@@ -330,13 +330,63 @@ try {
     Say 'Free space' ($freePct -ge 15) "$freePct% free ($([int]($sys.FreeSpace/1GB)) GB)"
 } catch { }
 
-# Startup programs are named rather than counted: "9 entries" is not something
-# anyone can act on.
+# Startup programs, counted the way Task Manager counts them: only the ones
+# that actually run.
+#
+# Win32_StartupCommand lists every entry that exists and has no idea which are
+# switched off, so it reported eight on a machine that starts three - a warning
+# nobody could act on, about a problem that was not there. Windows keeps the
+# on/off state separately, in StartupApproved: no marker means never disabled,
+# and otherwise the low bit of the first byte is set when it is off. This is
+# what src/main/ps/startup.ps1 reads, and the two must not disagree.
+function Test-StartupEnabled($approvedKey, $valueName) {
+    $item = Get-ItemProperty -LiteralPath $approvedKey -Name $valueName -ErrorAction SilentlyContinue
+    if ($null -eq $item) { return $true }
+    $bytes = $item.$valueName
+    if ($null -eq $bytes -or $bytes.Count -lt 1) { return $true }
+    return (([int]$bytes[0] -band 1) -eq 0)
+}
+
 try {
-    $startup = @(Get-CimInstance Win32_StartupCommand -EA Stop | Select-Object -ExpandProperty Name -Unique)
-    Say 'Startup programs' ($startup.Count -le 6) "$($startup.Count) entries"
-    if ($startup.Count -gt 6) { Write-Host ('           -> ' + ($startup -join ', ')) -ForegroundColor DarkGray }
-} catch { }
+    $running = @()
+    $total = 0
+
+    $runScopes = @(
+        @{ Source = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run';             Approved = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run' },
+        @{ Source = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run';             Approved = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run' },
+        @{ Source = 'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Run'; Approved = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run32' }
+    )
+    foreach ($s in $runScopes) {
+        $key = Get-Item -LiteralPath $s.Source -ErrorAction SilentlyContinue
+        if (-not $key) { continue }
+        foreach ($n in $key.GetValueNames()) {
+            if ([string]::IsNullOrWhiteSpace($n)) { continue }
+            $total++
+            if (Test-StartupEnabled $s.Approved $n) { $running += $n }
+        }
+    }
+
+    $folderScopes = @(
+        @{ Path = [Environment]::GetFolderPath('Startup');       Approved = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder' },
+        @{ Path = [Environment]::GetFolderPath('CommonStartup'); Approved = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder' }
+    )
+    foreach ($s in $folderScopes) {
+        if (-not $s.Path -or -not (Test-Path -LiteralPath $s.Path)) { continue }
+        foreach ($f in Get-ChildItem -LiteralPath $s.Path -File -ErrorAction SilentlyContinue) {
+            if ($f.Name -eq 'desktop.ini') { continue }
+            $total++
+            if (Test-StartupEnabled $s.Approved $f.Name) { $running += $f.BaseName }
+        }
+    }
+
+    $off = $total - $running.Count
+    $detail = "$($running.Count) run at boot"
+    if ($off -gt 0) { $detail += " ($off already switched off)" }
+    Say 'Startup programs' ($running.Count -le 6) $detail
+    if ($running.Count -gt 0) { Write-Host ('           -> ' + ($running -join ', ')) -ForegroundColor DarkGray }
+} catch {
+    Say 'Startup programs' $false "could not be read ($($_.Exception.Message))"
+}
 
 Write-Host ''
 
