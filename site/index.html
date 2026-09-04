@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panda Tweaks — the free Windows optimizer you can read</title>
-<meta name="description" content="119 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
+<meta name="description" content="118 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
 <meta property="og:title" content="Panda Tweaks">
 <meta property="og:description" content="Make Windows faster — and read every change before it happens.">
 <meta property="og:type" content="website">
@@ -236,7 +236,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section style="padding-bottom:0"><div class="wrap">
     <div class="stats">
-      <div class="stat"><b>119</b><span>tweaks</span></div>
+      <div class="stat"><b>118</b><span>tweaks</span></div>
       <div class="stat"><b>17</b><span>repairs</span></div>
       <div class="stat"><b>53</b><span>removable apps</span></div>
       <div class="stat"><b>21</b><span>services</span></div>
@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section id="catalogue" style="padding-top:0"><div class="wrap">
     <p class="eyebrow">Full control</p>
-    <h2>210 entries, every one explained</h2>
+    <h2>209 entries, every one explained</h2>
     <p class="sub">No hidden scripts. This is the same list the app uses — generated from the same
       data, so it cannot drift away from it. Under every entry is exactly what gets touched.</p>
 
@@ -1201,14 +1201,14 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">No accidental Alt+Shift layout switch mid-game.</p>
           <ul class="item__targets"><li>HKCU\Keyboard Layout\Toggle\Language = 3</li><li>HKCU\Keyboard Layout\Toggle\Hotkey = 3</li><li>HKCU\Keyboard Layout\Toggle\Layout = 3</li></ul>
         </article>
-        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable all accessibility popups mousekeys, stickykeys, filterkeys, togglekeys fully off. hkcu\control panel\accessibility\mousekeys\flags = 0 hkcu\control panel\accessibility\stickykeys\flags = 0 hkcu\control panel\accessibility\keyboard response\flags = 0 hkcu\control panel\accessibility\togglekeys\flags = 0">
-          <div class="item__name">Disable All Accessibility Popups
+        <article class="item" data-group="Gaming" data-risk="safe" data-search="disable mouse keys turns off steering the pointer with the numeric keypad, and the shortcut popup that offers it. hkcu\control panel\accessibility\mousekeys\flags = 0">
+          <div class="item__name">Disable Mouse Keys
             <span class="badge badge--safe">Safe</span>
             <span class="badge badge--group">Gaming</span>
             
           </div>
-          <p class="item__desc">MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.</p>
-          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\MouseKeys\Flags = 0</li><li>HKCU\Control Panel\Accessibility\StickyKeys\Flags = 0</li><li>HKCU\Control Panel\Accessibility\Keyboard Response\Flags = 0</li><li>HKCU\Control Panel\Accessibility\ToggleKeys\Flags = 0</li></ul>
+          <p class="item__desc">Turns off steering the pointer with the numeric keypad, and the shortcut popup that offers it.</p>
+          <ul class="item__targets"><li>HKCU\Control Panel\Accessibility\MouseKeys\Flags = 0</li></ul>
         </article>
         <article class="item" data-group="Gaming" data-risk="safe" data-search="mouse polish pack trails, beeps, snap-to-button &amp; window tracking off. hkcu\control panel\mouse\mousetrails = 0 hkcu\control panel\mouse\beep = no hkcu\control panel\mouse\extendedsounds = no hkcu\control panel\mouse\snaptodefaultbutton = 0 hkcu\control panel\mouse\activewindowtracking = 0">
           <div class="item__name">Mouse Polish Pack
@@ -1353,15 +1353,6 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Edge no longer preloads itself when Windows starts.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\StartupBoostEnabled = 0</li></ul>
-        </article>
-        <article class="item" data-group="Performance" data-risk="safe" data-search="edge: disable preloading stops edge preloading pages and tabs in the background. hklm\software\policies\microsoft\edge\startupboostenabled = 0 hkcu\software\microsoft\windows\currentversion\explorer\advanced\start_trackprogs = 0">
-          <div class="item__name">Edge: Disable Preloading
-            <span class="badge badge--safe">Safe</span>
-            <span class="badge badge--group">Performance</span>
-            
-          </div>
-          <p class="item__desc">Stops Edge preloading pages and tabs in the background.</p>
-          <ul class="item__targets"><li>HKLM\SOFTWARE\Policies\Microsoft\Edge\StartupBoostEnabled = 0</li><li>HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Start_TrackProgs = 0</li></ul>
         </article>
         <article class="item" data-group="Performance" data-risk="advanced" data-search="games priority profile (mmcss) gives games top gpu/cpu scheduling priority. pairs with system responsiveness. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\gpu priority = 8 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\games\sfio priority = high">
           <div class="item__name">Games Priority Profile (MMCSS)
@@ -2284,7 +2275,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       <details><summary>Does it need administrator rights?</summary><p>Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings.</p></details>
       <details><summary>Can I undo everything?</summary><p>Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created.</p></details>
       <details><summary>Where do I actually download it?</summary><p>In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing.</p></details>
-      <details><summary>Why 119 tweaks and not 147?</summary><p>Because 28 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 28 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
+      <details><summary>Why 118 tweaks and not 146?</summary><p>Because 28 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 28 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
       <details><summary>I am not technical. Can I use this?</summary><p>Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start.</p></details>
       <details><summary>How much faster will my PC get?</summary><p>That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours.</p></details>
     </div>

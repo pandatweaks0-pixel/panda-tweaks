@@ -80,7 +80,7 @@ const POWER = [
 const STREAMING = ["cpu_pagingexec", "mem_sysmain_off", "mem_prefetch_off", "mem_clearpagefile"];
 
 // Browsers left running in the background during a session.
-const BROWSERS = ["app_chrome_bg_off", "app_edge_bg_off", "app_edge_boost_off", "app_edge_preload_off"];
+const BROWSERS = ["app_chrome_bg_off", "app_edge_bg_off", "app_edge_boost_off"];
 
 // Teredo is deliberately absent. Turning it off is a fine tweak on its own, but
 // Xbox networking and party chat lean on it, so a preset that silently killed

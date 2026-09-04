@@ -3199,12 +3199,12 @@
   },
   {
     "id": "in_accessibility_off",
-    "name": "Disable All Accessibility Popups",
+    "name": "Disable Mouse Keys",
     "category": "Gaming",
     "sourceCategory": "Input",
     "risk": "safe",
-    "description": "MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.",
-    "detailedDescription": "MouseKeys, StickyKeys, FilterKeys, ToggleKeys fully off.",
+    "description": "Turns off steering the pointer with the numeric keypad, and the shortcut popup that offers it.",
+    "detailedDescription": "Turns off steering the pointer with the numeric keypad, and the shortcut popup that offers it.",
     "recommended": true,
     "requiresRestart": false,
     "oneTimeAction": false,
@@ -3221,33 +3221,6 @@
         "action": "set",
         "hive": "HKCU",
         "key": "Control Panel\\Accessibility\\MouseKeys",
-        "name": "Flags",
-        "valueType": "REG_SZ",
-        "value": "0"
-      },
-      {
-        "type": "registry",
-        "action": "set",
-        "hive": "HKCU",
-        "key": "Control Panel\\Accessibility\\StickyKeys",
-        "name": "Flags",
-        "valueType": "REG_SZ",
-        "value": "0"
-      },
-      {
-        "type": "registry",
-        "action": "set",
-        "hive": "HKCU",
-        "key": "Control Panel\\Accessibility\\Keyboard Response",
-        "name": "Flags",
-        "valueType": "REG_SZ",
-        "value": "0"
-      },
-      {
-        "type": "registry",
-        "action": "set",
-        "hive": "HKCU",
-        "key": "Control Panel\\Accessibility\\ToggleKeys",
         "name": "Flags",
         "valueType": "REG_SZ",
         "value": "0"
@@ -4060,44 +4033,6 @@
     ],
     "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /t REG_DWORD /d 0 /f",
     "originalRevert": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /f"
-  },
-  {
-    "id": "app_edge_preload_off",
-    "name": "Edge: Disable Preloading",
-    "category": "Performance",
-    "sourceCategory": "Memory",
-    "risk": "safe",
-    "description": "Stops Edge preloading pages and tabs in the background.",
-    "detailedDescription": "Stops Edge preloading pages and tabs in the background.",
-    "recommended": true,
-    "requiresRestart": false,
-    "oneTimeAction": false,
-    "windowsDefault": {
-      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\Start_TrackProgs": "1"
-    },
-    "warnings": [],
-    "operations": [
-      {
-        "type": "registry",
-        "action": "set",
-        "hive": "HKLM",
-        "key": "SOFTWARE\\Policies\\Microsoft\\Edge",
-        "name": "StartupBoostEnabled",
-        "valueType": "REG_DWORD",
-        "value": "0"
-      },
-      {
-        "type": "registry",
-        "action": "set",
-        "hive": "HKCU",
-        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
-        "name": "Start_TrackProgs",
-        "valueType": "REG_DWORD",
-        "value": "0"
-      }
-    ],
-    "originalCommand": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\" /v StartupBoostEnabled /t REG_DWORD /d 0 /f & reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 0 /f",
-    "originalRevert": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 1 /f"
   },
   {
     "id": "cpu_mmcss_games",

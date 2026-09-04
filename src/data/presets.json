@@ -65,7 +65,6 @@
       "app_chrome_bg_off",
       "app_edge_bg_off",
       "app_edge_boost_off",
-      "app_edge_preload_off",
       "win_fso_off",
       "dsp_dx_settings"
     ]
@@ -136,7 +135,6 @@
       "app_chrome_bg_off",
       "app_edge_bg_off",
       "app_edge_boost_off",
-      "app_edge_preload_off",
       "win_fso_off"
     ]
   },
@@ -194,7 +192,6 @@
       "app_chrome_bg_off",
       "app_edge_bg_off",
       "app_edge_boost_off",
-      "app_edge_preload_off",
       "cpu_pagingexec",
       "mem_sysmain_off",
       "mem_prefetch_off",
