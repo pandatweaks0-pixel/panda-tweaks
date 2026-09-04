@@ -1125,7 +1125,6 @@
     "sourceCategory": "Clean",
     "risk": "safe",
     "description": "ipconfig /flushdns.",
-    "detailedDescription": "ipconfig /flushdns.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -1133,9 +1132,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "ipconfig /flushdns",
-        "reason": "\"ipconfig\" operations are not implemented yet"
+        "type": "command",
+        "command": "flushDns"
       }
     ],
     "originalCommand": "ipconfig /flushdns",
@@ -2786,7 +2784,6 @@
     "sourceCategory": "Clean",
     "risk": "safe",
     "description": "Clears corrupted/blurry icon caches.",
-    "detailedDescription": "Clears corrupted/blurry icon caches.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -2794,9 +2791,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "cmd /c \"del /q /f %LocalAppData%\\IconCache.db & del /q /f /s %LocalAppData%\\Microsoft\\Windows\\Explorer\\iconcache_*.db\"",
-        "reason": "\"cmd\" operations are not implemented yet"
+        "type": "command",
+        "command": "rebuildIconCache"
       }
     ],
     "originalCommand": "cmd /c \"del /q /f %LocalAppData%\\IconCache.db & del /q /f /s %LocalAppData%\\Microsoft\\Windows\\Explorer\\iconcache_*.db\"",
@@ -2809,7 +2805,7 @@
     "sourceCategory": "Clean",
     "risk": "advanced",
     "description": "Rebuilds the Windows font cache.",
-    "detailedDescription": "Rebuilds the Windows font cache.",
+    "detailedDescription": "The font cache is a rebuilt index of every installed font, and a corrupted one shows up as missing or garbled text in programs rather than as an error. Clearing it means stopping the FontCache service, deleting the files and starting it again; Windows rebuilds the index on demand. Nothing is lost - the fonts themselves are untouched.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -2817,9 +2813,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "cmd /c \"net stop FontCache & del /q /f /s %WinDir%\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\* & net start FontCache\"",
-        "reason": "\"cmd\" operations are not implemented yet"
+        "type": "command",
+        "command": "clearFontCache"
       }
     ],
     "originalCommand": "cmd /c \"net stop FontCache & del /q /f /s %WinDir%\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\* & net start FontCache\"",
@@ -2832,7 +2827,6 @@
     "sourceCategory": "Clean",
     "risk": "safe",
     "description": "Runs wsreset to clear the Microsoft Store cache.",
-    "detailedDescription": "Runs wsreset to clear the Microsoft Store cache.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -2840,9 +2834,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "wsreset.exe",
-        "reason": "\"wsreset\" operations are not implemented yet"
+        "type": "command",
+        "command": "storeReset"
       }
     ],
     "originalCommand": "wsreset.exe",
@@ -3369,7 +3362,6 @@
     "sourceCategory": "CPU",
     "risk": "safe",
     "description": "Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.",
-    "detailedDescription": "Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.",
     "recommended": false,
     "requiresRestart": true,
     "oneTimeAction": true,
@@ -3377,9 +3369,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "cmd /c \"bcdedit /deletevalue useplatformtick >nul 2>&1 & bcdedit /deletevalue useplatformclock >nul 2>&1 & bcdedit /set disabledynamictick no\"",
-        "reason": "\"cmd\" operations are not implemented yet"
+        "type": "command",
+        "command": "resetBootTimers"
       }
     ],
     "originalCommand": "cmd /c \"bcdedit /deletevalue useplatformtick >nul 2>&1 & bcdedit /deletevalue useplatformclock >nul 2>&1 & bcdedit /set disabledynamictick no\"",
@@ -3742,7 +3733,6 @@
     "sourceCategory": "GPU",
     "risk": "safe",
     "description": "Opens Windows display settings so you can pick your monitor's highest Hz.",
-    "detailedDescription": "Opens Windows display settings so you can pick your monitor's highest Hz.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -3750,9 +3740,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "cmd /c start ms-settings:display-advanced",
-        "reason": "\"cmd\" operations are not implemented yet"
+        "type": "command",
+        "command": "openDisplaySettings"
       }
     ],
     "originalCommand": "cmd /c start ms-settings:display-advanced",

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panda Tweaks — the free Windows optimizer you can read</title>
-<meta name="description" content="118 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
+<meta name="description" content="124 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
 <meta property="og:title" content="Panda Tweaks">
 <meta property="og:description" content="Make Windows faster — and read every change before it happens.">
 <meta property="og:type" content="website">
@@ -236,7 +236,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section style="padding-bottom:0"><div class="wrap">
     <div class="stats">
-      <div class="stat"><b>118</b><span>tweaks</span></div>
+      <div class="stat"><b>124</b><span>tweaks</span></div>
       <div class="stat"><b>17</b><span>repairs</span></div>
       <div class="stat"><b>53</b><span>removable apps</span></div>
       <div class="stat"><b>21</b><span>services</span></div>
@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section id="catalogue" style="padding-top:0"><div class="wrap">
     <p class="eyebrow">Full control</p>
-    <h2>209 entries, every one explained</h2>
+    <h2>215 entries, every one explained</h2>
     <p class="sub">No hidden scripts. This is the same list the app uses — generated from the same
       data, so it cannot drift away from it. Under every entry is exactly what gets touched.</p>
 
@@ -624,6 +624,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Removes cached prefetch files.</p>
           <ul class="item__targets"><li>Clean up: prefetch</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="flush dns cache ipconfig /flushdns. action: flushdns">
+          <div class="item__name">Flush DNS Cache
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">ipconfig /flushdns.</p>
+          <ul class="item__targets"><li>Action: flushDns</li></ul>
         </article>
         <article class="item" data-group="Debloat" data-risk="advanced" data-search="disable hibernate (free space) removes hiberfil.sys (= your ram size in gb). hibernation and fast startup stop working. the space comes back the moment you re-enable it. powercfg">
           <div class="item__name">Disable Hibernate (free space)
@@ -1129,6 +1138,33 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Disables the Ndu driver (can reduce a known RAM leak). Task Manager and Settings stop reporting per-app network usage.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\Ndu\Start = 4</li></ul>
         </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="rebuild icon cache clears corrupted/blurry icon caches. action: rebuildiconcache">
+          <div class="item__name">Rebuild Icon Cache
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Clears corrupted/blurry icon caches.</p>
+          <ul class="item__targets"><li>Action: rebuildIconCache</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="advanced" data-search="clear font cache rebuilds the windows font cache. action: clearfontcache">
+          <div class="item__name">Clear Font Cache
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Rebuilds the Windows font cache.</p>
+          <ul class="item__targets"><li>Action: clearFontCache</li></ul>
+        </article>
+        <article class="item" data-group="Debloat" data-risk="safe" data-search="reset store cache runs wsreset to clear the microsoft store cache. action: storereset">
+          <div class="item__name">Reset Store Cache
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Debloat</span>
+            
+          </div>
+          <p class="item__desc">Runs wsreset to clear the Microsoft Store cache.</p>
+          <ul class="item__targets"><li>Action: storeReset</li></ul>
+        </article>
         <article class="item" data-group="Debloat" data-risk="safe" data-search="clear crash dumps deletes crash dump and minidump files. clean up: crashdumps">
           <div class="item__name">Clear Crash Dumps
             <span class="badge badge--safe">Safe</span>
@@ -1246,6 +1282,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">mouclass/kbdclass ThreadPriority 31. Community tweak - unproven, but harmless. Reboot.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters\ThreadPriority = 31</li><li>HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters\ThreadPriority = 31</li></ul>
         </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="reset boot timers to default sets useplatformtick + disabledynamictick back to windows defaults. reboot required. action: resetboottimers">
+          <div class="item__name">Reset Boot Timers to Default
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.</p>
+          <ul class="item__targets"><li>Action: resetBootTimers</li></ul>
+        </article>
         <article class="item" data-group="Gaming" data-risk="safe" data-search="xbox button doesn't open game bar stops the xbox/guide button from opening the game bar mid-match. hkcu\software\microsoft\gamebar\usenexusforgamebarenabled = 0">
           <div class="item__name">Xbox Button Doesn't Open Game Bar
             <span class="badge badge--safe">Safe</span>
@@ -1308,6 +1353,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Screen won't sleep mid-cutscene or while idling in a lobby.</p>
           <ul class="item__targets"><li>powercfg</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="safe" data-search="open refresh rate settings opens windows display settings so you can pick your monitor's highest hz. action: opendisplaysettings">
+          <div class="item__name">Open Refresh Rate Settings
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Performance</span>
+            
+          </div>
+          <p class="item__desc">Opens Windows display settings so you can pick your monitor's highest Hz.</p>
+          <ul class="item__targets"><li>Action: openDisplaySettings</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="disable notification popups no dms or system toasts popping up mid-stream or mid-recording. hkcu\software\microsoft\windows\currentversion\pushnotifications\toastenabled = 0">
           <div class="item__name">Disable Notification Popups
@@ -2232,9 +2286,9 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
     </div>
 
     <div class="honest" style="margin-top:24px">
-      <h3>The honest part: 28 tweaks are still missing</h3>
+      <h3>The honest part: 22 tweaks are still missing</h3>
       <p>The collection originally came from SlideTweaks, where every entry was a raw command
-         line. 28 of them — powershell, powercfg, bcdedit, netsh — have not been
+         line. 22 of them — powershell, powercfg, bcdedit, netsh — have not been
          translated into validated operations yet. They are marked unavailable inside the app and
          appear neither in the number above nor in the list. Better one tweak fewer than one that
          only pretends.</p>
@@ -2275,7 +2329,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       <details><summary>Does it need administrator rights?</summary><p>Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings.</p></details>
       <details><summary>Can I undo everything?</summary><p>Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created.</p></details>
       <details><summary>Where do I actually download it?</summary><p>In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing.</p></details>
-      <details><summary>Why 118 tweaks and not 146?</summary><p>Because 28 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 28 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
+      <details><summary>Why 124 tweaks and not 146?</summary><p>Because 22 of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those 22 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
       <details><summary>I am not technical. Can I use this?</summary><p>Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start.</p></details>
       <details><summary>How much faster will my PC get?</summary><p>That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours.</p></details>
     </div>

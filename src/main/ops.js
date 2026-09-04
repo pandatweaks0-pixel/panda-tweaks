@@ -550,6 +550,59 @@ const COMMANDS = {
         label: "Check and repair system files (SFC)",
         timeout: 45 * 60_000,
     },
+    // The four below replace command lines the SlideTweaks conversion could not
+    // translate. Each is a fixed argument list on this list, which is the point:
+    // the renderer asks for "rebuildIconCache", never for a shell string, so a
+    // compromised or buggy UI still cannot run anything that is not written here.
+    // Paths are left unquoted on purpose - PowerShell expands $env: in a bare
+    // path, and adding quotes would mean nesting them inside these strings.
+    rebuildIconCache: {
+        file: "powershell.exe",
+        args: [
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "Remove-Item -Force -ErrorAction SilentlyContinue $env:LOCALAPPDATA\\IconCache.db; " +
+                "Remove-Item -Force -ErrorAction SilentlyContinue $env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer\\iconcache_*.db",
+        ],
+        admin: false,
+        // Explorer holds the rebuilt cache in memory, so the new icons appear
+        // after it restarts - which the repair page offers separately.
+        label: "Delete the icon caches so Explorer rebuilds them",
+    },
+    clearFontCache: {
+        file: "powershell.exe",
+        args: [
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "Stop-Service FontCache -Force -ErrorAction SilentlyContinue; " +
+                "Remove-Item -Force -Recurse -ErrorAction SilentlyContinue $env:WINDIR\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\*; " +
+                "Start-Service FontCache -ErrorAction SilentlyContinue",
+        ],
+        admin: true,
+        label: "Rebuild the Windows font cache",
+    },
+    // Only ever removes boot overrides and puts the documented default back, so
+    // this is the safe direction through bcdedit rather than a tweak that uses it.
+    resetBootTimers: {
+        file: "powershell.exe",
+        args: [
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "bcdedit /deletevalue useplatformtick; bcdedit /deletevalue useplatformclock; bcdedit /set disabledynamictick no",
+        ],
+        admin: true,
+        restart: true,
+        label: "Put the boot timer settings back to Windows defaults",
+    },
+    openDisplaySettings: {
+        file: "cmd.exe",
+        args: ["/c", "start", "", "ms-settings:display-advanced"],
+        admin: false,
+        label: "Open the advanced display settings",
+    },
 };
 
 function validateCommand(op) {
