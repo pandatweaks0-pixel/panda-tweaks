@@ -44,6 +44,11 @@ const PICKS = [
     "win_visualfx", "win_transparency_off", "win_window_anim_off", "win_taskbar_anim_off",
     "win_menu_delay", "win_startup_delay", "win_aeroshake_off", "win_snap_flyout_off",
     "str_notifications_off", "win_error_reporting_off", "aud_ducking_off",
+    // Windows will not restart out from under a match on its own schedule.
+    // Its sibling win_no_driver_updates is deliberately NOT here: blocking
+    // driver updates is reasonable once you are on a driver you like, and a
+    // trap while you are behind - which the driver check below will tell you.
+    "win_no_autoreboot",
 
     // Scheduling: tell Windows the game in front is what matters
     "cpu_priority", "cpu_mmcss", "cpu_mmcss_games", "mem_background_off",
@@ -246,6 +251,94 @@ $Met = @{
 $Changes = @(
 ${changes.map(rowFor).join("\n")}
 )
+
+# ---------- the things a script cannot change -------------------------------
+# Measured, not assumed, and reported whether the answer is good or bad. On a
+# well-kept machine every line here comes back green, and that is worth seeing:
+# a tool that only ever lists problems teaches you to distrust it when it finds
+# none. These four also outweigh every registry value further down.
+
+Write-Host '  System check' -ForegroundColor White
+
+function Say($label, $good, $detail) {
+    $mark  = if ($good) { 'ok  ' } else { 'note' }
+    $color = if ($good) { 'Green' } else { 'Yellow' }
+    Write-Host ("    [{0}] {1,-26} {2}" -f $mark, $label, $detail) -ForegroundColor $color
+}
+
+# GPU driver age. In a UE5 game a driver a year old costs more frames than
+# everything this script does put together.
+try {
+    # Get-CimInstance already hands back a DateTime here, while the older
+    # Get-WmiObject returned a DMTF string. Converting unconditionally threw,
+    # and an empty catch then swallowed the single most useful line on the
+    # screen - so this accepts either and says so when it can read neither.
+    # Win32_VideoController, not Win32_PnPSignedDriver. On this machine the two
+    # report the same driver version with day and month transposed - 2025-12-02
+    # against 2025-02-12, a difference of nearly a year - and there is no way to
+    # tell from here which provider is swapping them. The app reads
+    # VideoController, so the script reads it too: a tool that contradicts its
+    # own app teaches you to trust neither.
+    $drv = Get-CimInstance Win32_VideoController -EA Stop |
+           Where-Object { $_.DriverDate } |
+           Select-Object -First 1
+    if (-not $drv) {
+        Say 'GPU driver' $true 'no display driver reported a date'
+    } else {
+        $date = $null
+        if ($drv.DriverDate -is [datetime]) { $date = $drv.DriverDate }
+        else { try { $date = [Management.ManagementDateTimeConverter]::ToDateTime([string]$drv.DriverDate) } catch { } }
+
+        if ($null -eq $date) {
+            Say 'GPU driver' $false "version $($drv.DriverVersion) - release date unreadable"
+        } else {
+            $days = [int]((Get-Date) - $date).TotalDays
+            Say 'GPU driver' ($days -le 120) "$days days old (released $($date.ToString('yyyy-MM-dd')))"
+            if ($days -gt 120) { Write-Host '           -> update it before judging anything below' -ForegroundColor DarkGray }
+        }
+    }
+} catch {
+    Say 'GPU driver' $false "could not be read ($($_.Exception.Message))"
+}
+
+# Monitor running below what it can do is extremely common and instantly fixed.
+try {
+    $mode = Get-CimInstance Win32_VideoController -EA Stop | Where-Object { $_.CurrentRefreshRate } | Select-Object -First 1
+    if ($mode) {
+        $now = [int]$mode.CurrentRefreshRate; $max = [int]$mode.MaxRefreshRate
+        Say 'Refresh rate' ($max -le 0 -or $now -ge $max) "$now Hz$(if ($max -gt 0) { " of $max Hz" })"
+        if ($max -gt 0 -and $now -lt $max) { Write-Host '           -> Settings > System > Display > Advanced display' -ForegroundColor DarkGray }
+    }
+} catch { }
+
+# RAM below its rated speed means XMP/EXPO is off in the BIOS. Nothing in
+# Windows can fix it, and it is worth more than any tweak here.
+try {
+    $sticks = Get-CimInstance Win32_PhysicalMemory -EA Stop
+    $run = ($sticks | Measure-Object -Property ConfiguredClockSpeed -Maximum).Maximum
+    $rated = ($sticks | Measure-Object -Property Speed -Maximum).Maximum
+    if ($run -and $rated) {
+        Say 'Memory speed' ($run -ge $rated) "$run MHz of $rated MHz rated"
+        if ($run -lt $rated) { Write-Host '           -> switch on XMP (Intel) or EXPO (AMD) in the BIOS' -ForegroundColor DarkGray }
+    }
+} catch { }
+
+# A full system drive slows everything, including shader caches.
+try {
+    $sys = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$($env:SystemDrive)'" -EA Stop
+    $freePct = [int](100 * $sys.FreeSpace / $sys.Size)
+    Say 'Free space' ($freePct -ge 15) "$freePct% free ($([int]($sys.FreeSpace/1GB)) GB)"
+} catch { }
+
+# Startup programs are named rather than counted: "9 entries" is not something
+# anyone can act on.
+try {
+    $startup = @(Get-CimInstance Win32_StartupCommand -EA Stop | Select-Object -ExpandProperty Name -Unique)
+    Say 'Startup programs' ($startup.Count -le 6) "$($startup.Count) entries"
+    if ($startup.Count -gt 6) { Write-Host ('           -> ' + ($startup -join ', ')) -ForegroundColor DarkGray }
+} catch { }
+
+Write-Host ''
 
 # ---------- restore point ----------------------------------------------------
 if (-not $WhatIfOnly -and -not $NoRestorePoint) {
