@@ -2891,8 +2891,8 @@
     "category": "Performance",
     "sourceCategory": "CPU",
     "risk": "advanced",
-    "description": "Creates & activates a custom 'SlideTweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
-    "detailedDescription": "Creates & activates a custom 'SlideTweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
+    "description": "Creates & activates a custom 'Panda Tweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
+    "detailedDescription": "Creates & activates a custom 'Panda Tweaks Max FPS' plan (beyond Ultimate). Undo: switch to Balanced.",
     "recommended": false,
     "requiresRestart": false,
     "oneTimeAction": true,
@@ -2901,11 +2901,11 @@
     "operations": [
       {
         "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'SlideTweaks Max FPS' 'Max performance - SlideTweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
+        "command": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'Panda Tweaks Max FPS' 'Max performance - Panda Tweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
         "reason": "\"powershell\" operations are not implemented yet"
       }
     ],
-    "originalCommand": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'SlideTweaks Max FPS' 'Max performance - SlideTweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
+    "originalCommand": "powershell -NoProfile -Command \"$g=(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>$null); if(-not $g){$g=powercfg -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}; $id=[regex]::Match([string]$g,'([0-9a-fA-F-]{36})').Value; if($id){powercfg -changename $id 'Panda Tweaks Max FPS' 'Max performance - Panda Tweaks'; $P='54533251-82be-4824-96c1-47b60b740d00'; foreach($s in @(@('bc5038f7-23e0-4960-96da-33abaf5935ec',100),@('893dee8e-2bef-41e0-89c6-b55d0929964c',100),@('0cc5b647-c1df-4637-891a-dec35c318583',100),@('ea062031-0e34-4ff1-9b6d-eb1059334028',100),@('be337238-0d82-4146-a960-4f3749d470c7',2),@('45bcc044-d885-43e2-8605-ee0ec6e96b59',100),@('36687f9e-e3a5-4dbf-b1dc-15eb381c6863',0),@('75b0ae3f-bce0-45a7-8c89-c9611c25e100',0))){powercfg -setacvalueindex $id $P $s[0] $s[1]; powercfg -setdcvalueindex $id $P $s[0] $s[1]}; powercfg -setacvalueindex $id 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg -setacvalueindex $id 501a4d13-42af-4429-9fd1-a8218c268e20 ee12f906-d277-404b-b6da-e5fa1a576df5 0; powercfg -setactive $id}\"",
     "originalRevert": null
   },
   {
@@ -3865,12 +3865,12 @@
     "operations": [
       {
         "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'SlideTweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'SlideTweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
+        "command": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'Panda Tweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'Panda Tweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
         "reason": "\"powershell\" operations are not implemented yet"
       }
     ],
-    "originalCommand": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'SlideTweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'SlideTweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
-    "originalRevert": "powershell -NoProfile -Command \"Remove-NetQosPolicy -Name 'SlideTweaks OBS' -Confirm:$false -EA SilentlyContinue\""
+    "originalCommand": "powershell -NoProfile -Command \"if(-not (Get-NetQosPolicy -Name 'Panda Tweaks OBS' -EA SilentlyContinue)){ New-NetQosPolicy -Name 'Panda Tweaks OBS' -AppPathNameMatchCondition 'obs64.exe' -DSCPAction 46 -NetworkProfile All -EA SilentlyContinue }\"",
+    "originalRevert": "powershell -NoProfile -Command \"Remove-NetQosPolicy -Name 'Panda Tweaks OBS' -Confirm:$false -EA SilentlyContinue\""
   },
   {
     "id": "app_chrome_bg_off",

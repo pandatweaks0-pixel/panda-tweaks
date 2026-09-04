@@ -1,6 +1,6 @@
 "use strict";
 
-// One-off converter: turns the SlideTweaks command strings into Panda Tweaks
+// One-off converter: turns the the source export command strings into Panda Tweaks
 // typed operations.
 //
 // Anything this cannot translate with confidence is written out as an
@@ -8,17 +8,17 @@
 // disabled and labelled, rather than silently dropped or half-converted —
 // guessing at what a command does is how you get an undo that corrupts state.
 //
-// Usage: node tools/convert-slidetweaks.js <path-to-SlideTweaks/app> [--write]
+// Usage: node tools/convert-source-export.js <path-to-the source export/app> [--write]
 
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-const SRC = process.argv[2] || "C:\\Users\\henri\\Downloads\\SlideTweaks-Source\\app";
+const SRC = process.argv[2] || "C:\\Users\\henri\\Downloads\\the source export-Source\\app";
 const WRITE = process.argv.includes("--write");
 const OUT_DIR = path.join(__dirname, "..", "src", "data");
 
-// SlideTweaks categories -> Panda Tweaks categories.
+// the source export categories -> Panda Tweaks categories.
 const CATEGORY_MAP = {
     Windows: "Windows",
     Security: "Privacy",
@@ -207,7 +207,7 @@ function parseAll(commandString) {
     return splitCommands(commandString).map(parseCommand).filter(Boolean);
 }
 
-// The original revert command tells us what SlideTweaks considered the Windows
+// The original revert command tells us what the source export considered the Windows
 // default. Kept as a display-only hint; undo uses the captured snapshot.
 function defaultsFromRevert(revert) {
     const out = {};
@@ -238,6 +238,8 @@ const CLEANUP_MAP = {
 // --- conversion --------------------------------------------------------------
 
 function convertTweaks() {
+    // The global name below is the identifier inside the input file, not a
+    // label of our own - the importer has to look for exactly what is there.
     const source = loadWindowGlobal("tweaks.js", "slideTweaks");
     const report = { total: source.length, converted: 0, unsupported: 0, reasons: {} };
     const out = [];

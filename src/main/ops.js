@@ -550,7 +550,7 @@ const COMMANDS = {
         label: "Check and repair system files (SFC)",
         timeout: 45 * 60_000,
     },
-    // The four below replace command lines the SlideTweaks conversion could not
+    // The four below replace command lines the original import could not
     // translate. Each is a fixed argument list on this list, which is the point:
     // the renderer asks for "rebuildIconCache", never for a shell string, so a
     // compromised or buggy UI still cannot run anything that is not written here.

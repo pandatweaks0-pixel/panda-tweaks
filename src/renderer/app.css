@@ -1061,9 +1061,7 @@ p { margin: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ------------------------------------------------- start experience ------- */
-/* Splash and first-run wizard follow the SlideTweaks start design (MIT — see
-   NOTICE.md), re-drawn against Panda Tweaks' own tokens so the accent colour
-   the user picks carries through. */
+/* Splash and first-run wizard. */
 
 .splash {
     position: fixed;

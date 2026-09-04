@@ -1,7 +1,7 @@
 "use strict";
 
 // Start screen: animated rain backdrop plus the reveal timing.
-// Adapted from the SlideTweaks start design (MIT — see NOTICE.md); the colour is
+// Start screen; the colour is
 // read from the app's accent token so it follows the user's theme.
 
 const Splash = {

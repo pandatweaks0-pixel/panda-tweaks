@@ -8,13 +8,13 @@
 // have is worse than no page at all.
 //
 // It also refuses to advertise a tweak that cannot run: 41 of the 147 entries
-// still carry an "unsupported" operation left over from the SlideTweaks
-// conversion (powershell, powercfg, bcdedit, netsh). Those are counted and
+// still carry an "unsupported" operation left over from the original import
+// (powershell, powercfg, bcdedit, netsh). Those are counted and
 // listed separately rather than folded into the headline number.
 //
 //   node tools/build-site.js
 //
-// Layout follows the shape of slidetweaks.com - sticky nav, eyebrow labels over
+// Layout: sticky nav, eyebrow labels over
 // every section head, a two-button hero, benefit tiles, a Discord band, a FAQ.
 // The wording, the numbers and the accent are this product's own: their review
 // quotes belong to real people in their Discord, and their FPS figures were
@@ -407,7 +407,7 @@ const FAQ = [
     ["Does it need administrator rights?", "Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings."],
     ["Can I undo everything?", "Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created."],
     ["Where do I actually download it?", "In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing."],
-    [`Why ${working.length} tweaks and not ${tweaks.length}?`, `Because ${pending.length} of them do not run yet. The collection came from SlideTweaks, where every entry was a raw command line; those ${pending.length} have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.`],
+    [`Why ${working.length} tweaks and not ${tweaks.length}?`, `Because ${pending.length} of them do not run yet. They were imported as raw command lines; those ${pending.length} have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.`],
     ["I am not technical. Can I use this?", "Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start."],
     ["How much faster will my PC get?", "That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours."],
 ];
@@ -580,7 +580,7 @@ const html = `<!doctype html>
 
     <div class="honest" style="margin-top:24px">
       <h3>The honest part: ${pending.length} tweaks are still missing</h3>
-      <p>The collection originally came from SlideTweaks, where every entry was a raw command
+      <p>The collection was imported as raw command
          line. ${pending.length} of them — powershell, powercfg, bcdedit, netsh — have not been
          translated into validated operations yet. They are marked unavailable inside the app and
          appear neither in the number above nor in the list. Better one tweak fewer than one that
@@ -621,7 +621,6 @@ const html = `<!doctype html>
 <footer>
   <div class="wrap foot">
     <span>Panda Tweaks ${esc(pkg.version)} · MIT licensed</span>
-    <span>Originally based on SlideTweaks 2.1.0 (MIT)</span>
     <a class="sp" href="${esc(CONFIG.discord)}" target="_blank" rel="noopener">${esc(CONFIG.discord.replace(/^https?:\/\//, ""))}</a>
   </div>
 </footer>
