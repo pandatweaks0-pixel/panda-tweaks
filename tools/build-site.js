@@ -52,6 +52,22 @@ const CONFIG = {
     // replacement the same way:
     //   curl -s https://discord.com/api/v10/invites/<code>
     discord: "https://discord.gg/nV7m45NcBn",
+
+    // Who runs this site. German law (§ 5 DDG) requires a reachable natural or
+    // legal person with a postal address - a P.O. box or an email alone does not
+    // satisfy it, and neither does a nickname. The privacy notice names the same
+    // person as the controller under the GDPR.
+    //
+    // FILL THESE IN. The build refuses to finish while a placeholder is left,
+    // because an Impressum with invented details is worse than none at all:
+    // it is itself a breach, and it misleads the people it exists to protect.
+    operator: {
+        name: "FILL-IN-full-legal-name",
+        street: "FILL-IN-street-and-number",
+        city: "FILL-IN-postcode-and-town",
+        country: "Deutschland",
+        email: "FILL-IN-email",
+    },
 };
 
 const pkg = require(path.join(ROOT, "package.json"));
@@ -620,7 +636,9 @@ const html = `<!doctype html>
 
 <footer>
   <div class="wrap foot">
-    <span>Panda Tweaks ${esc(pkg.version)} · MIT licensed</span>
+    <span>Panda Tweaks ${esc(pkg.version)}</span>
+    <a href="impressum.html">Impressum</a>
+    <a href="datenschutz.html">Privacy</a>
     <a class="sp" href="${esc(CONFIG.discord)}" target="_blank" rel="noopener">${esc(CONFIG.discord.replace(/^https?:\/\//, ""))}</a>
   </div>
 </footer>
@@ -648,11 +666,158 @@ const html = `<!doctype html>
 </html>
 `;
 
+// ----------------------------------------------------------- legal pages --
+
+// Written in English to match the rest of the site. The obligation itself is
+// German and applies whatever language the page is in, so the footer link keeps
+// the word "Impressum": that is the term a German visitor looks for, and the
+// notice has to be easy to recognise, not merely present.
+//
+// A starting point, not legal advice. The wording describes what this site
+// actually does - no cookies, no analytics, no third-party requests - and stays
+// true only as long as that holds. Add an embedded video or a web font and the
+// privacy notice no longer matches the site it describes.
+
+const O = CONFIG.operator;
+
+const legalPage = (title, inner) => `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>${esc(title)} — Panda Tweaks</title>
+<style>${CSS}
+.legal{max-width:760px;margin:0 auto;padding:64px 24px 96px}
+.legal h1{font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-.03em;margin:0 0 8px}
+.legal h2{font-size:20px;margin:40px 0 10px;letter-spacing:-.01em}
+.legal p,.legal li{color:var(--muted);font-size:15.5px}
+.legal ul{padding-left:20px}
+.legal a{color:var(--acc)}
+.legal .back{display:inline-block;margin-bottom:32px;color:var(--muted);font-size:14px}
+.legal address{font-style:normal;color:var(--text);line-height:1.8}
+</style>
+</head>
+<body>
+<div class="legal">
+<a class="back" href="index.html">← Zurück zur Startseite</a>
+${inner}
+</div>
+</body>
+</html>
+`;
+
+const impressum = legalPage(
+    "Impressum",
+    `<h1>Impressum</h1>
+<p>Legal notice under section 5 of the German Digital Services Act (DDG).</p>
+
+<h2>Service provider</h2>
+<address>
+${esc(O.name)}<br>
+${esc(O.street)}<br>
+${esc(O.city)}<br>
+${esc(O.country)}
+</address>
+
+<h2>Contact</h2>
+<p>Email: <a href="mailto:${esc(O.email)}">${esc(O.email)}</a><br>
+Discord: <a href="${esc(CONFIG.discord)}" target="_blank" rel="noopener">${esc(CONFIG.discord.replace(/^https?:\/\//, ""))}</a></p>
+
+<h2>Responsible for the content</h2>
+<p>${esc(O.name)}, at the address above.</p>
+
+<h2>Liability for content</h2>
+<p>The content of this site was prepared with care, but no guarantee is given
+for its accuracy, completeness or timeliness. As a service provider we are
+responsible for our own content under the general laws; we are not obliged to
+monitor third-party information that is transmitted or stored.</p>
+
+<h2>Liability for links</h2>
+<p>This site links to external services whose content we do not control.
+Responsibility for that content lies with the respective provider. No unlawful
+content was apparent at the time the links were added.</p>
+
+<h2>Using the software</h2>
+<p>Panda Tweaks changes operating-system settings. It is used at your own risk.
+Every change is shown before it runs and can be undone individually, but no
+particular result on any particular machine is guaranteed.</p>`
+);
+
+const datenschutz = legalPage(
+    "Privacy policy",
+    `<h1>Privacy policy</h1>
+
+<h2>Controller</h2>
+<address>
+${esc(O.name)}<br>
+${esc(O.street)}<br>
+${esc(O.city)}<br>
+${esc(O.country)}<br>
+<a href="mailto:${esc(O.email)}">${esc(O.email)}</a>
+</address>
+
+<h2>What this website does not do</h2>
+<p>This site is a single HTML file. It sets <strong>no cookies</strong>, uses
+<strong>no analytics or tracking</strong>, and loads <strong>nothing from third
+parties</strong> — not even fonts from an external server. There is no form and
+no sign-in, so nothing is collected from you here.</p>
+
+<h2>Server logs</h2>
+<p>The site is hosted on Cloudflare. Serving a page necessarily processes
+technical access data: IP address, date and time, the address requested, the
+amount of data transferred, and browser and operating-system details. This is
+required to deliver the page and keep it secure.</p>
+<p>The legal basis is Art. 6(1)(f) GDPR, our legitimate interest in a stable and
+secure service. The provider is Cloudflare, Inc., United States, so this can
+involve a transfer to a third country.</p>
+
+<h2>Links to Discord and GitHub</h2>
+<p>This site links to Discord and GitHub. Your browser contacts their servers
+only once you click such a link, and transmits your IP address at that point.
+Before that, no connection is made. Their own privacy terms apply to what
+happens there.</p>
+
+<h2>The application itself</h2>
+<p>Panda Tweaks runs entirely on your computer. It contains no telemetry,
+requires no account, and opens no network connection of its own. Backups and the
+change history stay on your device; no data is transmitted to us.</p>
+
+<h2>Your rights</h2>
+<ul>
+<li>Access to the data held about you (Art. 15 GDPR)</li>
+<li>Rectification of inaccurate data (Art. 16 GDPR)</li>
+<li>Erasure (Art. 17 GDPR) and restriction of processing (Art. 18 GDPR)</li>
+<li>Data portability (Art. 20 GDPR)</li>
+<li>Objection to processing based on legitimate interests (Art. 21 GDPR)</li>
+<li>Complaint to a supervisory authority (Art. 77 GDPR)</li>
+</ul>
+<p>An email to the address above is enough to exercise any of them.</p>
+
+<h2>Status</h2>
+<p>This notice describes the site as it stands today. It has to be revised as
+soon as the site does anything it does not do now.</p>`
+);
+
 fs.mkdirSync(OUT, { recursive: true });
+fs.writeFileSync(path.join(OUT, "impressum.html"), impressum, "utf8");
+fs.writeFileSync(path.join(OUT, "datenschutz.html"), datenschutz, "utf8");
 fs.writeFileSync(path.join(OUT, "index.html"), html, "utf8");
 
 const kb = (Buffer.byteLength(html, "utf8") / 1024).toFixed(1);
 console.log(`site/index.html written — ${kb} KB`);
 console.log(`  ${working.length} tweaks listed, ${pending.length} held back as unsupported`);
 console.log(`  ${fixes.length} fixes · ${debloat.length} apps · ${services.length} services · ${items.length} rows total`);
+console.log("  + impressum.html, datenschutz.html");
 if (CONFIG.discord.includes("CHANGE-ME")) console.log("  ! Discord invite is still a placeholder - edit CONFIG in this file");
+
+// An Impressum carrying "FILL-IN-full-legal-name" is not a smaller problem than
+// a missing one - it is itself the breach, and it misleads the people it exists
+// to protect. Loud on purpose, at the end where it cannot be scrolled past.
+const unfilled = Object.entries(CONFIG.operator).filter(([, v]) => String(v).startsWith("FILL-IN"));
+if (unfilled.length) {
+    console.log("");
+    console.log("  !! DO NOT PUBLISH YET - the Impressum still has placeholders:");
+    for (const [k] of unfilled) console.log(`       operator.${k}`);
+    console.log("     Fill them in at the top of tools/build-site.js and build again.");
+}
