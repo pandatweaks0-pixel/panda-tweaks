@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panda Tweaks — the free Windows optimizer you can read</title>
-<meta name="description" content="124 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
+<meta name="description" content="131 tweaks, 17 repairs and a debloater for Windows 10 and 11. Every change names the exact registry key and can be rolled back one at a time. Free, open source, no account.">
 <meta property="og:title" content="Panda Tweaks">
 <meta property="og:description" content="Make Windows faster — and read every change before it happens.">
 <meta property="og:type" content="website">
@@ -236,7 +236,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section style="padding-bottom:0"><div class="wrap">
     <div class="stats">
-      <div class="stat"><b>124</b><span>tweaks</span></div>
+      <div class="stat"><b>131</b><span>tweaks</span></div>
       <div class="stat"><b>17</b><span>repairs</span></div>
       <div class="stat"><b>53</b><span>removable apps</span></div>
       <div class="stat"><b>21</b><span>services</span></div>
@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
 
   <section id="catalogue" style="padding-top:0"><div class="wrap">
     <p class="eyebrow">Full control</p>
-    <h2>215 entries, every one explained</h2>
+    <h2>222 entries, every one explained</h2>
     <p class="sub">No hidden scripts. This is the same list the app uses — generated from the same
       data, so it cannot drift away from it. Under every entry is exactly what gets touched.</p>
 
@@ -561,6 +561,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Only for SSDs. Do NOT use on HDDs.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters\EnablePrefetcher = 0</li></ul>
+        </article>
+        <article class="item" data-group="Network" data-risk="advanced" data-search="disable nagle's algorithm sends small network packets immediately instead of batching them, which can shave a few milliseconds off input in online games. it also raises the number of packets you send, so on a weak or congested connection it can make things worse. takes effect after a restart. registryscan registryscan">
+          <div class="item__name">Disable Nagle's Algorithm
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Network</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Sends small network packets immediately instead of batching them, which can shave a few milliseconds off input in online games. It also raises the number of packets you send, so on a weak or congested connection it can make things worse. Takes effect after a restart.</p>
+          <ul class="item__targets"><li>registryScan</li><li>registryScan</li></ul>
         </article>
         <article class="item" data-group="Network" data-risk="advanced" data-search="disable network throttling lifts the 10ms multimedia network throttle. removes the throttle that protects audio and video playback from network interrupt load; under heavy traffic playback can stutter. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\networkthrottlingindex = 4294967295">
           <div class="item__name">Disable Network Throttling
@@ -1282,6 +1291,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">mouclass/kbdclass ThreadPriority 31. Community tweak - unproven, but harmless. Reboot.</p>
           <ul class="item__targets"><li>HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters\ThreadPriority = 31</li><li>HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters\ThreadPriority = 31</li></ul>
         </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="usb input power saving off stops windows suspending usb keyboards and mice to save power. fixes a mouse that stutters or 'wakes up' after a pause. costs a little idle power. takes effect after a restart. registryscan registryscan">
+          <div class="item__name">USB Input Power Saving Off
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Stops Windows suspending USB keyboards and mice to save power. Fixes a mouse that stutters or 'wakes up' after a pause. Costs a little idle power. Takes effect after a restart.</p>
+          <ul class="item__targets"><li>registryScan</li><li>registryScan</li></ul>
+        </article>
         <article class="item" data-group="Performance" data-risk="safe" data-search="reset boot timers to default sets useplatformtick + disabledynamictick back to windows defaults. reboot required. action: resetboottimers">
           <div class="item__name">Reset Boot Timers to Default
             <span class="badge badge--safe">Safe</span>
@@ -1290,6 +1308,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Sets useplatformtick + disabledynamictick back to Windows defaults. Reboot required.</p>
           <ul class="item__targets"><li>Action: resetBootTimers</li></ul>
+        </article>
+        <article class="item" data-group="Performance" data-risk="advanced" data-search="enable msi mode (gpu) switches the graphics card to message-signalled interrupts, which can reduce stutter and latency. standard on modern hardware, but a few older cards misbehave - if the screen flickers or the driver crashes, undo it. takes effect after a restart. registryscan">
+          <div class="item__name">Enable MSI Mode (GPU)
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Performance</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Switches the graphics card to message-signalled interrupts, which can reduce stutter and latency. Standard on modern hardware, but a few older cards misbehave - if the screen flickers or the driver crashes, undo it. Takes effect after a restart.</p>
+          <ul class="item__targets"><li>registryScan</li></ul>
         </article>
         <article class="item" data-group="Gaming" data-risk="safe" data-search="xbox button doesn't open game bar stops the xbox/guide button from opening the game bar mid-match. hkcu\software\microsoft\gamebar\usenexusforgamebarenabled = 0">
           <div class="item__name">Xbox Button Doesn't Open Game Bar
@@ -1300,6 +1327,24 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Stops the Xbox/Guide button from opening the Game Bar mid-match.</p>
           <ul class="item__targets"><li>HKCU\Software\Microsoft\GameBar\UseNexusForGameBarEnabled = 0</li></ul>
         </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="controller usb power saving off stops windows putting usb game controllers into power saving, which is a common cause of a pad that goes unresponsive after idling. costs a little idle power. takes effect after a restart. registryscan registryscan">
+          <div class="item__name">Controller USB Power Saving Off
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Stops Windows putting USB game controllers into power saving, which is a common cause of a pad that goes unresponsive after idling. Costs a little idle power. Takes effect after a restart.</p>
+          <ul class="item__targets"><li>registryScan</li><li>registryScan</li></ul>
+        </article>
+        <article class="item" data-group="Gaming" data-risk="advanced" data-search="bluetooth power saving off keeps bluetooth devices awake instead of letting windows power them down - helps with stuttering wireless controllers and headset dropouts. costs battery on a laptop. takes effect after a restart. registryscan">
+          <div class="item__name">Bluetooth Power Saving Off
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Gaming</span>
+            <span class="badge badge--note">Restart needed</span>
+          </div>
+          <p class="item__desc">Keeps Bluetooth devices awake instead of letting Windows power them down - helps with stuttering wireless controllers and headset dropouts. Costs battery on a laptop. Takes effect after a restart.</p>
+          <ul class="item__targets"><li>registryScan</li></ul>
+        </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="disable audio ducking windows stops lowering game volume when someone talks in discord. hkcu\software\microsoft\multimedia\audio\userduckingpreference = 3">
           <div class="item__name">Disable Audio Ducking
             <span class="badge badge--safe">Safe</span>
@@ -1309,6 +1354,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           <p class="item__desc">Windows stops lowering game volume when someone talks in Discord.</p>
           <ul class="item__targets"><li>HKCU\Software\Microsoft\Multimedia\Audio\UserDuckingPreference = 3</li></ul>
         </article>
+        <article class="item" data-group="Windows" data-risk="safe" data-search="disable audio enhancements turns off windows audio effects on every playback device for cleaner, slightly lower-latency sound. if you rely on an equaliser, bass boost or virtual surround from your sound card, that goes away too. registryscan">
+          <div class="item__name">Disable Audio Enhancements
+            <span class="badge badge--safe">Safe</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Turns off Windows audio effects on every playback device for cleaner, slightly lower-latency sound. If you rely on an equaliser, bass boost or virtual surround from your sound card, that goes away too.</p>
+          <ul class="item__targets"><li>registryScan</li></ul>
+        </article>
         <article class="item" data-group="Windows" data-risk="advanced" data-search="audio thread priority gives the audio engine higher scheduling priority (mmcss audio task). audio outranks other work, which on a weak cpu can cost frames. hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\priority = 6 hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\scheduling category = high hklm\software\microsoft\windows nt\currentversion\multimedia\systemprofile\tasks\audio\sfio priority = high">
           <div class="item__name">Audio Thread Priority
             <span class="badge badge--advanced">Advanced</span>
@@ -1317,6 +1371,15 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
           </div>
           <p class="item__desc">Gives the audio engine higher scheduling priority (MMCSS Audio task). Audio outranks other work, which on a weak CPU can cost frames.</p>
           <ul class="item__targets"><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Priority = 6</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\Scheduling Category = High</li><li>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio\SFIO Priority = High</li></ul>
+        </article>
+        <article class="item" data-group="Windows" data-risk="advanced" data-search="block exclusive audio control stops applications taking exclusive control of a playback device, which is what mutes game audio when another app grabs the card. the cost is that bit-perfect playback in music players and daws stops working. registryscan">
+          <div class="item__name">Block Exclusive Audio Control
+            <span class="badge badge--advanced">Advanced</span>
+            <span class="badge badge--group">Windows</span>
+            
+          </div>
+          <p class="item__desc">Stops applications taking exclusive control of a playback device, which is what mutes game audio when another app grabs the card. The cost is that bit-perfect playback in music players and DAWs stops working.</p>
+          <ul class="item__targets"><li>registryScan</li></ul>
         </article>
         <article class="item" data-group="Windows" data-risk="safe" data-search="disable windows system sounds no dings and error beeps over your game audio. hkcu\appevents\schemes\ = .none">
           <div class="item__name">Disable Windows System Sounds
@@ -2286,9 +2349,9 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
     </div>
 
     <div class="honest" style="margin-top:24px">
-      <h3>The honest part: 22 tweaks are still missing</h3>
+      <h3>The honest part: 15 tweaks are still missing</h3>
       <p>The collection was imported as raw command
-         line. 22 of them — powershell, powercfg, bcdedit, netsh — have not been
+         line. 15 of them — powershell, powercfg, bcdedit, netsh — have not been
          translated into validated operations yet. They are marked unavailable inside the app and
          appear neither in the number above nor in the list. Better one tweak fewer than one that
          only pretends.</p>
@@ -2329,7 +2392,7 @@ footer{border-top:1px solid var(--line);padding:48px 0;color:var(--faint);font-s
       <details><summary>Does it need administrator rights?</summary><p>Not to start. Analysis and every change inside your own user account run as a normal user. Windows only prompts once you apply something that reaches system-wide settings.</p></details>
       <details><summary>Can I undo everything?</summary><p>Yes. The previous value is captured before every change, and the history rolls back each one individually. The app also offers a Windows restore point on first launch and then checks that it was really created.</p></details>
       <details><summary>Where do I actually download it?</summary><p>In the Discord, in the download channel. There is no download button on this site on purpose — see the section above for why. Joining takes one click and costs nothing.</p></details>
-      <details><summary>Why 124 tweaks and not 146?</summary><p>Because 22 of them do not run yet. They were imported as raw command lines; those 22 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
+      <details><summary>Why 131 tweaks and not 146?</summary><p>Because 15 of them do not run yet. They were imported as raw command lines; those 15 have not been translated into validated operations. The app marks them unavailable and this page does not count them. A bigger number would be easy — it just would not be true.</p></details>
       <details><summary>I am not technical. Can I use this?</summary><p>Yes. Press Analyse once and you get a plain-language list of what is recommended and why. Nothing is applied without your confirmation, and risky changes are hidden from the start.</p></details>
       <details><summary>How much faster will my PC get?</summary><p>That depends entirely on your PC, and any specific number on a website is a guess. A freshly installed machine gains little, a cluttered one can gain a lot. The system analysis shows you up front where there is anything to gain on yours.</p></details>
     </div>

@@ -874,18 +874,23 @@
     "category": "Network",
     "sourceCategory": "Network",
     "risk": "advanced",
-    "description": "TcpAckFrequency/TCPNoDelay on every interface.",
+    "description": "Sends small network packets immediately instead of batching them, which can shave a few milliseconds off input in online games. It also raises the number of packets you send, so on a weak or congested connection it can make things worse. Takes effect after a restart.",
     "detailedDescription": "TcpAckFrequency/TCPNoDelay on every interface.",
     "recommended": false,
-    "requiresRestart": false,
+    "requiresRestart": true,
     "oneTimeAction": false,
     "windowsDefault": null,
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' | ForEach-Object { Set-ItemProperty $_.PSPath -Name TcpAckFrequency -Value 1 -Type DWord -Force; Set-ItemProperty $_.PSPath -Name TCPNoDelay -Value 1 -Type DWord -Force }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "tcpAckFrequency",
+        "value": "1"
+      },
+      {
+        "type": "registryScan",
+        "setting": "tcpNoDelay",
+        "value": "1"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' | ForEach-Object { Set-ItemProperty $_.PSPath -Name TcpAckFrequency -Value 1 -Type DWord -Force; Set-ItemProperty $_.PSPath -Name TCPNoDelay -Value 1 -Type DWord -Force }\"",
@@ -3338,7 +3343,7 @@
     "category": "Gaming",
     "sourceCategory": "Input",
     "risk": "advanced",
-    "description": "Disables Enhanced Power Management on mouse/keyboard USB devices. Reboot.",
+    "description": "Stops Windows suspending USB keyboards and mice to save power. Fixes a mouse that stutters or 'wakes up' after a pause. Costs a little idle power. Takes effect after a restart.",
     "detailedDescription": "Disables Enhanced Power Management on mouse/keyboard USB devices. Reboot.",
     "recommended": false,
     "requiresRestart": true,
@@ -3347,9 +3352,14 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -ErrorAction SilentlyContinue | Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { $dp = Join-Path $_.PSPath 'Device Parameters'; if (Test-Path $dp) { $svc=(Get-ItemProperty $_.PSPath -Name Service -ErrorAction SilentlyContinue).Service; if ($svc -match 'HidUsb|kbdhid|mouhid') { Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue } } }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "usbInputEpm",
+        "value": "0"
+      },
+      {
+        "type": "registryScan",
+        "setting": "usbInputSuspend",
+        "value": "0"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -ErrorAction SilentlyContinue | Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { $dp = Join-Path $_.PSPath 'Device Parameters'; if (Test-Path $dp) { $svc=(Get-ItemProperty $_.PSPath -Name Service -ErrorAction SilentlyContinue).Service; if ($svc -match 'HidUsb|kbdhid|mouhid') { Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue } } }\"",
@@ -3382,7 +3392,7 @@
     "category": "Performance",
     "sourceCategory": "GPU",
     "risk": "advanced",
-    "description": "Message-Signaled Interrupts for your graphics card - can lower latency/stutter. Reboot required.",
+    "description": "Switches the graphics card to message-signalled interrupts, which can reduce stutter and latency. Standard on modern hardware, but a few older cards misbehave - if the screen flickers or the driver crashes, undo it. Takes effect after a restart.",
     "detailedDescription": "Message-Signaled Interrupts for your graphics card - can lower latency/stutter. Reboot required.",
     "recommended": false,
     "requiresRestart": true,
@@ -3391,9 +3401,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-CimInstance Win32_VideoController | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.PNPDeviceID+'\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name MSISupported -Value 1 -Type DWord -Force } }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "gpuMsi",
+        "value": "1"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-CimInstance Win32_VideoController | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.PNPDeviceID+'\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if(Test-Path $p){ Set-ItemProperty $p -Name MSISupported -Value 1 -Type DWord -Force } }\"",
@@ -3456,7 +3466,7 @@
     "category": "Gaming",
     "sourceCategory": "Input",
     "risk": "advanced",
-    "description": "Stops Windows putting game controllers into power saving. Reboot.",
+    "description": "Stops Windows putting USB game controllers into power saving, which is a common cause of a pad that goes unresponsive after idling. Costs a little idle power. Takes effect after a restart.",
     "detailedDescription": "Stops Windows putting game controllers into power saving. Reboot.",
     "recommended": false,
     "requiresRestart": true,
@@ -3465,9 +3475,14 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -EA SilentlyContinue | Get-ChildItem -EA SilentlyContinue | ForEach-Object { $dp=Join-Path $_.PSPath 'Device Parameters'; if(Test-Path $dp){ $svc=(Get-ItemProperty $_.PSPath -Name Service -EA SilentlyContinue).Service; if($svc -match 'xusb22|WinUSB|HidUsb|BthUsb'){ Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } } }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "usbControllerEpm",
+        "value": "0"
+      },
+      {
+        "type": "registryScan",
+        "setting": "usbControllerSuspend",
+        "value": "0"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\USB' -EA SilentlyContinue | Get-ChildItem -EA SilentlyContinue | ForEach-Object { $dp=Join-Path $_.PSPath 'Device Parameters'; if(Test-Path $dp){ $svc=(Get-ItemProperty $_.PSPath -Name Service -EA SilentlyContinue).Service; if($svc -match 'xusb22|WinUSB|HidUsb|BthUsb'){ Set-ItemProperty $dp -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue; Set-ItemProperty $dp -Name SelectiveSuspendEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } } }\"",
@@ -3479,7 +3494,7 @@
     "category": "Gaming",
     "sourceCategory": "Input",
     "risk": "advanced",
-    "description": "Keeps wireless controllers/headsets awake (helps stutter & dropouts). Reboot.",
+    "description": "Keeps Bluetooth devices awake instead of letting Windows power them down - helps with stuttering wireless controllers and headset dropouts. Costs battery on a laptop. Takes effect after a restart.",
     "detailedDescription": "Keeps wireless controllers/headsets awake (helps stutter & dropouts). Reboot.",
     "recommended": false,
     "requiresRestart": true,
@@ -3488,9 +3503,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-PnpDevice -Class Bluetooth -EA SilentlyContinue | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.InstanceId+'\\Device Parameters'; if(Test-Path $p){ Set-ItemProperty $p -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "btEpm",
+        "value": "0"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-PnpDevice -Class Bluetooth -EA SilentlyContinue | ForEach-Object { $p='HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\'+$_.InstanceId+'\\Device Parameters'; if(Test-Path $p){ Set-ItemProperty $p -Name EnhancedPowerManagementEnabled -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
@@ -3530,7 +3545,7 @@
     "category": "Windows",
     "sourceCategory": "Audio",
     "risk": "safe",
-    "description": "Turns off Windows audio effects on all playback devices (cleaner, lower latency).",
+    "description": "Turns off Windows audio effects on every playback device for cleaner, slightly lower-latency sound. If you rely on an equaliser, bass boost or virtual surround from your sound card, that goes away too.",
     "detailedDescription": "Turns off Windows audio effects on all playback devices (cleaner, lower latency).",
     "recommended": false,
     "requiresRestart": false,
@@ -3539,9 +3554,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'FxProperties'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -Value 1 -Type DWord -Force -EA SilentlyContinue }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "audioFxDisable",
+        "value": "1"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'FxProperties'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -Value 1 -Type DWord -Force -EA SilentlyContinue }\"",
@@ -3602,7 +3617,7 @@
     "category": "Windows",
     "sourceCategory": "Audio",
     "risk": "advanced",
-    "description": "Stops apps taking exclusive control of your audio device (fixes muted game audio).",
+    "description": "Stops applications taking exclusive control of a playback device, which is what mutes game audio when another app grabs the card. The cost is that bit-perfect playback in music players and DAWs stops working.",
     "detailedDescription": "Stops apps taking exclusive control of your audio device (fixes muted game audio).",
     "recommended": false,
     "requiresRestart": false,
@@ -3611,9 +3626,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'Properties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{b3f8fa53-0004-438e-9003-51a46e139bfc},3' -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "registryScan",
+        "setting": "audioExclusive",
+        "value": "0"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\MMDevices\\Audio\\Render' -EA SilentlyContinue | ForEach-Object { $p=Join-Path $_.PSPath 'Properties'; if(Test-Path $p){ Set-ItemProperty $p -Name '{b3f8fa53-0004-438e-9003-51a46e139bfc},3' -Value 0 -Type DWord -Force -EA SilentlyContinue } }\"",

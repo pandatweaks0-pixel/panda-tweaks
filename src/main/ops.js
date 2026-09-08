@@ -198,6 +198,273 @@ function explainRegistry(op, cur) {
 }
 
 // ---------------------------------------------------------------------------
+// Registry scan — one value, written to every device of a known kind
+// ---------------------------------------------------------------------------
+//
+// A handful of tweaks do not target one registry key but "every USB input
+// device", "every playback device", "the graphics card". The key names contain
+// hardware ids, so they cannot be written down in advance.
+//
+// The dangerous way to do that is to let a data file carry a path to enumerate.
+// It does not: a tweak names a setting from the table below, and the table
+// decides both which fixed enumeration runs and which single value it may
+// write. Paths come back from the scan, and every one is checked against the
+// root its scope is allowed to touch before a write happens.
+//
+// The payoff over the PowerShell one-liners these replace is undo. Those wrote
+// the same value everywhere and kept nothing; here each key's previous value is
+// captured separately, so undo puts back what each device actually had —
+// including deleting the value again on the devices that never had it.
+
+const SCAN_SCOPES = {
+    usbInput: { root: "SYSTEM\\CurrentControlSet\\Enum\\USB", label: "USB keyboards and mice" },
+    usbController: { root: "SYSTEM\\CurrentControlSet\\Enum\\USB", label: "USB game controllers" },
+    bluetooth: { root: "SYSTEM\\CurrentControlSet\\Enum", label: "Bluetooth devices" },
+    gpu: { root: "SYSTEM\\CurrentControlSet\\Enum", label: "graphics adapters" },
+    audioRender: {
+        root: "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\MMDevices\\Audio\\Render",
+        label: "playback devices",
+    },
+    tcpInterfaces: {
+        root: "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces",
+        label: "network interfaces",
+    },
+};
+
+// `sub` is the subkey under each enumerated device key; "" means the key itself.
+// `create: true` allows the subkey to be created when a device does not have it
+// yet — only where Windows itself treats the key as optional.
+const SCAN_SETTINGS = {
+    usbInputEpm: {
+        scope: "usbInput",
+        sub: "Device Parameters",
+        name: "EnhancedPowerManagementEnabled",
+        label: "Enhanced power management",
+    },
+    usbInputSuspend: {
+        scope: "usbInput",
+        sub: "Device Parameters",
+        name: "SelectiveSuspendEnabled",
+        label: "Selective suspend",
+    },
+    usbControllerEpm: {
+        scope: "usbController",
+        sub: "Device Parameters",
+        name: "EnhancedPowerManagementEnabled",
+        label: "Enhanced power management",
+    },
+    usbControllerSuspend: {
+        scope: "usbController",
+        sub: "Device Parameters",
+        name: "SelectiveSuspendEnabled",
+        label: "Selective suspend",
+    },
+    btEpm: {
+        scope: "bluetooth",
+        sub: "Device Parameters",
+        name: "EnhancedPowerManagementEnabled",
+        label: "Enhanced power management",
+    },
+    gpuMsi: {
+        scope: "gpu",
+        sub: "Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties",
+        name: "MSISupported",
+        label: "Message-signalled interrupts",
+    },
+    audioFxDisable: {
+        scope: "audioRender",
+        sub: "FxProperties",
+        name: "{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5",
+        label: "Audio enhancements disabled",
+        create: true,
+    },
+    audioExclusive: {
+        scope: "audioRender",
+        sub: "Properties",
+        name: "{b3f8fa53-0004-438e-9003-51a46e139bfc},3",
+        label: "Applications may take exclusive control",
+    },
+    tcpAckFrequency: {
+        scope: "tcpInterfaces",
+        sub: "",
+        name: "TcpAckFrequency",
+        label: "TCP acknowledgement delay",
+    },
+    tcpNoDelay: { scope: "tcpInterfaces", sub: "", name: "TCPNoDelay", label: "Nagle's algorithm" },
+};
+
+function validateRegistryScan(op) {
+    const setting = SCAN_SETTINGS[op.setting];
+    if (!setting) throw new Error(`Unknown device setting: ${op.setting}`);
+    const raw = op.value;
+    const value =
+        typeof raw === "number" ? raw : typeof raw === "string" && raw.trim() !== "" ? Number(raw) : NaN;
+    if (!Number.isInteger(value) || value < 0 || value > 0xffffffff)
+        throw new Error(`Invalid device setting value: ${op.value}`);
+    return { ...op, setting: op.setting, value: String(value) };
+}
+
+// The scan reads paths off the machine, and this operation then writes to them.
+// Confining them to the scope's own root is what keeps a surprising registry
+// layout from turning into a write somewhere else entirely.
+function scanKeyAllowed(scope, key) {
+    const root = SCAN_SCOPES[scope].root.toLowerCase();
+    const k = String(key || "").toLowerCase();
+    return (k === root || k.startsWith(root + "\\")) && !k.includes("..");
+}
+
+const scanTargetKey = (setting, deviceKey) =>
+    setting.sub ? `${deviceKey}\\${setting.sub}` : deviceKey;
+
+// A synthetic registry op, so the value writing, deleting and error reporting
+// below is the same code the plain `registry` type uses.
+const scanRegOp = (setting, key) => ({ hive: "HKLM", key, name: setting.name });
+
+async function captureRegistryScan(ops) {
+    const out = new Map();
+    if (!ops.length) return out;
+
+    const scopes = [...new Set(ops.map((op) => SCAN_SETTINGS[op.setting].scope))];
+    const scan = await runPsJson(path.join(PS_DIR, "scan-registry.ps1"), { scopes }, null);
+    if (!scan.ok || !scan.data) {
+        const error = scan.error || "device scan failed";
+        for (const op of ops) out.set(op, { readFailed: true, error });
+        return out;
+    }
+
+    // Every value across every op in one read, rather than one PowerShell start
+    // per device.
+    const reads = [];
+    for (const op of ops) {
+        const setting = SCAN_SETTINGS[op.setting];
+        const found = scan.data[setting.scope];
+        if (!found || !found.ok) {
+            out.set(op, {
+                readFailed: true,
+                error: `Could not enumerate ${SCAN_SCOPES[setting.scope].label}`,
+            });
+            continue;
+        }
+        const targets = (found.keys || [])
+            .filter((k) => scanKeyAllowed(setting.scope, k))
+            .map((k) => ({ key: scanTargetKey(setting, k) }));
+        out.set(op, { readFailed: false, targets });
+        for (const t of targets) reads.push({ target: t, path: `${HIVES.HKLM.provider}\\${t.key}`, name: setting.name });
+    }
+
+    if (!reads.length) return out;
+
+    const res = await runPsJson(
+        path.join(PS_DIR, "read-registry.ps1"),
+        reads.map((r, idx) => ({ id: String(idx), path: r.path, name: r.name })),
+        {}
+    );
+    for (let i = 0; i < reads.length; i++) {
+        const raw = res.data ? res.data[String(i)] : null;
+        if (!res.ok || !raw) {
+            Object.assign(reads[i].target, { readFailed: true });
+        } else {
+            Object.assign(reads[i].target, {
+                readFailed: false,
+                exists: !!raw.exists,
+                valueType: KIND_TO_REG[raw.type] || raw.type || "",
+                value: raw.value,
+            });
+        }
+    }
+    return out;
+}
+
+function registryScanIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    // No device of this kind on this machine. Nothing to change is the end state
+    // the tweak asks for, the same answer a service that was never installed
+    // gets — anything else would recommend a Bluetooth tweak on a PC without
+    // Bluetooth, forever.
+    if (!cur.targets.length) return true;
+    if (cur.targets.some((t) => t.readFailed)) return null;
+    const want = normalizeRegValue("REG_DWORD", op.value);
+    return cur.targets.every((t) => t.exists && normalizeRegValue("REG_DWORD", t.value) === want);
+}
+
+async function applyRegistryScan(op, prev) {
+    const setting = SCAN_SETTINGS[op.setting];
+    if (!prev || prev.readFailed) {
+        return { ok: false, error: prev && prev.error ? prev.error : "Could not read the current state" };
+    }
+    if (!prev.targets.length) {
+        return { ok: true, warning: `No ${SCAN_SCOPES[setting.scope].label} found — nothing to change` };
+    }
+
+    const failures = [];
+    for (const t of prev.targets) {
+        // Writing where nothing was read is how an undo loses a value. The one
+        // exception is a subkey Windows leaves out until something needs it.
+        if (t.readFailed && !setting.create) {
+            failures.push("could not be read before the change");
+            continue;
+        }
+        const res = await regSet(scanRegOp(setting, t.key), "REG_DWORD", op.value);
+        if (!res.ok) failures.push(res.error);
+    }
+    if (!failures.length) return { ok: true };
+    if (failures.length === prev.targets.length) return { ok: false, error: failures[0] };
+    return {
+        ok: true,
+        warning: `${prev.targets.length - failures.length} of ${prev.targets.length} devices changed; the rest failed: ${failures[0]}`,
+    };
+}
+
+async function restoreRegistryScan(op, prev) {
+    const setting = SCAN_SETTINGS[op.setting];
+    if (!prev || prev.readFailed) {
+        return { ok: false, error: "No captured state for these devices — cannot undo safely" };
+    }
+    if (!prev.targets.length) return { ok: true };
+
+    const failures = [];
+    for (const t of prev.targets) {
+        if (t.readFailed) {
+            failures.push("no captured value");
+            continue;
+        }
+        const regOp = scanRegOp(setting, t.key);
+        // Each device gets its own value back, and a device that never had the
+        // value has it removed rather than set to some assumed default.
+        const res = t.exists ? await regSet(regOp, t.valueType || "REG_DWORD", t.value) : await regDelete(regOp);
+        if (!res.ok) failures.push(res.error);
+    }
+    return failures.length ? { ok: false, error: `${failures.length} of ${prev.targets.length} devices: ${failures[0]}` } : { ok: true };
+}
+
+function describeRegistryScan(op) {
+    const setting = SCAN_SETTINGS[op.setting];
+    return `Set "${setting.name}" = ${op.value} on every one of the ${SCAN_SCOPES[setting.scope].label} found on this PC`;
+}
+
+function explainRegistryScan(op, cur) {
+    const setting = SCAN_SETTINGS[op.setting];
+    let now = null;
+    if (cur && !cur.readFailed) {
+        const n = cur.targets.length;
+        if (!n) {
+            now = "no such devices on this PC";
+        } else {
+            const want = normalizeRegValue("REG_DWORD", op.value);
+            const set = cur.targets.filter((t) => !t.readFailed && t.exists && normalizeRegValue("REG_DWORD", t.value) === want).length;
+            now = `${set} of ${n} already set`;
+        }
+    }
+    return {
+        kind: "Every device of a kind",
+        target: `${setting.label} — ${SCAN_SCOPES[setting.scope].label}`,
+        type: "REG_DWORD",
+        now,
+        after: String(op.value),
+    };
+}
+
+// ---------------------------------------------------------------------------
 // Services
 // ---------------------------------------------------------------------------
 
@@ -1135,6 +1402,17 @@ const OPS = {
         requiresAdmin: (op) => HIVES[op.hive].admin,
         undoable: true,
     },
+    registryScan: {
+        validate: validateRegistryScan,
+        capture: captureRegistryScan,
+        isApplied: registryScanIsApplied,
+        apply: applyRegistryScan,
+        restore: restoreRegistryScan,
+        describe: describeRegistryScan,
+        explain: explainRegistryScan,
+        requiresAdmin: () => true, // every scope lives under HKLM
+        undoable: true,
+    },
     service: {
         validate: validateService,
         capture: captureServices,
@@ -1268,6 +1546,9 @@ module.exports = {
     normalizeRegValue,
     POWER_SETTINGS,
     NET_SETTINGS,
+    SCAN_SCOPES,
+    SCAN_SETTINGS,
+    scanKeyAllowed,
     CLEANUP_ROOTS,
     cleanupScan,
     listInstalledApps,

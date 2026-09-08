@@ -112,8 +112,22 @@ function contextReasons(analysis, scores) {
 // exception that is not a powercfg operation has to be named.
 const ALSO_DRAINS_BATTERY = new Set(["cpu_powerthrottle_off"]);
 
+// Device power saving is the whole point of these settings, so switching it off
+// costs battery for the same reason it helps latency. The other registryScan
+// settings (interrupts, audio effects, TCP) cost nothing on a laptop.
+const BATTERY_SETTINGS = new Set([
+    "usbInputEpm",
+    "usbInputSuspend",
+    "usbControllerEpm",
+    "usbControllerSuspend",
+    "btEpm",
+]);
+
 const drainsBattery = (tweak) =>
-    ALSO_DRAINS_BATTERY.has(tweak.id) || (tweak.operations || []).some((op) => op.type === "powercfg");
+    ALSO_DRAINS_BATTERY.has(tweak.id) ||
+    (tweak.operations || []).some(
+        (op) => op.type === "powercfg" || (op.type === "registryScan" && BATTERY_SETTINGS.has(op.setting))
+    );
 
 // Tweaks whose own description names a hardware condition. Keeping the rule here
 // rather than in tweaks.json means the converter cannot overwrite it, and it

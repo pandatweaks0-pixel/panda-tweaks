@@ -23,7 +23,7 @@ The rest of the folders exist to support that one:
 | | |
 |---|---|
 | `src/` | the application itself — this is what ships in the .exe |
-| `test/` | 88 automated checks that run against the catalogue and the operations layer |
+| `test/` | 101 automated checks that run against the catalogue and the operations layer |
 | `tools/` | generators: the website, the game presets, the one-shot optimizer |
 | `site/` | the public website, generated from the same data the app uses |
 
@@ -115,7 +115,7 @@ src/
     main.js              window + lifecycle
     ipc.js               the complete renderer-facing API surface
     preload.js           contextBridge; one typed function per IPC channel
-    ops.js               typed operations: registry, service, task, appx, cleanup
+    ops.js               typed operations: registry, service, task, appx, cleanup, ...
     engine.js            detect / apply / undo, history store
     analyzer.js          system analysis + recommendations
     scores.js            health scoring (pure, no I/O)
@@ -219,8 +219,21 @@ A tweak is data, not code. Adding one means adding an entry to
 Detection, application, undo, logging and the "what this changes" list are all
 derived from the operations. You do not write any of that per tweak.
 
-**Operation types:** `registry`, `service`, `scheduledTask`, `appx`, `startup`,
-`cleanup`, `command`.
+**Operation types:** `registry`, `registryScan`, `service`, `scheduledTask`,
+`appx`, `startup`, `cleanup`, `command`, `powercfg`, `netsh`.
+
+`registryScan` is the one that does not name its own target. Some tweaks apply
+to "every USB input device" or "every playback device", and those key names
+contain hardware ids that cannot be written down in advance. A tweak therefore
+names a *setting* from a table in `ops.js`, and that table decides both which
+fixed enumeration runs and which single value it may write — a data file still
+cannot describe a registry path. Every key the scan returns is checked against
+the root its scope is allowed to touch before anything is written, and each
+key's previous value is captured on its own, so undo gives every device back
+what it actually had.
+
+`command`, `powercfg` and `netsh` work the same way: the operation picks an id
+out of a fixed table, never a command line or a path.
 
 Services and cleanup targets are not a separate system: each is generated at
 load time as a tweak with a single operation, so detection, undo, history and
@@ -242,9 +255,10 @@ half-applied.
 
 ### Not implemented yet
 
-The catalogue includes tweaks whose original commands used `powercfg`, `netsh`,
-`bcdedit` or ad-hoc PowerShell. Those have no typed operation yet, so they ship
-**disabled and labelled**, with the original command preserved in the JSON.
+15 of the 146 tweaks in the catalogue have no typed operation yet — power
+schemes, `bcdedit` boot settings, and a handful of ad-hoc PowerShell one-liners.
+They ship **disabled and labelled**, with the original command preserved in the
+JSON.
 
 They are not hidden and they are not faked. A tweak either performs a defined,
 reversible action or says it cannot.
