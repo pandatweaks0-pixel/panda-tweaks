@@ -24,8 +24,7 @@ The rest of the folders exist to support that one:
 |---|---|
 | `src/` | the application itself — this is what ships in the .exe |
 | `test/` | 109 automated checks that run against the catalogue and the operations layer |
-| `tools/` | generators: the website, the game presets, the one-shot optimizer |
-| `site/` | the public website, generated from the same data the app uses |
+| `tools/` | generators: the game presets, the one-shot optimizer |
 
 ---
 

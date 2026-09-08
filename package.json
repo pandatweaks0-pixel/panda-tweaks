@@ -12,7 +12,6 @@
     "dev": "electron . --dev",
     "test": "node --test \"test/**/*.test.js\"",
     "convert-data": "node tools/convert-tweaks.js",
-    "build:site": "node tools/build-site.js",
     "build": "electron-builder --win portable",
     "build:setup": "electron-builder --win nsis",
     "build:all": "electron-builder --win portable nsis",
