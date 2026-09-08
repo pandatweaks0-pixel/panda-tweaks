@@ -133,7 +133,11 @@ const drainsBattery = (tweak) =>
 // rather than in tweaks.json means the converter cannot overwrite it, and it
 // stays next to the code that enforces it.
 const NEEDS_SSD = new Set(["mem_prefetch_off"]); // "SSD only. Do NOT use on HDDs."
-const NEEDS_RAM_GB = { cpu_pagingexec: 16 }; // "needs plenty of RAM"
+const NEEDS_RAM_GB = {
+    cpu_pagingexec: 16, // "needs plenty of RAM"
+    // Below 16 GB, compression is what keeps Windows off the page file.
+    mem_compression_off: 16,
+};
 
 // Does this tweak suit this machine? Returns null when it fits, or the reason it
 // does not, ready to show.

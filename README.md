@@ -23,7 +23,7 @@ The rest of the folders exist to support that one:
 | | |
 |---|---|
 | `src/` | the application itself — this is what ships in the .exe |
-| `test/` | 101 automated checks that run against the catalogue and the operations layer |
+| `test/` | 109 automated checks that run against the catalogue and the operations layer |
 | `tools/` | generators: the website, the game presets, the one-shot optimizer |
 | `site/` | the public website, generated from the same data the app uses |
 
@@ -220,7 +220,7 @@ Detection, application, undo, logging and the "what this changes" list are all
 derived from the operations. You do not write any of that per tweak.
 
 **Operation types:** `registry`, `registryScan`, `service`, `scheduledTask`,
-`appx`, `startup`, `cleanup`, `command`, `powercfg`, `netsh`.
+`appx`, `startup`, `cleanup`, `command`, `powercfg`, `netsh`, `toggle`.
 
 `registryScan` is the one that does not name its own target. Some tweaks apply
 to "every USB input device" or "every playback device", and those key names
@@ -255,7 +255,7 @@ half-applied.
 
 ### Not implemented yet
 
-15 of the 146 tweaks in the catalogue have no typed operation yet — power
+11 of the 146 tweaks in the catalogue have no typed operation yet — power
 schemes, `bcdedit` boot settings, and a handful of ad-hoc PowerShell one-liners.
 They ship **disabled and labelled**, with the original command preserved in the
 JSON.

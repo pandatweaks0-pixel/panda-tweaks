@@ -1085,7 +1085,7 @@
     "category": "Debloat",
     "sourceCategory": "Clean",
     "risk": "safe",
-    "description": "Empties the Windows Recycle Bin.",
+    "description": "Empties the Recycle Bin on every drive. The files are gone for good - this is the one thing here that cannot be undone.",
     "detailedDescription": "Empties the Windows Recycle Bin.",
     "recommended": false,
     "requiresRestart": false,
@@ -1094,9 +1094,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "command",
+        "command": "emptyRecycleBin"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"",
@@ -1150,18 +1149,18 @@
     "category": "Debloat",
     "sourceCategory": "Clean",
     "risk": "advanced",
-    "description": "Frees ~7 GB reserved for updates.",
+    "description": "Frees the roughly 7 GB Windows keeps aside for updates. The space comes back, but the next feature update has to find it somewhere else - on a nearly full drive that update can fail instead.",
     "detailedDescription": "Frees ~7 GB reserved for updates.",
     "recommended": false,
     "requiresRestart": false,
-    "oneTimeAction": true,
+    "oneTimeAction": false,
     "windowsDefault": null,
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"DISM /Online /Set-ReservedStorageState /State:Disabled\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "toggle",
+        "setting": "reservedStorage",
+        "enabled": false
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"DISM /Online /Set-ReservedStorageState /State:Disabled\"",
@@ -2873,7 +2872,7 @@
     "category": "Debloat",
     "sourceCategory": "Clean",
     "risk": "advanced",
-    "description": "Wipes all Windows event logs.",
+    "description": "Clears every Windows event log. Frees a few hundred MB, and gives away the record you would need to work out why the PC crashed or a driver failed. Not undoable.",
     "detailedDescription": "Wipes all Windows event logs.",
     "recommended": false,
     "requiresRestart": false,
@@ -2882,9 +2881,8 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"wevtutil el | ForEach-Object { wevtutil cl \\\"$_\\\" }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "command",
+        "command": "clearEventLogs"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"wevtutil el | ForEach-Object { wevtutil cl \\\"$_\\\" }\"",
@@ -3415,7 +3413,7 @@
     "category": "Performance",
     "sourceCategory": "Memory",
     "risk": "advanced",
-    "description": "Stops Windows compressing RAM (saves CPU). Best with 16 GB+.",
+    "description": "Stops Windows compressing memory pages instead of paging them out. Saves a little CPU on a PC with plenty of RAM. On a PC with less it does the opposite: Windows starts hitting the disk earlier, so this only makes sense from 16 GB up.",
     "detailedDescription": "Stops Windows compressing RAM (saves CPU). Best with 16 GB+.",
     "recommended": false,
     "requiresRestart": false,
@@ -3424,9 +3422,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"Disable-MMAgent -mc\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "toggle",
+        "setting": "memoryCompression",
+        "enabled": false
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"Disable-MMAgent -mc\"",

@@ -465,6 +465,101 @@ function explainRegistryScan(op, cur) {
 }
 
 // ---------------------------------------------------------------------------
+// Toggle — a Windows switch that lives inside a tool, not in the registry
+// ---------------------------------------------------------------------------
+//
+// Memory compression and reserved storage have no registry value to write: a
+// cmdlet holds the state and a cmdlet changes it. Shipping them as `command`
+// would have cost both halves that make a tweak behave — there would be no way
+// to tell whether it is already on, so it would sit in the recommended list
+// forever, and no way back.
+//
+// Same rule as everywhere else: the operation names an entry in this table, and
+// the table owns the argument lists.
+
+const TOGGLES = {
+    memoryCompression: {
+        label: "Memory compression",
+        on: ["-NoProfile", "-NonInteractive", "-Command", "Enable-MMAgent -mc"],
+        off: ["-NoProfile", "-NonInteractive", "-Command", "Disable-MMAgent -mc"],
+        file: "powershell.exe",
+    },
+    reservedStorage: {
+        label: "Reserved storage",
+        file: "dism.exe",
+        on: ["/Online", "/Set-ReservedStorageState", "/State:Enabled"],
+        off: ["/Online", "/Set-ReservedStorageState", "/State:Disabled"],
+        // DISM refuses while an update is mid-flight, and says so.
+        timeout: 300_000,
+    },
+};
+
+function validateToggle(op) {
+    if (!Object.prototype.hasOwnProperty.call(TOGGLES, String(op.setting || "")))
+        throw new Error(`Unknown Windows toggle: ${op.setting}`);
+    if (typeof op.enabled !== "boolean")
+        throw new Error(`Toggle "${op.setting}" needs enabled: true or false, got ${JSON.stringify(op.enabled)}`);
+    return { ...op, setting: String(op.setting), enabled: op.enabled };
+}
+
+async function captureToggles(ops) {
+    const out = new Map();
+    if (!ops.length) return out;
+    const settings = [...new Set(ops.map((op) => op.setting))];
+    const res = await runPsJson(path.join(PS_DIR, "read-toggles.ps1"), { settings }, null);
+    for (const op of ops) {
+        const raw = res.ok && res.data ? res.data[op.setting] : null;
+        if (!raw || !raw.ok) {
+            // Reading these needs administrator rights, so an unelevated run
+            // lands here. Unknown, not "switched off".
+            out.set(op, {
+                readFailed: true,
+                error: res.error || `Could not read "${TOGGLES[op.setting].label}" — this needs administrator rights`,
+            });
+        } else {
+            out.set(op, { readFailed: false, enabled: !!raw.enabled });
+        }
+    }
+    return out;
+}
+
+function toggleIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    return cur.enabled === op.enabled;
+}
+
+async function setToggle(setting, enabled) {
+    const spec = TOGGLES[setting];
+    const res = await run(spec.file, enabled ? spec.on : spec.off, { timeout: spec.timeout || 120_000 });
+    if (res.ok) return { ok: true };
+    return { ok: false, error: res.stderr || res.stdout || res.error || `${spec.file} exited ${res.code}` };
+}
+
+async function applyToggle(op, prev) {
+    if (!prev || prev.readFailed) {
+        return { ok: false, error: prev && prev.error ? prev.error : "Could not read the current state" };
+    }
+    return setToggle(op.setting, op.enabled);
+}
+
+async function restoreToggle(op, prev) {
+    if (!prev || prev.readFailed) {
+        return { ok: false, error: `No captured state for "${TOGGLES[op.setting].label}" — cannot undo safely` };
+    }
+    return setToggle(op.setting, prev.enabled);
+}
+
+const describeToggle = (op) => `Turn ${TOGGLES[op.setting].label} ${op.enabled ? "on" : "off"}`;
+
+const explainToggle = (op, cur) => ({
+    kind: "Windows setting",
+    target: TOGGLES[op.setting].label,
+    type: "",
+    now: cur && !cur.readFailed ? (cur.enabled ? "On" : "Off") : null,
+    after: op.enabled ? "On" : "Off",
+});
+
+// ---------------------------------------------------------------------------
 // Services
 // ---------------------------------------------------------------------------
 
@@ -869,6 +964,30 @@ const COMMANDS = {
         args: ["/c", "start", "", "ms-settings:display-advanced"],
         admin: false,
         label: "Open the advanced display settings",
+    },
+    // Clear-RecycleBin is the supported way in: it goes through the shell, so
+    // the bin icon updates and every drive is covered. Walking $Recycle.Bin and
+    // deleting the files by hand would leave Windows still showing them.
+    emptyRecycleBin: {
+        file: "powershell.exe",
+        args: ["-NoProfile", "-NonInteractive", "-Command", "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"],
+        admin: false,
+        label: "Empty the Recycle Bin on every drive",
+        timeout: 300_000,
+    },
+    // "el" lists every log, "cl" clears one. Both come from wevtutil itself, so
+    // no log name is composed here.
+    clearEventLogs: {
+        file: "powershell.exe",
+        args: [
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "wevtutil el | ForEach-Object { wevtutil cl \"$_\" 2>$null }",
+        ],
+        admin: true,
+        label: "Clear all Windows event logs",
+        timeout: 600_000,
     },
 };
 
@@ -1413,6 +1532,17 @@ const OPS = {
         requiresAdmin: () => true, // every scope lives under HKLM
         undoable: true,
     },
+    toggle: {
+        validate: validateToggle,
+        capture: captureToggles,
+        isApplied: toggleIsApplied,
+        apply: applyToggle,
+        restore: restoreToggle,
+        describe: describeToggle,
+        explain: explainToggle,
+        requiresAdmin: () => true, // both of these need it even to read
+        undoable: true,
+    },
     service: {
         validate: validateService,
         capture: captureServices,
@@ -1549,6 +1679,8 @@ module.exports = {
     SCAN_SCOPES,
     SCAN_SETTINGS,
     scanKeyAllowed,
+    TOGGLES,
+    COMMANDS,
     CLEANUP_ROOTS,
     cleanupScan,
     listInstalledApps,
