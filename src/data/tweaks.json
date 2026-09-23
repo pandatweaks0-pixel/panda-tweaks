@@ -5,12 +5,13 @@
     "category": "Windows",
     "sourceCategory": "Windows",
     "risk": "safe",
-    "description": "Windows Game Mode on for better game scheduling.",
+    "description": "Lets Windows give the game in the foreground priority over background services and hold updates back while you play. Two values have to agree for this to survive a restart: Windows treats AllowAutoGameMode as the real preference, so setting only AutoGameModeEnabled - which is what most tweaking tools do - is quietly undone at the next sign-in.",
     "recommended": true,
     "requiresRestart": false,
     "oneTimeAction": false,
     "windowsDefault": {
-      "HKCU\\Software\\Microsoft\\GameBar\\AutoGameModeEnabled": "0"
+      "HKCU\\Software\\Microsoft\\GameBar\\AutoGameModeEnabled": "0",
+      "HKCU\\Software\\Microsoft\\GameBar\\AllowAutoGameMode": "0"
     },
     "warnings": [],
     "operations": [
@@ -19,9 +20,18 @@
         "action": "set",
         "hive": "HKCU",
         "key": "Software\\Microsoft\\GameBar",
-        "name": "AutoGameModeEnabled",
         "valueType": "REG_DWORD",
-        "value": "1"
+        "value": "1",
+        "name": "AutoGameModeEnabled"
+      },
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKCU",
+        "key": "Software\\Microsoft\\GameBar",
+        "valueType": "REG_DWORD",
+        "value": "1",
+        "name": "AllowAutoGameMode"
       }
     ],
     "originalCommand": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AutoGameModeEnabled /t REG_DWORD /d 1 /f",
