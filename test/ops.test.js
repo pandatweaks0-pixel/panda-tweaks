@@ -81,6 +81,22 @@ test("DWORD values compare equal across hex and decimal notation", () => {
     assert.equal(normalizeRegValue("REG_SZ", "Text"), "Text");
 });
 
+// .NET hands a DWORD back as a signed 32-bit integer, so anything with the top
+// bit set arrives negative. net_throttle_off writes 4294967295 and reads back
+// -1; before this was handled it could never be detected as applied, so the app
+// recommended it forever and reported "unverified" right after succeeding.
+test("a DWORD with the top bit set compares equal however it is read back", () => {
+    assert.equal(normalizeRegValue("REG_DWORD", "-1"), "4294967295");
+    assert.equal(normalizeRegValue("REG_DWORD", "0xffffffff"), "4294967295");
+    assert.equal(normalizeRegValue("REG_DWORD", "4294967295"), "4294967295");
+    assert.equal(normalizeRegValue("REG_DWORD", "-2"), "4294967294");
+    // Ordinary values keep their meaning, and a negative below the 32-bit floor
+    // is left alone rather than wrapped into nonsense.
+    assert.equal(normalizeRegValue("REG_DWORD", "10"), "10");
+    assert.equal(normalizeRegValue("REG_DWORD", "0"), "0");
+    assert.equal(normalizeRegValue("REG_DWORD", "-4294967295"), "-4294967295");
+});
+
 test("validation rejects malformed operations instead of passing them through", () => {
     assert.throws(() => validateOp({ type: "registry", hive: "HKXX", key: "a", name: "b" }), /hive/i);
     assert.throws(() => validateOp({ type: "registry", hive: "HKCU", key: "", name: "b" }), /key/i);

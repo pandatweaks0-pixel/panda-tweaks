@@ -73,7 +73,14 @@ function normalizeRegValue(type, value) {
     const s = String(value);
     if (type === "REG_DWORD" || type === "REG_QWORD") {
         const n = /^0x/i.test(s) ? Number.parseInt(s, 16) : Number.parseInt(s, 10);
-        return Number.isNaN(n) ? s : String(n);
+        if (Number.isNaN(n)) return s;
+        // A DWORD comes back from .NET as a signed 32-bit integer, so a value
+        // with the top bit set arrives negative: 0xFFFFFFFF reads as -1 while
+        // the tweak that wrote it declares 4294967295. Without this, every
+        // tweak using the high half of the range is permanently undetectable —
+        // it reports "not applied" immediately after applying successfully.
+        if (type === "REG_DWORD" && n < 0 && n >= -0x8000_0000) return String(n + 0x1_0000_0000);
+        return String(n);
     }
     if (type === "REG_BINARY") return s.replace(/[\s,]/g, "").toLowerCase();
     return s;
