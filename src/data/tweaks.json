@@ -3743,7 +3743,7 @@
     "category": "Windows",
     "sourceCategory": "Audio",
     "risk": "advanced",
-    "description": "Gives OBS / Streamlabs high priority so recordings stop dropping frames.",
+    "description": "Starts OBS above normal programs on the processor so recordings stop dropping frames. It takes that time from whatever you are recording, so a CPU-limited game will lose some of it.",
     "detailedDescription": "Gives OBS / Streamlabs high priority so recordings stop dropping frames.",
     "recommended": false,
     "requiresRestart": false,
@@ -3752,13 +3752,78 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name CpuPriorityClass -Value 3 -Type DWord -Force }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "perApp",
+        "app": "obs",
+        "setting": "cpuPriorityHigh"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; Set-ItemProperty $p -Name CpuPriorityClass -Value 3 -Type DWord -Force }\"",
     "originalRevert": "powershell -NoProfile -Command \"foreach($e in 'obs64.exe','obs32.exe','Streamlabs OBS.exe'){ $p='HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\'+$e+'\\PerfOptions'; if(Test-Path $p){ Remove-ItemProperty $p -Name CpuPriorityClass -EA SilentlyContinue } }\""
+  },
+  {
+    "sourceCategory": "GPU",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "id": "game_retrac_gpu",
+    "name": "Project Retrac on the dedicated GPU",
+    "category": "Gaming",
+    "risk": "safe",
+    "description": "Tells Windows to run Project Retrac on the dedicated graphics card. This only does something on a PC that has more than one GPU - a laptop, or a processor with integrated graphics. On a desktop with a single card there is nothing to choose and nothing will change.",
+    "operations": [
+      {
+        "type": "perApp",
+        "app": "retrac",
+        "setting": "gpuHighPerf"
+      }
+    ]
+  },
+  {
+    "sourceCategory": "GPU",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "id": "game_retrac_fso",
+    "name": "Project Retrac: fullscreen optimizations off",
+    "category": "Gaming",
+    "risk": "advanced",
+    "description": "Stops Windows running the game in a borderless window pretending to be fullscreen, so it gets the screen to itself. On an old DirectX 11 build like this one that is a real cut in input lag. The cost is that alt-tab becomes slower and overlays that draw on top - Discord, Medal, the Xbox bar - can stop appearing in game.",
+    "operations": [
+      {
+        "type": "perApp",
+        "app": "retrac",
+        "setting": "fullscreenOptOff"
+      }
+    ]
+  },
+  {
+    "sourceCategory": "CPU",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [
+      "anticheat"
+    ],
+    "id": "game_retrac_priority",
+    "name": "Project Retrac at high CPU priority",
+    "category": "Gaming",
+    "risk": "advanced",
+    "description": "Starts the game above every normal program on the processor. Fortnite on Unreal Engine 4 is limited by the CPU long before the graphics card, so this is the per-game setting most likely to be felt. Two costs: everything else on the PC gets the leftovers and can stutter while you play, and this is written to the same registry branch that debuggers attach through, which an anti-cheat may look at. Project Retrac ships an undocumented kernel anti-cheat, so apply this one knowingly.",
+    "operations": [
+      {
+        "type": "perApp",
+        "app": "retrac",
+        "setting": "cpuPriorityHigh"
+      }
+    ]
   },
   {
     "id": "str_obs_gpu",
@@ -3766,7 +3831,7 @@
     "category": "Windows",
     "sourceCategory": "Audio",
     "risk": "safe",
-    "description": "Forces OBS to use your dedicated GPU (important on laptops).",
+    "description": "Runs OBS on the dedicated graphics card so recording does not fall back to integrated graphics. Only does something where there is a second GPU to choose from, which in practice means a laptop.",
     "detailedDescription": "Forces OBS to use your dedicated GPU (important on laptops).",
     "recommended": false,
     "requiresRestart": false,
@@ -3775,9 +3840,9 @@
     "warnings": [],
     "operations": [
       {
-        "type": "unsupported",
-        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; foreach($n in 'C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe','C:\\Program Files (x86)\\obs-studio\\bin\\64bit\\obs64.exe'){ Set-ItemProperty $p -Name $n -Value 'GpuPreference=2;' -Force -EA SilentlyContinue }\"",
-        "reason": "\"powershell\" operations are not implemented yet"
+        "type": "perApp",
+        "app": "obs",
+        "setting": "gpuHighPerf"
       }
     ],
     "originalCommand": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Microsoft\\DirectX\\UserGpuPreferences'; if(-not (Test-Path $p)){ New-Item -Path $p -Force | Out-Null }; foreach($n in 'C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe','C:\\Program Files (x86)\\obs-studio\\bin\\64bit\\obs64.exe'){ Set-ItemProperty $p -Name $n -Value 'GpuPreference=2;' -Force -EA SilentlyContinue }\"",

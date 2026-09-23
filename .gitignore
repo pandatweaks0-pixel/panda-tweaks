@@ -5,3 +5,6 @@ dist/
 # Built executables, wherever they end up. They live on the releases page,
 # and a 86 MB binary in git makes every future clone carry it for ever.
 *.exe
+
+# Agent skills installed locally — tooling, not part of the product
+.agents/

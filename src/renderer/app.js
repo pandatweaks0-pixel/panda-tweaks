@@ -135,26 +135,18 @@ const App = {
 
     // --- theming -------------------------------------------------------------
 
+    // Two palettes, and "system" picks between them. The accent is no longer a
+    // setting: it is the one lit colour on the panel and it has a job — it marks
+    // what is active and what a value is about to become. A colour the user can
+    // change cannot mean anything, and it has to keep working against both
+    // grounds, which in practice means every choice ends up a compromise.
     applyTheme() {
         let theme = State.settings.theme || "dark";
         if (theme === "system") {
             theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
         }
+        if (theme !== "light") theme = "dark"; // retired themes fall back
         document.body.dataset.theme = theme;
-        const accent = State.settings.accentColor || "#4ade80";
-        document.documentElement.style.setProperty("--accent", accent);
-        // Dark text on light accents, light text on dark ones, so the label on a
-        // primary button stays readable whatever colour is chosen.
-        document.documentElement.style.setProperty("--accent-ink", this.contrastInk(accent));
-    },
-
-    contrastInk(hex) {
-        const m = /^#?([0-9a-f]{6})$/i.exec(hex);
-        if (!m) return "#04140a";
-        const n = parseInt(m[1], 16);
-        const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-        // Rec. 601 luma is good enough to pick between two inks.
-        return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? "#04140a" : "#ffffff";
     },
 
     // --- navigation ----------------------------------------------------------
@@ -734,13 +726,13 @@ const App = {
                     h(
                         "div.wiz",
                         null,
-                        h("div.wiz__icon", { text: "🎨" }),
+                        h("div.wiz__icon", { text: "step 2 / 3" }),
                         h("h2", { text: t("firstrun.chooseTheme") }),
                         h("p", { text: t("firstrun.themeText") }),
                         h(
                             "div.wiz__choices.wiz__choices--vertical",
                             null,
-                            ...["dark", "midnight", "light", "minimal"].map((theme) =>
+                            ...["dark", "light", "system"].map((theme) =>
                                 choice(
                                     t(`settings.theme.${theme}`),
                                     null,
@@ -762,7 +754,7 @@ const App = {
                     return h(
                         "div.wiz",
                         null,
-                        h("div.wiz__icon", { text: "🛡️" }),
+                        h("div.wiz__icon", { text: "step 3 / 3" }),
                         h("h2", { text: t("firstrun.rpTitle") }),
                         h("p", { text: t("firstrun.rpText") }),
                         h(

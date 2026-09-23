@@ -465,6 +465,217 @@ function explainRegistryScan(op, cur) {
 }
 
 // ---------------------------------------------------------------------------
+// Per-application — settings Windows keeps against one executable
+// ---------------------------------------------------------------------------
+//
+// These are the only tweaks that can honestly differ between games. Everything
+// else in the catalogue is machine-wide, which is why two game presets built
+// from it come out 98% identical.
+//
+// Windows stores three useful things against an executable: which GPU it runs
+// on, whether the fullscreen compositor is bypassed, and what CPU priority it
+// starts at. All three are registry writes keyed by the program's path or file
+// name, so the path has to be discovered on this machine.
+//
+// A tweak names an app and a setting, both from the tables below. The candidate
+// paths are fixed strings here, with environment variables expanded at read
+// time — a data file still cannot describe a location on disk.
+
+const APPS = {
+    // The Retrac launcher installs to Program Files; the client itself is
+    // dropped next to the anti-cheat rather than under the launcher.
+    retrac: {
+        label: "Project Retrac",
+        candidates: [
+            "%ProgramFiles%\\Alea\\FortniteClient-Win64-Shipping.exe",
+            "%ProgramFiles(x86)%\\Alea\\FortniteClient-Win64-Shipping.exe",
+        ],
+    },
+    fortnite: {
+        label: "Fortnite",
+        candidates: [
+            "%ProgramFiles%\\Epic Games\\Fortnite\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe",
+        ],
+    },
+    obs: {
+        label: "OBS Studio",
+        candidates: [
+            "%ProgramFiles%\\obs-studio\\bin\\64bit\\obs64.exe",
+            "%ProgramFiles(x86)%\\obs-studio\\bin\\64bit\\obs64.exe",
+        ],
+    },
+};
+
+// `kind` decides how the value is read and written:
+//   list  — a ";"-separated list of key=value settings, keyed by full path
+//   flags — a space-separated set of tokens, keyed by full path
+//   dword — a plain number under Image File Execution Options, keyed by file name
+const APP_SETTINGS = {
+    gpuHighPerf: {
+        kind: "list",
+        hive: "HKCU",
+        key: "Software\\Microsoft\\DirectX\\UserGpuPreferences",
+        token: "GpuPreference=2",
+        prefix: "GpuPreference=",
+        label: "Run on the high-performance GPU",
+    },
+    fullscreenOptOff: {
+        kind: "flags",
+        hive: "HKCU",
+        key: "Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers",
+        token: "DISABLEDXMAXIMIZEDWINDOWEDMODE",
+        label: "Fullscreen optimizations off",
+    },
+    cpuPriorityHigh: {
+        kind: "dword",
+        hive: "HKLM",
+        key: "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options",
+        sub: "PerfOptions",
+        name: "CpuPriorityClass",
+        value: "3", // 3 = High. 4 would be Realtime, which starves the OS.
+        label: "Start at high CPU priority",
+    },
+};
+
+function validatePerApp(op) {
+    if (!Object.prototype.hasOwnProperty.call(APPS, String(op.app || "")))
+        throw new Error(`Unknown application: ${op.app}`);
+    if (!Object.prototype.hasOwnProperty.call(APP_SETTINGS, String(op.setting || "")))
+        throw new Error(`Unknown per-application setting: ${op.setting}`);
+    return { ...op, app: String(op.app), setting: String(op.setting) };
+}
+
+// Expands %VARS% and returns the first candidate that is actually on disk.
+function findExe(appId) {
+    for (const raw of APPS[appId].candidates) {
+        const full = raw.replace(/%([^%]+)%/g, (m, name) => process.env[name] || m);
+        if (full.includes("%")) continue; // a variable this system does not define
+        try {
+            if (fs.statSync(full).isFile()) return full;
+        } catch {
+            /* next candidate */
+        }
+    }
+    return null;
+}
+
+// Where the setting lives for this executable: a value name on a shared key, or
+// a value inside a per-executable subkey.
+function perAppTarget(setting, exe) {
+    if (setting.kind === "dword") {
+        return { hive: setting.hive, key: `${setting.key}\\${path.basename(exe)}\\${setting.sub}`, name: setting.name };
+    }
+    return { hive: setting.hive, key: setting.key, name: exe };
+}
+
+const splitList = (s, kind) => String(s || "").split(kind === "flags" ? /\s+/ : /;/).filter(Boolean);
+
+function perAppHasToken(setting, value) {
+    if (value === null || value === undefined) return false;
+    if (setting.kind === "dword") return normalizeRegValue("REG_DWORD", value) === setting.value;
+    return splitList(value, setting.kind).some((t) => t.trim() === setting.token);
+}
+
+// Adds the token without discarding anything else already there. Windows writes
+// its own entries into both of these lists, and replacing the whole string would
+// quietly drop another program's setting.
+function perAppWithToken(setting, current) {
+    if (setting.kind === "dword") return setting.value;
+    const parts = splitList(current, setting.kind).map((t) => t.trim());
+    const kept = setting.prefix ? parts.filter((t) => !t.startsWith(setting.prefix)) : parts.filter((t) => t !== setting.token);
+    kept.push(setting.token);
+    return setting.kind === "flags" ? `~ ${kept.filter((t) => t !== "~").join(" ")}` : kept.join(";") + ";";
+}
+
+async function capturePerApp(ops) {
+    const out = new Map();
+    if (!ops.length) return out;
+
+    const reads = [];
+    for (const op of ops) {
+        const exe = findExe(op.app);
+        if (!exe) {
+            out.set(op, { readFailed: false, missing: true });
+            continue;
+        }
+        const setting = APP_SETTINGS[op.setting];
+        const target = perAppTarget(setting, exe);
+        const state = { readFailed: false, missing: false, exe, target };
+        out.set(op, state);
+        reads.push({ state, path: `${HIVES[target.hive].provider}\\${target.key}`, name: target.name });
+    }
+    if (!reads.length) return out;
+
+    const res = await runPsJson(
+        path.join(PS_DIR, "read-registry.ps1"),
+        reads.map((r, idx) => ({ id: String(idx), path: r.path, name: r.name })),
+        {}
+    );
+    for (let i = 0; i < reads.length; i++) {
+        const raw = res.data ? res.data[String(i)] : null;
+        if (!res.ok || !raw) {
+            Object.assign(reads[i].state, { readFailed: true, error: res.error || "registry read failed" });
+        } else {
+            Object.assign(reads[i].state, {
+                exists: !!raw.exists,
+                valueType: KIND_TO_REG[raw.type] || raw.type || "",
+                value: raw.value,
+            });
+        }
+    }
+    return out;
+}
+
+function perAppIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    // The program is not on this PC, so the setting cannot be in place. Saying
+    // "applied" would be a lie, and saying "not applied" invites applying it.
+    if (cur.missing) return null;
+    if (!cur.exists) return false;
+    return perAppHasToken(APP_SETTINGS[op.setting], cur.value);
+}
+
+const perAppRegOp = (state) => ({ hive: state.target.hive, key: state.target.key, name: state.target.name });
+
+async function applyPerApp(op, prev) {
+    const setting = APP_SETTINGS[op.setting];
+    if (!prev || prev.readFailed) return { ok: false, error: prev && prev.error ? prev.error : "Could not read the current state" };
+    if (prev.missing) return { ok: false, error: `${APPS[op.app].label} is not installed on this PC` };
+
+    const type = setting.kind === "dword" ? "REG_DWORD" : "REG_SZ";
+    return regSet(perAppRegOp(prev), type, perAppWithToken(setting, prev.exists ? prev.value : ""));
+}
+
+async function restorePerApp(op, prev) {
+    if (!prev || prev.readFailed) return { ok: false, error: "No captured state for this program — cannot undo safely" };
+    if (prev.missing) return { ok: true };
+    const regOp = perAppRegOp(prev);
+    // Nothing was there before the tweak, so undo removes it rather than
+    // writing a default that Windows never had.
+    if (!prev.exists) return regDelete(regOp);
+    return regSet(regOp, prev.valueType || (APP_SETTINGS[op.setting].kind === "dword" ? "REG_DWORD" : "REG_SZ"), prev.value);
+}
+
+const describePerApp = (op) => `${APP_SETTINGS[op.setting].label} for ${APPS[op.app].label}`;
+
+function explainPerApp(op, cur) {
+    const setting = APP_SETTINGS[op.setting];
+    let now = null;
+    if (cur && !cur.readFailed) {
+        if (cur.missing) now = "not installed";
+        else if (!cur.exists) now = "—";
+        else now = String(cur.value);
+    }
+    return {
+        kind: "Per program",
+        target: `${APPS[op.app].label} — ${setting.label}`,
+        type: cur && cur.exe ? path.basename(cur.exe) : "",
+        now,
+        after: setting.kind === "dword" ? setting.value : setting.token,
+    };
+}
+
+// ---------------------------------------------------------------------------
 // Toggle — a Windows switch that lives inside a tool, not in the registry
 // ---------------------------------------------------------------------------
 //
@@ -1532,6 +1743,18 @@ const OPS = {
         requiresAdmin: () => true, // every scope lives under HKLM
         undoable: true,
     },
+    perApp: {
+        validate: validatePerApp,
+        capture: capturePerApp,
+        isApplied: perAppIsApplied,
+        apply: applyPerApp,
+        restore: restorePerApp,
+        describe: describePerApp,
+        explain: explainPerApp,
+        // Only the IFEO priority key lives under HKLM.
+        requiresAdmin: (op) => APP_SETTINGS[op.setting].hive === "HKLM",
+        undoable: true,
+    },
     toggle: {
         validate: validateToggle,
         capture: captureToggles,
@@ -1681,6 +1904,11 @@ module.exports = {
     scanKeyAllowed,
     TOGGLES,
     COMMANDS,
+    APPS,
+    APP_SETTINGS,
+    findExe,
+    perAppWithToken,
+    perAppHasToken,
     CLEANUP_ROOTS,
     cleanupScan,
     listInstalledApps,

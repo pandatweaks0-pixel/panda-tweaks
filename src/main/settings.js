@@ -11,7 +11,9 @@ const DEFAULTS = {
     firstRunComplete: false,
     language: null, // null = ask on first run
     theme: "dark",
-    accentColor: "#4ade80",
+    // The accent is fixed in the stylesheet: it marks what is active and what a
+    // value becomes, so it has a meaning a user setting would take away.
+    accentColor: null,
     askForRestorePoint: true,
     showRiskyTweaks: false,
     confirmBeforeApply: true,

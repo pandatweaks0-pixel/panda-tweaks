@@ -99,7 +99,11 @@ function tweakCard(tweak, { reason = null } = {}) {
     // Only the exceptions are worth a line. Risk already has its own badge, and
     // "reversible, no restart" is the norm — repeating it on every card was
     // noise that pushed the list to five visible items.
+    // The risk badge leads this row rather than trailing the title: on a card it
+    // belongs on the footer line with the other qualifiers, where the eye lands
+    // after reading the description and before reaching for the switch.
     const flags = [
+        riskBadge(tweak.risk, { quiet: true }),
         tweak.requiresRestart ? h("span.flag", { text: t("tweaks.restart") }) : null,
         tweak.requiresAdmin ? h("span.flag", { text: t("tweaks.needsAdmin") }) : null,
         !tweak.undoable && !tweak.unavailable ? h("span.flag.flag--warn", { text: t("tweaks.notReversible") }) : null,
@@ -112,7 +116,7 @@ function tweakCard(tweak, { reason = null } = {}) {
         h(
             "div.tweak__body",
             null,
-            h("div.tweak__name", null, tweak.name, riskBadge(tweak.risk, { quiet: true }), statusBadge(status)),
+            h("div.tweak__name", null, tweak.name, statusBadge(status)),
             h("p.tweak__desc", { text: tweak.description }),
             reason ? h("p.small.mt-2", null, h("b", { text: `${t("recommended.reason")}: ` }), t(reason)) : null,
             tweak.unavailable
@@ -1110,8 +1114,7 @@ Views.history = () => {
 
 // --- settings ----------------------------------------------------------------
 
-const THEMES = ["dark", "light", "system", "midnight", "minimal"];
-const ACCENTS = ["#4ade80", "#60a5fa", "#c084fc", "#fb7185", "#fbbf24", "#2dd4bf"];
+const THEMES = ["dark", "light", "system"];
 
 function toggleRow(labelKey, helpKey, settingKey) {
     return h(
@@ -1153,20 +1156,6 @@ Views.settings = () =>
                         onclick: () => App.updateSettings({ theme }),
                     })
                 )
-            ),
-            h("div.field.mt-5", null, h("span.field__label", { text: t("settings.accentColor") })),
-            h(
-                "div.swatches.mt-2",
-                null,
-                ...ACCENTS.map((color) => {
-                    const b = h("button.swatch", {
-                        "aria-pressed": String(State.settings.accentColor === color),
-                        "aria-label": color,
-                        onclick: () => App.updateSettings({ accentColor: color }),
-                    });
-                    b.style.background = color;
-                    return b;
-                })
             ),
             h("div.field.mt-5", null, h("span.field__label", { text: t("settings.language") })),
             h(
