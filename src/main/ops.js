@@ -683,6 +683,211 @@ function explainPerApp(op, cur) {
 }
 
 // ---------------------------------------------------------------------------
+// Game config — a setting that lives in the game's own ini file
+// ---------------------------------------------------------------------------
+//
+// Some of the biggest wins are not Windows settings at all. Running an old
+// DirectX 11 build in borderless windowed mode sends every frame through the
+// desktop compositor, which costs a whole frame — about 4 ms at 240 Hz — and no
+// registry key can undo that. Only the game's own configuration can.
+//
+// Same rule as everywhere: a tweak names a game and a setting from the tables
+// below, never a file path. Two things make this type more dangerous than a
+// registry write, and both are handled here:
+//
+//   - The file belongs to someone else. Unreal keeps hundreds of unrelated
+//     lines in it, so the edit is surgical: find the key inside its section,
+//     replace that one line, leave every byte around it alone, including the
+//     CRLF line endings Unreal writes.
+//
+//   - The game rewrites the file when it exits. Editing while it runs achieves
+//     nothing and looks like a failure that is really a race, so applying is
+//     refused while the process is alive.
+
+const GAME_CONFIGS = {
+    retrac: {
+        label: "Project Retrac",
+        file: "%LOCALAPPDATA%\\RetracGame\\Saved\\Config\\WindowsClient\\GameUserSettings.ini",
+        process: "FortniteClient-Win64-Shipping.exe",
+    },
+};
+
+const GAME_SETTINGS = {
+    exclusiveFullscreen: {
+        section: "/Script/FortniteGame.FortGameUserSettings",
+        // Unreal keeps a second "last confirmed" copy and reverts to it when the
+        // two disagree, which is why setting only the first one does not hold —
+        // the same shape of bug as Game Mode.
+        entries: { PreferredFullscreenMode: "0", LastConfirmedFullscreenMode: "0" },
+        label: "Exclusive fullscreen instead of borderless",
+    },
+};
+
+function validateGameConfig(op) {
+    if (!Object.prototype.hasOwnProperty.call(GAME_CONFIGS, String(op.game || "")))
+        throw new Error(`Unknown game: ${op.game}`);
+    if (!Object.prototype.hasOwnProperty.call(GAME_SETTINGS, String(op.setting || "")))
+        throw new Error(`Unknown game setting: ${op.setting}`);
+    return { ...op, game: String(op.game), setting: String(op.setting) };
+}
+
+const gameConfigPath = (gameId) => {
+    const full = GAME_CONFIGS[gameId].file.replace(/%([^%]+)%/g, (m, name) => process.env[name] || m);
+    return full.includes("%") ? null : full;
+};
+
+function gameIsRunning(gameId) {
+    try {
+        const out = require("child_process")
+            .execFileSync("tasklist.exe", ["/fi", `imagename eq ${GAME_CONFIGS[gameId].process}`, "/nh"], {
+                windowsHide: true,
+            })
+            .toString();
+        return out.includes(GAME_CONFIGS[gameId].process);
+    } catch {
+        return false; // tasklist unavailable is not a reason to refuse
+    }
+}
+
+// Reads one key from inside one section. Returns null when the section or the
+// key is absent, which is different from an empty value.
+function iniRead(text, section, key) {
+    const lines = text.split(/\r?\n/);
+    let inSection = false;
+    for (const line of lines) {
+        const head = /^\s*\[(.+?)\]\s*$/.exec(line);
+        if (head) {
+            inSection = head[1] === section;
+            continue;
+        }
+        if (!inSection) continue;
+        const m = new RegExp(`^\\s*${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*=(.*)$`).exec(line);
+        if (m) return m[1].trim();
+    }
+    return null;
+}
+
+// Replaces the value of one key in place. A key that is not there yet is added
+// directly under its section header. Everything else in the file is untouched,
+// and the file's own line ending is kept.
+function iniWrite(text, section, key, value) {
+    const eol = text.includes("\r\n") ? "\r\n" : "\n";
+    const lines = text.split(/\r?\n/);
+    const esc = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    let inSection = false;
+    let sectionAt = -1;
+    for (let i = 0; i < lines.length; i++) {
+        const head = /^\s*\[(.+?)\]\s*$/.exec(lines[i]);
+        if (head) {
+            if (head[1] === section) {
+                inSection = true;
+                sectionAt = i;
+            } else if (inSection) {
+                break; // left the section without finding the key
+            }
+            continue;
+        }
+        if (inSection && new RegExp(`^\\s*${esc}\\s*=`).test(lines[i])) {
+            lines[i] = `${key}=${value}`;
+            return lines.join(eol);
+        }
+    }
+    if (sectionAt < 0) return null; // the section does not exist; do not invent one
+    lines.splice(sectionAt + 1, 0, `${key}=${value}`);
+    return lines.join(eol);
+}
+
+async function captureGameConfig(ops) {
+    const out = new Map();
+    for (const op of ops) {
+        const file = gameConfigPath(op.game);
+        if (!file || !fs.existsSync(file)) {
+            out.set(op, { readFailed: false, missing: true });
+            continue;
+        }
+        try {
+            const text = fs.readFileSync(file, "utf8");
+            const setting = GAME_SETTINGS[op.setting];
+            const previous = {};
+            for (const key of Object.keys(setting.entries)) previous[key] = iniRead(text, setting.section, key);
+            out.set(op, { readFailed: false, missing: false, file, previous });
+        } catch (e) {
+            out.set(op, { readFailed: true, error: `Could not read ${path.basename(file)}: ${e.message}` });
+        }
+    }
+    return out;
+}
+
+function gameConfigIsApplied(op, cur) {
+    if (!cur || cur.readFailed) return null;
+    if (cur.missing) return null; // the game is not installed here
+    const setting = GAME_SETTINGS[op.setting];
+    return Object.entries(setting.entries).every(([k, v]) => String(cur.previous[k]) === String(v));
+}
+
+function writeGameConfig(op, prev, values) {
+    const setting = GAME_SETTINGS[op.setting];
+    let text;
+    try {
+        text = fs.readFileSync(prev.file, "utf8");
+    } catch (e) {
+        return { ok: false, error: `Could not read the configuration: ${e.message}` };
+    }
+    for (const [key, value] of Object.entries(values)) {
+        if (value === null) continue; // was not in the file before; leave it out
+        const next = iniWrite(text, setting.section, key, value);
+        if (next === null) return { ok: false, error: `Section [${setting.section}] is not in this configuration` };
+        text = next;
+    }
+    try {
+        fs.writeFileSync(prev.file, text, "utf8");
+    } catch (e) {
+        return { ok: false, error: `Could not write the configuration: ${e.message}` };
+    }
+    return { ok: true };
+}
+
+async function applyGameConfig(op, prev) {
+    if (!prev || prev.readFailed) return { ok: false, error: prev && prev.error ? prev.error : "Could not read the configuration" };
+    if (prev.missing) return { ok: false, error: `${GAME_CONFIGS[op.game].label} is not installed on this PC` };
+    if (gameIsRunning(op.game)) {
+        return {
+            ok: false,
+            error: `${GAME_CONFIGS[op.game].label} is running. It rewrites this file when it closes, so the change would be lost — close the game and apply again.`,
+        };
+    }
+    return writeGameConfig(op, prev, GAME_SETTINGS[op.setting].entries);
+}
+
+async function restoreGameConfig(op, prev) {
+    if (!prev || prev.readFailed) return { ok: false, error: "No captured state for this configuration — cannot undo safely" };
+    if (prev.missing) return { ok: true };
+    if (gameIsRunning(op.game)) {
+        return { ok: false, error: `${GAME_CONFIGS[op.game].label} is running — close it and undo again.` };
+    }
+    return writeGameConfig(op, prev, prev.previous);
+}
+
+const describeGameConfig = (op) =>
+    `${GAME_SETTINGS[op.setting].label} in ${GAME_CONFIGS[op.game].label}'s own settings file`;
+
+function explainGameConfig(op, cur) {
+    const setting = GAME_SETTINGS[op.setting];
+    const keys = Object.keys(setting.entries);
+    let now = null;
+    if (cur && !cur.readFailed) {
+        now = cur.missing ? "not installed" : keys.map((k) => `${k}=${cur.previous[k] === null ? "—" : cur.previous[k]}`).join("  ");
+    }
+    return {
+        kind: "Game setting",
+        target: `${GAME_CONFIGS[op.game].label} — ${setting.label}`,
+        type: "GameUserSettings.ini",
+        now,
+        after: keys.map((k) => `${k}=${setting.entries[k]}`).join("  "),
+    };
+}
+
+// ---------------------------------------------------------------------------
 // Toggle — a Windows switch that lives inside a tool, not in the registry
 // ---------------------------------------------------------------------------
 //
@@ -1750,6 +1955,17 @@ const OPS = {
         requiresAdmin: () => true, // every scope lives under HKLM
         undoable: true,
     },
+    gameConfig: {
+        validate: validateGameConfig,
+        capture: captureGameConfig,
+        isApplied: gameConfigIsApplied,
+        apply: applyGameConfig,
+        restore: restoreGameConfig,
+        describe: describeGameConfig,
+        explain: explainGameConfig,
+        requiresAdmin: () => false, // the file lives in the user's own profile
+        undoable: true,
+    },
     perApp: {
         validate: validatePerApp,
         capture: capturePerApp,
@@ -1914,6 +2130,10 @@ module.exports = {
     APPS,
     APP_SETTINGS,
     findExe,
+    GAME_CONFIGS,
+    GAME_SETTINGS,
+    iniRead,
+    iniWrite,
     perAppWithToken,
     perAppHasToken,
     CLEANUP_ROOTS,

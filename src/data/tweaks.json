@@ -3813,6 +3813,27 @@
     ]
   },
   {
+    "id": "game_retrac_exclusive_fs",
+    "name": "Project Retrac in exclusive fullscreen",
+    "category": "Gaming",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Switches the game out of borderless windowed into real fullscreen, in its own settings file. Borderless sends every frame through the Windows desktop compositor, which costs a full frame - about 4 ms on a 240 Hz screen - and nothing on the Windows side can give that back. This is the largest single latency change available for this game. The cost is the usual one for exclusive fullscreen: alt-tab is slower, and overlays that draw on top of the game, like Discord and Medal, stop appearing. Retrac must be closed when this is applied, because the game rewrites its configuration on exit.",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "gameConfig",
+        "game": "retrac",
+        "setting": "exclusiveFullscreen"
+      }
+    ]
+  },
+  {
     "sourceCategory": "CPU",
     "detailedDescription": null,
     "recommended": false,

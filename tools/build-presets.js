@@ -96,6 +96,20 @@ const NET = [
 const FSO = ["win_fso_off"];
 const DX = ["dsp_dx_settings"];
 
+// The only group in this file that is about one game rather than one kind of
+// game. Exclusive fullscreen is the largest single latency change available
+// here: borderless windowed sends every frame through the desktop compositor,
+// which costs a whole frame, and no Windows setting can give that back. The two
+// halves belong together - the game's own setting asks for exclusive fullscreen,
+// the Windows one stops it being quietly converted back.
+//
+// game_retrac_priority is deliberately absent. It is only "advanced", so the
+// rule at the top of this file would allow it, but it writes to the registry
+// branch debuggers attach through and Retrac ships an undocumented kernel
+// anti-cheat. That is a decision to make deliberately, not one to inherit from
+// a button you pressed without reading. It stays available on its own.
+const RETRAC = ["game_retrac_exclusive_fs", "game_retrac_fso", "game_retrac_gpu"];
+
 // Never in a preset - see the header.
 const DISPLAY_DRIVER = new Set(["gpu_hags", "gpu_mpo_off", "gpu_tdrdelay"]);
 
@@ -119,6 +133,17 @@ const PRESETS = [
         // No STREAMING: the maps are small and load once, so trading memory
         // behaviour for load times buys nothing here.
         groups: [BASE, INPUT, SCHED, POWER, NET, BROWSERS, FSO],
+    },
+    {
+        id: "retrac",
+        name: "PROJECT RETRAC",
+        short: "RTC",
+        color: "#4ADE80",
+        tagline: "Exclusive fullscreen and the CPU first",
+        // No STREAMING: it is a Chapter 2 map loaded once, same as Valorant.
+        // The RETRAC group is what makes this preset genuinely different from
+        // the others rather than the same list under a new name.
+        groups: [BASE, INPUT, SCHED, POWER, NET, BROWSERS, FSO, RETRAC],
     },
     {
         id: "gta5",
