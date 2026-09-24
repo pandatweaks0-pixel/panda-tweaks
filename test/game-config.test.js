@@ -164,6 +164,26 @@ test("only operations that declare a blocker are asked about", () => {
     assert.equal(runningBlockers([gcOp]).length, processIsRunning(declared.process) ? 1 : 0);
 });
 
+// Fortnite and Project Retrac both run a process called
+// FortniteClient-Win64-Shipping.exe. Telling someone "Fortnite is running"
+// while Retrac is the one open sends them to close the wrong program, so the
+// blocker carries the exact executable, not just the name.
+test("two games sharing a process name are told apart by path", () => {
+    const a = OPS.gameConfig.blockedBy(makeOp("retrac", "exclusiveFullscreen"));
+    const b = OPS.gameConfig.blockedBy(makeOp("fortnite", "exclusiveFullscreen"));
+
+    assert.equal(a.process, b.process, "the premise of this test no longer holds");
+    assert.notEqual(a.label, b.label);
+    // Where both are installed, the paths must differ; where one is not, a
+    // missing path is honest rather than a guess.
+    if (a.path && b.path) {
+        assert.notEqual(a.path.toLowerCase(), b.path.toLowerCase(), "both resolved to the same executable");
+    }
+    for (const blocker of [a, b]) {
+        if (blocker.path) assert.ok(require("node:fs").statSync(blocker.path).isFile(), `${blocker.label}: not a file`);
+    }
+});
+
 test("capture reads the real file without changing it", async () => {
     const fsNode = require("node:fs");
     const op = makeOp("retrac", "exclusiveFullscreen");

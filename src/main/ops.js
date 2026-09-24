@@ -738,10 +738,26 @@ function explainPerApp(op, cur) {
 //     nothing and looks like a failure that is really a race, so applying is
 //     refused while the process is alive.
 
+// `app` points at the APPS entry above, so the exact executable can be found
+// and two games running the same process name are told apart.
+//
+// Only GameUserSettings.ini appears here, and that is deliberate for Fortnite:
+// Epic stopped honouring edits to the other ini files in patch 1.7.2 and treats
+// them as a rules violation, because people were using them to strip fog and
+// widen the field of view. GameUserSettings is the one file Epic says is meant
+// to be edited, and every value in it also exists in the game's own options
+// menu — this tweak just sets one of them without making you find it.
 const GAME_CONFIGS = {
     retrac: {
         label: "Project Retrac",
+        app: "retrac",
         file: "%LOCALAPPDATA%\\RetracGame\\Saved\\Config\\WindowsClient\\GameUserSettings.ini",
+        process: "FortniteClient-Win64-Shipping.exe",
+    },
+    fortnite: {
+        label: "Fortnite",
+        app: "fortnite",
+        file: "%LOCALAPPDATA%\\FortniteGame\\Saved\\Config\\WindowsClient\\GameUserSettings.ini",
         process: "FortniteClient-Win64-Shipping.exe",
     },
 };
@@ -908,10 +924,16 @@ const describeGameConfig = (op) =>
 // Which program has to be closed before this operation can work. Declared
 // statically here; whether it is actually running is asked once for a whole
 // batch by runningBlockers below, rather than per operation.
-const gameConfigBlockedBy = (op) => ({
-    process: GAME_CONFIGS[op.game].process,
-    label: GAME_CONFIGS[op.game].label,
-});
+const gameConfigBlockedBy = (op) => {
+    const game = GAME_CONFIGS[op.game];
+    return {
+        process: game.process,
+        label: game.label,
+        // The exact copy, so a second game running the same executable name is
+        // not mistaken for this one.
+        path: game.app ? findExe(game.app) : null,
+    };
+};
 
 function explainGameConfig(op, cur) {
     const setting = GAME_SETTINGS[op.setting];
@@ -2175,23 +2197,56 @@ function runningBlockers(ops) {
 
     const running = [];
     for (const [, blocker] of wanted) {
-        if (processIsRunning(blocker.process)) running.push(blocker);
+        if (processIsRunning(blocker.process, blocker.path || null)) running.push(blocker);
     }
     return running;
 }
 
-// tasklist prints a header and a "no tasks" notice in the system language, so
-// the answer is taken from whether the image name itself comes back, not from
-// parsing the message around it.
-function processIsRunning(image) {
+// Is this program running? With `exePath`, the answer is about that one copy.
+//
+// Fortnite and Project Retrac both run a process called
+// FortniteClient-Win64-Shipping.exe. Matching on the name alone would tell
+// someone "Fortnite is running" while Retrac is the one open — a message that
+// names the wrong game is worse than no message, because they will go and close
+// the wrong thing.
+//
+// tasklist prints its header and its "no tasks" notice in the system language,
+// so the answer is never taken from the sentence around the result.
+function processIsRunning(image, exePath = null) {
+    const name = String(image || "");
+    if (!name) return false;
+
+    if (exePath) {
+        try {
+            const out = require("child_process")
+                .execFileSync(
+                    "powershell.exe",
+                    [
+                        "-NoProfile",
+                        "-NonInteractive",
+                        "-Command",
+                        `Get-CimInstance Win32_Process -Filter "Name='${name.replace(/'/g, "''")}'" | ` +
+                            "Select-Object -ExpandProperty ExecutablePath",
+                    ],
+                    { windowsHide: true, stdio: ["ignore", "pipe", "ignore"], timeout: 15_000 }
+                )
+                .toString();
+            return out
+                .split(/\r?\n/)
+                .some((p) => p.trim() && path.resolve(p.trim()).toLowerCase() === path.resolve(exePath).toLowerCase());
+        } catch {
+            // Falls through to the name check rather than claiming it is closed.
+        }
+    }
+
     try {
         const out = require("child_process")
-            .execFileSync("tasklist.exe", ["/fi", `imagename eq ${image}`, "/nh"], {
+            .execFileSync("tasklist.exe", ["/fi", `imagename eq ${name}`, "/nh"], {
                 windowsHide: true,
                 stdio: ["ignore", "pipe", "ignore"],
             })
             .toString();
-        return out.toLowerCase().includes(String(image).toLowerCase());
+        return out.toLowerCase().includes(name.toLowerCase());
     } catch {
         // tasklist unavailable is not evidence that anything is running.
         return false;

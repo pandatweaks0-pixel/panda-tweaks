@@ -110,6 +110,15 @@ const DX = ["dsp_dx_settings"];
 // a button you pressed without reading. It stays available on its own.
 const RETRAC = ["game_retrac_exclusive_fs", "game_retrac_fso", "game_retrac_gpu"];
 
+// The same idea for the official game, and the reason there is only one entry
+// here. Epic stopped honouring edits to the other ini files in patch 1.7.2 and
+// treats them as a rules violation - people were using them to strip fog and
+// widen the field of view. GameUserSettings.ini is the one file Epic says is
+// meant to be edited, and this value is one the game's own video options set
+// anyway. Everything else people post as a "Fortnite ini tweak" belongs to the
+// files that stopped working eight years ago.
+const FORTNITE_GAME = ["game_fortnite_exclusive_fs"];
+
 // Never in a preset - see the header.
 const DISPLAY_DRIVER = new Set(["gpu_hags", "gpu_mpo_off", "gpu_tdrdelay"]);
 
@@ -122,7 +131,7 @@ const PRESETS = [
         short: "FN",
         color: "#3AA6E0",
         tagline: "Maximum FPS, minimum input lag",
-        groups: [BASE, INPUT, SCHED, POWER, NET, BROWSERS, FSO, DX],
+        groups: [BASE, INPUT, SCHED, POWER, NET, BROWSERS, FSO, DX, FORTNITE_GAME],
     },
     {
         id: "valorant",

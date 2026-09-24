@@ -3813,6 +3813,27 @@
     ]
   },
   {
+    "id": "game_fortnite_exclusive_fs",
+    "name": "Fortnite in exclusive fullscreen",
+    "category": "Gaming",
+    "sourceCategory": "GPU",
+    "risk": "advanced",
+    "description": "Switches Fortnite out of borderless windowed into real fullscreen. Borderless sends every frame through the Windows desktop compositor, which costs a full frame of latency that nothing on the Windows side can give back. The cost is the usual one: alt-tab is slower and overlays that draw on top of the game, like Discord and Medal, stop appearing. This writes to GameUserSettings.ini - the one configuration file Epic says is meant to be edited, and the same setting the game's own video options offer. Fortnite must be closed, because it rewrites that file on exit.",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": false,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "gameConfig",
+        "game": "fortnite",
+        "setting": "exclusiveFullscreen"
+      }
+    ]
+  },
+  {
     "id": "game_retrac_exclusive_fs",
     "name": "Project Retrac in exclusive fullscreen",
     "category": "Gaming",
