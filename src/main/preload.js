@@ -71,6 +71,15 @@ contextBridge.exposeInMainWorld("panda", {
         remove: (packages) => ipcRenderer.invoke("debloat:remove", packages),
     },
 
+    diagnose: {
+        crashes: () => ipcRenderer.invoke("diagnose:crashes"),
+    },
+
+    drivers: {
+        list: () => ipcRenderer.invoke("drivers:list"),
+        remove: (infs) => ipcRenderer.invoke("drivers:remove", infs),
+    },
+
     log: {
         read: () => ipcRenderer.invoke("log:read"),
         clear: () => ipcRenderer.invoke("log:clear"),

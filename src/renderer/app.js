@@ -14,6 +14,8 @@ const State = {
     debloatError: null,
     debloatOpen: new Set(),
     cleanupScan: new Map(),
+    drivers: undefined,
+    driverSelection: new Set(),
     startup: null,
     presets: null,
     selection: new Set(),
@@ -42,6 +44,7 @@ const NAV_GROUPS = [
             ["startup", "power"],
             ["services", "stack"],
             ["cleanup", "trash"],
+            ["drivers", "stack"],
             ["system", "chip"],
             ["history", "clock"],
         ],
@@ -158,6 +161,7 @@ const App = {
         // Sizes cost a directory walk, so they are read when the page is opened
         // rather than on every system scan.
         if (page === "cleanup") this.scanCleanup(false);
+        if (page === "drivers") this.loadDrivers(false);
         if (page === "startup") this.loadStartup(false);
     },
 
@@ -180,6 +184,70 @@ const App = {
         else toast(entry.enabled ? t("startup.turnedOff", { name: entry.name }) : t("startup.turnedOn", { name: entry.name }), "ok");
         State.history = await window.panda.history.list();
         await this.loadStartup(true);
+    },
+
+    // --- old drivers ---------------------------------------------------------
+
+    // Reading the driver store walks every package directory to size it, so it
+    // happens when the page is opened rather than on every scan.
+    async loadDrivers(force) {
+        if (State.drivers !== undefined && !force) return;
+        if (force) {
+            State.drivers = undefined;
+            State.driverSelection = new Set();
+            this.render();
+        }
+        State.drivers = await window.panda.drivers.list();
+        // A package that vanished between two readings must not stay ticked.
+        const present = new Set((State.drivers.drivers || []).map((d) => d.inf));
+        State.driverSelection = new Set([...State.driverSelection].filter((inf) => present.has(inf)));
+        if (State.page === "drivers") this.render();
+    },
+
+    async removeDrivers() {
+        const chosen = [...State.driverSelection];
+        if (!chosen.length || State.busy) return;
+
+        const list = (State.drivers?.drivers || []).filter((d) => chosen.includes(d.inf));
+        const bytes = list.reduce((sum, d) => sum + (d.bytes || 0), 0);
+        const gb = bytes / 1024 ** 3;
+        const size = gb >= 1 ? `${gb.toFixed(1)} GB` : `${Math.round(bytes / 1024 ** 2)} MB`;
+
+        // Deleting a driver package cannot be undone, so this asks plainly and
+        // says what "cannot be undone" means here rather than just the words.
+        const go = await confirmModal({
+            title: t("drivers.confirmTitle"),
+            message: t("drivers.confirmBody", { count: chosen.length, size }),
+            confirmLabel: t("common.remove"),
+            variant: "danger",
+        });
+        if (!go) return;
+
+        State.busy = true;
+        this.render();
+        const res = await window.panda.drivers.remove(chosen);
+        State.busy = false;
+
+        if (res.error === "needs-admin") {
+            const elevate = await confirmModal({
+                title: t("admin.neededTitle"),
+                message: t("drivers.needsAdmin"),
+                confirmLabel: t("admin.restartAsAdmin"),
+            });
+            if (elevate) await this.requestAdmin();
+            return;
+        }
+        if (res.error) {
+            toast(res.error, "bad");
+            return;
+        }
+
+        const { removed = 0, failed = 0 } = res.summary || {};
+        if (removed) toast(t("drivers.removed", { count: removed }), "ok");
+        if (failed) toast(t("drivers.removeFailed", { count: failed }), "warn");
+
+        State.history = await window.panda.history.list();
+        await this.loadDrivers(true);
     },
 
     // Fills in "how much would this actually free" per cleanup target. Each

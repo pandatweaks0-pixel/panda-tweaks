@@ -38,7 +38,18 @@ const usable = (t) => {
         return false;
     }
 };
-const byId = new Map(tweaks.map((t) => [t.id, t]));
+// Services are not in tweaks.json: the app turns each entry in services.json
+// into a one-operation tweak when it loads, which is why a preset may name one.
+// The same ids are derived here, or every service in a preset would be rejected
+// as "no such tweak" by a generator that simply had not looked.
+const SERVICES = path.join(ROOT, "src", "data", "services.json");
+const services = JSON.parse(fs.readFileSync(SERVICES, "utf8")).map((svc) => ({
+    id: `service_${String(svc.name).toLowerCase()}`,
+    risk: svc.risk || "advanced",
+    operations: [{ type: "service", name: svc.name, startMode: "disabled" }],
+}));
+
+const byId = new Map([...tweaks, ...services].map((t) => [t.id, t]));
 
 // --------------------------------------------------------------- groups --
 
@@ -122,6 +133,27 @@ const FORTNITE_GAME = ["game_fortnite_exclusive_fs"];
 // Never in a preset - see the header.
 const DISPLAY_DRIVER = new Set(["gpu_hags", "gpu_mpo_off", "gpu_tdrdelay"]);
 
+// Tournament mode is not a game preset. It is a layer switched on for a match
+// and off afterwards: everything that can interrupt, pop up or eat bandwidth
+// and disk mid-round. Ending it undoes exactly what starting it applied, so a
+// setting you already had stays yours.
+//
+// Two extra rules follow from "on and off again": nothing that needs a restart
+// (it would only take effect after the match), and nothing that is only worth
+// having permanently. Windows Search is here and not in any game preset because
+// stopping the indexer for two hours is harmless; turning it off for good
+// breaks search.
+const TOURNAMENT = [
+    "win_game_mode", "win_gamedvr_off", "win_gamebar_off",
+    "str_notifications_off", "str_historical_capture_off", "win_error_reporting_off",
+    "win_stickykeys_off", "in_filterkeys_off", "in_togglekeys_off", "in_langhotkey_off",
+    "in_accessibility_off", "in_xbox_button_off",
+    "aud_ducking_off", "mem_background_off", "net_do_off",
+    "app_chrome_bg_off", "app_edge_bg_off",
+    "cpu_minstate100", "cpu_coreparking_off", "cpu_powerthrottle_off",
+    "service_wsearch",
+];
+
 // ----------------------------------------------------------- compositions --
 
 const PRESETS = [
@@ -163,6 +195,15 @@ const PRESETS = [
         // INPUT_LIGHT rather than INPUT: hitching while the world streams in is
         // the complaint here, not a millisecond of mouse latency.
         groups: [BASE, INPUT_LIGHT, SCHED, POWER, NET, BROWSERS, STREAMING, DX],
+    },
+    {
+        id: "tournament",
+        mode: "tournament",
+        name: "TOURNAMENT",
+        short: "T",
+        color: "#F5B301",
+        tagline: "Nothing interrupts the match",
+        groups: [TOURNAMENT],
     },
 ];
 

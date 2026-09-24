@@ -323,6 +323,13 @@ function saveHistory() {
 
 const getHistory = () => history.entries.slice().reverse(); // newest first
 
+// For actions that live outside the tweak pipeline (driver removal) but still
+// belong on the record.
+function recordHistory(entry) {
+    history.entries.push(entry);
+    saveHistory();
+}
+
 // ---------------------------------------------------------------------------
 // Apply
 // ---------------------------------------------------------------------------
@@ -840,6 +847,7 @@ module.exports = {
     initHistory,
     initBlocked,
     getHistory,
+    recordHistory,
     applyTweaks,
     blockersFor,
     undoEntry,

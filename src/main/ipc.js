@@ -14,6 +14,8 @@ const path = require("path");
 const engine = require("./engine");
 const analyzer = require("./analyzer");
 const restore = require("./restore");
+const diagnose = require("./diagnose");
+const drivers = require("./drivers");
 const settings = require("./settings");
 const logger = require("./logger");
 const { isAdmin, elevate } = require("./elevation");
@@ -164,6 +166,28 @@ function register({ getWindow, dataDirectory }) {
         if (!Array.isArray(packages) || !packages.length) return { results: [], summary: null };
         const win = getWindow();
         return engine.removeApps(packages.map(String), {
+            onProgress: (p) => win && !win.isDestroyed() && win.webContents.send("tweaks:progress", p),
+        });
+    });
+
+    // --- diagnosis ---------------------------------------------------------
+    // Read-only: what Windows recorded about crashes and black screens.
+    ipcMain.handle("diagnose:crashes", () => diagnose.diagnoseCrashes());
+
+    // --- old drivers -------------------------------------------------------
+    // Reading the driver store needs elevation, and Windows says so in the
+    // system language. Whether that is the reason is answered here, where the
+    // answer is a fact, rather than by matching words in a localized sentence.
+    ipcMain.handle("drivers:list", async () => {
+        const res = await drivers.listOldDrivers();
+        return { ...res, needsAdmin: !res.ok && !isAdmin() };
+    });
+    ipcMain.handle("drivers:remove", async (_e, infs) => {
+        if (!Array.isArray(infs) || !infs.length) return { results: [], summary: null };
+        if (!isAdmin()) return { results: [], summary: null, error: "needs-admin" };
+        const win = getWindow();
+        return drivers.removeOldDrivers(infs.map(String), {
+            history: engine.recordHistory,
             onProgress: (p) => win && !win.isDestroyed() && win.webContents.send("tweaks:progress", p),
         });
     });

@@ -271,5 +271,35 @@
       "mem_clearpagefile",
       "dsp_dx_settings"
     ]
+  },
+  {
+    "id": "tournament",
+    "name": "TOURNAMENT",
+    "short": "T",
+    "color": "#F5B301",
+    "tagline": "Nothing interrupts the match",
+    "ids": [
+      "win_game_mode",
+      "win_gamedvr_off",
+      "win_gamebar_off",
+      "str_notifications_off",
+      "str_historical_capture_off",
+      "win_error_reporting_off",
+      "win_stickykeys_off",
+      "in_filterkeys_off",
+      "in_togglekeys_off",
+      "in_langhotkey_off",
+      "in_accessibility_off",
+      "in_xbox_button_off",
+      "aud_ducking_off",
+      "mem_background_off",
+      "net_do_off",
+      "app_chrome_bg_off",
+      "app_edge_bg_off",
+      "cpu_minstate100",
+      "cpu_coreparking_off",
+      "cpu_powerthrottle_off",
+      "service_wsearch"
+    ]
   }
 ]

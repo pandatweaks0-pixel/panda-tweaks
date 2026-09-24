@@ -18,6 +18,9 @@ const DEFAULTS = {
     showRiskyTweaks: false,
     confirmBeforeApply: true,
     lastScanAt: null,
+    // { startedAt, entryIds } while tournament mode is on: the history entries
+    // that ending it undoes.
+    tournament: null,
 };
 
 let filePath = null;

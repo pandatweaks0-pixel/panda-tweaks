@@ -830,6 +830,128 @@ Views.cleanup = () => {
     );
 };
 
+// --- old drivers -------------------------------------------------------------
+
+// Superseded driver packages. The list is deliberately narrow: only a package
+// with a newer version of itself already installed, and never one a device is
+// bound to. That is decided in the main process; this page shows the result and
+// is honest about the two things that matter — how much space it is, and that
+// removal cannot be undone.
+const formatBytes = (n) => {
+    if (!Number.isFinite(n) || n <= 0) return "—";
+    const gb = n / 1024 ** 3;
+    return gb >= 1 ? `${gb.toFixed(1)} GB` : `${Math.round(n / 1024 ** 2)} MB`;
+};
+
+Views.drivers = () => {
+    const state = State.drivers;
+
+    if (state === null || state === undefined) {
+        return h(
+            "div.page",
+            null,
+            pageHead(t("drivers.title"), t("drivers.subtitle")),
+            h("div.empty.mt-4", { text: t("drivers.scanning") })
+        );
+    }
+
+    if (!state.ok) {
+        // "Needs admin" is a different problem from "the store is unreadable",
+        // and only one of them has a fix the user can act on. The flag comes
+        // from the main process, which knows whether the app is elevated —
+        // Windows phrases the refusal in the system language, so reading it
+        // would work in English and fail everywhere else.
+        const needsAdmin = state.needsAdmin === true;
+        return h(
+            "div.page",
+            null,
+            pageHead(
+                t("drivers.title"),
+                t("drivers.subtitle"),
+                h("button.btn", { text: t("drivers.scan"), onclick: () => App.loadDrivers(true) })
+            ),
+            h("div.notice.notice--bad.mt-4", { text: needsAdmin ? t("drivers.needsAdmin") : t("drivers.failed") }),
+            needsAdmin
+                ? h("button.btn.btn--primary.mt-4", {
+                      text: t("admin.restartAsAdmin"),
+                      onclick: () => App.requestAdmin(),
+                  })
+                : h("div.code.mt-3", { text: String(state.error || "") })
+        );
+    }
+
+    const list = state.drivers || [];
+    const chosen = list.filter((d) => State.driverSelection.has(d.inf));
+    const total = chosen.reduce((sum, d) => sum + (d.bytes || 0), 0);
+
+    const row = (d) => {
+        const selected = State.driverSelection.has(d.inf);
+        return h(
+            `div.tweak${selected ? ".tweak--selected" : ""}`,
+            null,
+            h("input.check", {
+                type: "checkbox",
+                checked: selected,
+                "aria-label": `${d.provider} ${d.version}`,
+                onchange: (e) => {
+                    e.target.checked ? State.driverSelection.add(d.inf) : State.driverSelection.delete(d.inf);
+                    App.render();
+                },
+            }),
+            h(
+                "div.tweak__body",
+                null,
+                h(
+                    "div.tweak__name",
+                    null,
+                    `${d.provider || "?"} — ${d.className || "?"}`,
+                    h("span.flag.flag--warn", { text: t("tweaks.notReversible") })
+                ),
+                h("p.tweak__desc", { text: `${d.original || d.inf}  ·  ${d.version || "?"}` }),
+                h(
+                    "div.tweak__meta",
+                    null,
+                    h("span.mono", { text: d.inf }),
+                    h("span", { text: t("drivers.replacedBy", { version: d.newerVersion || "?" }) }),
+                    d.date ? h("span", { text: String(d.date).slice(0, 10) }) : null
+                )
+            ),
+            h("div.tweak__actions", null, h("span.score__value", { text: formatBytes(d.bytes), style: { fontSize: "14px" } }))
+        );
+    };
+
+    return h(
+        "div.page",
+        null,
+        pageHead(
+            t("drivers.title"),
+            t("drivers.subtitle"),
+            h("button.btn", { text: t("drivers.scan"), onclick: () => App.loadDrivers(true) })
+        ),
+        h("p.page__sub.mt-3", { text: t("drivers.note") }),
+        h("div.notice.mt-3", { text: t("drivers.onlySuperseded") }),
+        h("div.notice.notice--warn.mt-2", { text: t("drivers.notReversible") }),
+        list.length
+            ? h(
+                  "div",
+                  null,
+                  h("div.list.mt-4", null, ...list.map(row)),
+                  h(
+                      "div.row.mt-4",
+                      null,
+                      h("span.muted", { text: t("drivers.freed", { size: formatBytes(total) }) }),
+                      h("span.spacer"),
+                      h("button.btn.btn--danger", {
+                          text: chosen.length === 1 ? t("drivers.removeOne") : t("drivers.remove", { count: chosen.length }),
+                          disabled: !chosen.length || State.busy,
+                          onclick: () => App.removeDrivers(),
+                      })
+                  )
+              )
+            : h("div.empty.mt-4", { text: t("drivers.none") })
+    );
+};
+
 // --- debloat -----------------------------------------------------------------
 
 Views.debloat = () => {
