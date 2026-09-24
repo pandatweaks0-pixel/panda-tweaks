@@ -180,6 +180,16 @@ function openModal({ title, subtitle, body, buttons = [], wide = false, dismissi
     });
 }
 
+// A refusal, not a question. One button, because there is nothing to decide —
+// offering "Cancel / Apply" for something the app will not do either way reads
+// as a choice and gets clicked through.
+const alertModal = ({ title, message }) =>
+    openModal({
+        title,
+        body: h("p", { text: message }),
+        buttons: [{ label: t("common.ok"), variant: "primary", value: true }],
+    });
+
 const confirmModal = ({ title, message, confirmLabel, variant = "primary" }) =>
     openModal({
         title,

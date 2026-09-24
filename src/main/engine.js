@@ -11,7 +11,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { getOp, validateOp, listInstalledApps, listStartupEntries } = require("./ops");
+const { getOp, validateOp, listInstalledApps, listStartupEntries, runningBlockers } = require("./ops");
 const logger = require("./logger");
 
 const RISK_LEVELS = new Set(["safe", "advanced", "risky"]);
@@ -448,6 +448,19 @@ async function applyOne(tweak, { isAdmin }) {
 
 // Applies a list of tweaks one after another. A single failure never aborts the
 // batch and never throws out of here.
+// Programs that have to be closed before this selection can be applied, and
+// that are open right now. Asked before anything is written, so the caller can
+// stop rather than apply most of a batch and fail the part that mattered.
+function blockersFor(ids) {
+    const ops = [];
+    for (const id of ids || []) {
+        const tweak = getTweak(id);
+        if (!tweak || tweak.unavailable) continue;
+        for (const op of tweak.operations || []) ops.push(op);
+    }
+    return runningBlockers(ops);
+}
+
 async function applyTweaks(ids, { isAdmin = false, onProgress = null } = {}) {
     const list = ids.map(getTweak).filter(Boolean);
     const results = [];
@@ -828,6 +841,7 @@ module.exports = {
     initBlocked,
     getHistory,
     applyTweaks,
+    blockersFor,
     undoEntry,
     normalizeTweak,
     statusFromOps,

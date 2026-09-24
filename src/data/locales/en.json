@@ -346,5 +346,8 @@
   "about.communityTitle": "Community and source code",
   "about.communityBody": "The build is handed out through Discord and nowhere else — one official file, one place to ask when something goes wrong. The full source is public: every tweak, every registry key and every command is plain text you can read before you run it.",
   "about.joinDiscord": "Join the Discord",
-  "about.viewSource": "View the source code"
+  "about.viewSource": "View the source code",
+  "common.ok": "OK",
+  "apply.gameRunningTitle": "Close the game first",
+  "apply.gameRunning": "{game} is running. It rewrites its settings file when it closes, so anything changed now would be thrown away. Nothing has been applied — close the game and try again."
 }

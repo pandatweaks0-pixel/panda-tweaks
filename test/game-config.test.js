@@ -7,7 +7,16 @@
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { OPS, validateOp, GAME_CONFIGS, GAME_SETTINGS, iniRead, iniWrite } = require("../src/main/ops");
+const {
+    OPS,
+    validateOp,
+    GAME_CONFIGS,
+    GAME_SETTINGS,
+    iniRead,
+    iniWrite,
+    runningBlockers,
+    processIsRunning,
+} = require("../src/main/ops");
 
 const gc = OPS.gameConfig;
 const makeOp = (game, setting) => validateOp({ type: "gameConfig", game, setting });
@@ -118,6 +127,41 @@ test("applied means every key agrees, not just the first", () => {
 test("it needs no administrator rights and can be undone", () => {
     assert.equal(gc.requiresAdmin(makeOp("retrac", "exclusiveFullscreen")), false);
     assert.equal(gc.undoable, true);
+});
+
+// The apply flow stops the whole run when one of these is open, so a wrong
+// answer either blocks everything for no reason or lets the change be thrown
+// away silently. Both directions are checked against the real system.
+test("a running process is recognised, an absent one is not", () => {
+    // explorer.exe is running on any Windows session that has a desktop.
+    assert.equal(processIsRunning("explorer.exe"), true);
+    assert.equal(processIsRunning("this-program-does-not-exist-12345.exe"), false);
+    // tasklist answers in the system language, so the check must not depend on
+    // parsing its "no tasks found" sentence.
+    assert.equal(processIsRunning(""), false);
+});
+
+test("only operations that declare a blocker are asked about", () => {
+    // A registry tweak has nothing to close, so it never blocks a run.
+    const reg = validateOp({
+        type: "registry",
+        hive: "HKCU",
+        key: "Software\\PandaTweaks",
+        name: "X",
+        valueType: "REG_DWORD",
+        value: "1",
+    });
+    assert.deepEqual(runningBlockers([reg]), []);
+    assert.deepEqual(runningBlockers([]), []);
+    assert.deepEqual(runningBlockers(null), []);
+
+    // The game config operation declares one, whether or not it is open now.
+    const gcOp = makeOp("retrac", "exclusiveFullscreen");
+    const declared = OPS.gameConfig.blockedBy(gcOp);
+    assert.equal(declared.process, GAME_CONFIGS.retrac.process);
+    assert.ok(declared.label);
+    // Whatever the answer is, it must match what the process check says.
+    assert.equal(runningBlockers([gcOp]).length, processIsRunning(declared.process) ? 1 : 0);
 });
 
 test("capture reads the real file without changing it", async () => {

@@ -905,6 +905,14 @@ async function restoreGameConfig(op, prev) {
 const describeGameConfig = (op) =>
     `${GAME_SETTINGS[op.setting].label} in ${GAME_CONFIGS[op.game].label}'s own settings file`;
 
+// Which program has to be closed before this operation can work. Declared
+// statically here; whether it is actually running is asked once for a whole
+// batch by runningBlockers below, rather than per operation.
+const gameConfigBlockedBy = (op) => ({
+    process: GAME_CONFIGS[op.game].process,
+    label: GAME_CONFIGS[op.game].label,
+});
+
 function explainGameConfig(op, cur) {
     const setting = GAME_SETTINGS[op.setting];
     const keys = Object.keys(setting.entries);
@@ -1997,6 +2005,7 @@ const OPS = {
         restore: restoreGameConfig,
         describe: describeGameConfig,
         explain: explainGameConfig,
+        blockedBy: gameConfigBlockedBy,
         requiresAdmin: () => false, // the file lives in the user's own profile
         undoable: true,
     },
@@ -2144,6 +2153,51 @@ function getOp(type) {
     return handler;
 }
 
+// Programs that must be closed before these operations can do anything, and
+// that are running right now.
+//
+// A game rewrites its configuration when it exits, so an edit made mid-session
+// is thrown away. Each operation could refuse on its own — and does — but by
+// then the rest of a batch has already been applied, and the one change the
+// user came for is the one missing, reported on line 47 of a result list. This
+// lets the caller stop before anything is touched.
+//
+// tasklist is asked once per distinct process, not once per operation.
+function runningBlockers(ops) {
+    const wanted = new Map();
+    for (const op of ops || []) {
+        const handler = OPS[op && op.type];
+        if (!handler || !handler.blockedBy) continue;
+        const b = handler.blockedBy(op);
+        if (b && b.process) wanted.set(b.process.toLowerCase(), b);
+    }
+    if (!wanted.size) return [];
+
+    const running = [];
+    for (const [, blocker] of wanted) {
+        if (processIsRunning(blocker.process)) running.push(blocker);
+    }
+    return running;
+}
+
+// tasklist prints a header and a "no tasks" notice in the system language, so
+// the answer is taken from whether the image name itself comes back, not from
+// parsing the message around it.
+function processIsRunning(image) {
+    try {
+        const out = require("child_process")
+            .execFileSync("tasklist.exe", ["/fi", `imagename eq ${image}`, "/nh"], {
+                windowsHide: true,
+                stdio: ["ignore", "pipe", "ignore"],
+            })
+            .toString();
+        return out.toLowerCase().includes(String(image).toLowerCase());
+    } catch {
+        // tasklist unavailable is not evidence that anything is running.
+        return false;
+    }
+}
+
 function validateOp(op) {
     const handler = getOp(op && op.type);
     return { ...handler.validate(op), type: op.type };
@@ -2153,6 +2207,8 @@ module.exports = {
     OPS,
     getOp,
     validateOp,
+    runningBlockers,
+    processIsRunning,
     normalizeRegValue,
     POWER_SETTINGS,
     NET_SETTINGS,

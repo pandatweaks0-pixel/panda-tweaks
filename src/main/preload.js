@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld("panda", {
         list: () => ipcRenderer.invoke("tweaks:list"),
         detect: (ids) => ipcRenderer.invoke("tweaks:detect", ids),
         inspect: (id) => ipcRenderer.invoke("tweaks:inspect", id),
+        blockers: (ids) => ipcRenderer.invoke("tweaks:blockers", ids),
         apply: (ids) => ipcRenderer.invoke("tweaks:apply", ids),
         // Returns an unsubscribe function so views can clean up their listener.
         onProgress: (handler) => {

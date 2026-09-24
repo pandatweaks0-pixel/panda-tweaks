@@ -341,6 +341,23 @@ const App = {
         const available = all.filter((x) => !x.unavailable);
         const unavailable = all.length - available.length;
 
+        // A game rewrites its own settings file when it exits, so a change made
+        // while it runs is thrown away a few minutes later. Each operation
+        // refuses on its own, but by then the rest of the batch has been
+        // applied and the one change the user came for is missing, reported on
+        // line 47 of a result list nobody reads to the end.
+        //
+        // So the whole run stops. Doing nothing and saying why is better than
+        // doing 62 of 63 things and burying which one failed.
+        const blockers = await window.panda.tweaks.blockers(available.map((x) => x.id));
+        if (blockers.length) {
+            await alertModal({
+                title: t("apply.gameRunningTitle"),
+                message: t("apply.gameRunning", { game: blockers.map((b) => b.label).join(", ") }),
+            });
+            return;
+        }
+
         // A preset is a fixed list written months ago on someone else's machine,
         // so it gets checked against this one: no battery-draining tweaks on a
         // laptop, no prefetch change on a spinning disk. A hand-picked selection

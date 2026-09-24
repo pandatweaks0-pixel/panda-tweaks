@@ -346,5 +346,8 @@
   "about.communityTitle": "Community und Quellcode",
   "about.communityBody": "Die App wird ausschließlich über Discord verteilt — eine offizielle Datei, eine Stelle zum Nachfragen, wenn etwas klemmt. Der vollständige Quellcode ist öffentlich: jeder Tweak, jeder Registry-Schlüssel und jeder Befehl steht im Klartext da, bevor du ihn ausführst.",
   "about.joinDiscord": "Discord beitreten",
-  "about.viewSource": "Quellcode ansehen"
+  "about.viewSource": "Quellcode ansehen",
+  "common.ok": "OK",
+  "apply.gameRunningTitle": "Schließe zuerst das Spiel",
+  "apply.gameRunning": "{game} läuft gerade. Das Spiel schreibt seine Einstellungsdatei beim Beenden neu, deshalb wäre alles, was jetzt geändert wird, danach weg. Es wurde nichts angewendet — schließe das Spiel und versuche es erneut."
 }

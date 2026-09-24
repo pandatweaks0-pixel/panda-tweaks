@@ -116,6 +116,11 @@ function register({ getWindow, dataDirectory }) {
     ipcMain.handle("tweaks:detect", (_e, ids) => engine.detect(Array.isArray(ids) ? ids : null));
     ipcMain.handle("tweaks:inspect", (_e, id) => engine.inspect(String(id)));
 
+    // Which programs must be closed before this selection can be applied. The
+    // renderer asks before it offers to apply, so the answer arrives while
+    // nothing has been written yet.
+    ipcMain.handle("tweaks:blockers", (_e, ids) => engine.blockersFor(Array.isArray(ids) ? ids : []));
+
     ipcMain.handle("tweaks:apply", async (_e, ids) => {
         if (!Array.isArray(ids) || !ids.length) return { results: [], summary: null };
         const win = getWindow();
