@@ -493,6 +493,12 @@ const APPS = {
     // dropped next to the anti-cheat rather than under the launcher.
     retrac: {
         label: "Project Retrac",
+        // The client is dropped next to the anti-cheat rather than under the
+        // launcher, and the launcher's registered install location does not
+        // point at it. The anti-cheat service records its own path though, so
+        // that is asked first: it survives an install on another drive, which
+        // guessing at Program Files does not.
+        fromService: { name: "AleaAntiCheat", exe: "FortniteClient-Win64-Shipping.exe" },
         candidates: [
             "%ProgramFiles%\\Alea\\FortniteClient-Win64-Shipping.exe",
             "%ProgramFiles(x86)%\\Alea\\FortniteClient-Win64-Shipping.exe",
@@ -552,8 +558,36 @@ function validatePerApp(op) {
     return { ...op, app: String(op.app), setting: String(op.setting) };
 }
 
+// Asks a Windows service where it lives and looks for the executable in the
+// same folder. Reading only — and only the ImagePath of a service named in the
+// table above, never one supplied by a tweak.
+function exeFromService(spec) {
+    try {
+        const out = require("child_process")
+            .execFileSync(
+                "reg.exe",
+                ["query", `HKLM\\SYSTEM\\CurrentControlSet\\Services\\${spec.name}`, "/v", "ImagePath"],
+                { windowsHide: true, stdio: ["ignore", "pipe", "ignore"] }
+            )
+            .toString();
+        const m = /ImagePath\s+REG_[A-Z_]+\s+(.+)/i.exec(out);
+        if (!m) return null;
+        // The value is usually quoted and may carry arguments.
+        const image = m[1].trim().replace(/^"(.*?)"/, "$1").split(/"\s|\s-|\s\//)[0].trim().replace(/^"|"$/g, "");
+        const candidate = path.join(path.dirname(image), spec.exe);
+        return fs.statSync(candidate).isFile() ? candidate : null;
+    } catch {
+        return null;
+    }
+}
+
 // Expands %VARS% and returns the first candidate that is actually on disk.
 function findExe(appId) {
+    const app = APPS[appId];
+    if (app.fromService) {
+        const found = exeFromService(app.fromService);
+        if (found) return found;
+    }
     for (const raw of APPS[appId].candidates) {
         const full = raw.replace(/%([^%]+)%/g, (m, name) => process.env[name] || m);
         if (full.includes("%")) continue; // a variable this system does not define
