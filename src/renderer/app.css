@@ -387,17 +387,28 @@ p { margin: 0; }
 .preset .kv { grid-template-columns: 1fr auto; gap: var(--space-2) var(--space-4); }
 .preset .kv dt { font-size: 12.5px; }
 .preset .row:last-child { margin-top: auto; }
+/* The short code sits underneath; a picture, when there is one, covers it. */
 .preset__mark {
+    position: relative;
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
     flex: none;
+    overflow: hidden;
     border-radius: var(--radius);
     color: #fff;
     font-family: var(--font-display);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 800;
+}
+.preset__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 /* --------------------------------------------------------------- badges --- */

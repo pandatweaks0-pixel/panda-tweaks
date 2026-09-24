@@ -537,6 +537,33 @@ Views.tweaks = () => {
 // already exist in the catalogue. That also means a preset cannot promise more
 // than the catalogue can deliver, so every card states how many of its tweaks
 // are actually applicable on this machine instead of just a total.
+// The tile that identifies a preset. A picture is used when one has been put in
+// src/renderer/assets/presets/ named after the preset id; otherwise the coloured
+// tile with the short code stays.
+//
+// None ship with the app on purpose. Those logos belong to Epic, Riot and
+// Rockstar, and putting them inside an executable that is handed to strangers
+// is a different thing from having them on your own machine. Dropping your own
+// file in is one copy on one PC, and that is your call rather than something
+// baked into every download.
+const PRESET_IMAGE_TYPES = ["png", "jpg", "webp"];
+
+function presetMark(preset) {
+    const mark = h("div.preset__mark", { style: { background: preset.color }, text: preset.short });
+    const img = h("img.preset__img", { alt: "" });
+
+    // Try each extension in turn; when none loads, the tile underneath is what
+    // stays visible, so a missing picture is never a broken-image icon.
+    let next = 0;
+    img.onerror = () => {
+        if (next < PRESET_IMAGE_TYPES.length) img.src = `assets/presets/${preset.id}.${PRESET_IMAGE_TYPES[next++]}`;
+        else img.remove();
+    };
+    img.onerror();
+    mark.append(img);
+    return mark;
+}
+
 Views.presets = () => {
     const presets = State.presets;
     if (presets === null) {
@@ -556,7 +583,7 @@ Views.presets = () => {
             h(
                 "div.row",
                 null,
-                h("div.preset__mark", { style: { background: preset.color }, text: preset.short }),
+                presetMark(preset),
                 h(
                     "div",
                     null,
