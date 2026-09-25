@@ -236,6 +236,10 @@ const SCAN_SCOPES = {
         root: "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces",
         label: "network interfaces",
     },
+    netAdapters: {
+        root: "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}",
+        label: "network cards",
+    },
 };
 
 // `sub` is the subkey under each enumerated device key; "" means the key itself.
@@ -298,6 +302,12 @@ const SCAN_SETTINGS = {
         label: "TCP acknowledgement delay",
     },
     tcpNoDelay: { scope: "tcpInterfaces", sub: "", name: "TCPNoDelay", label: "Nagle's algorithm" },
+    nicInterruptModeration: {
+        scope: "netAdapters",
+        sub: "",
+        name: "*InterruptModeration",
+        label: "Interrupt moderation",
+    },
 };
 
 function validateRegistryScan(op) {
@@ -970,6 +980,20 @@ const TOGGLES = {
         on: ["-NoProfile", "-NonInteractive", "-Command", "Enable-MMAgent -mc"],
         off: ["-NoProfile", "-NonInteractive", "-Command", "Disable-MMAgent -mc"],
         file: "powershell.exe",
+    },
+    // TRIM tells the SSD which blocks are free. With it off the drive gets
+    // slower and wears faster, and it buys nothing at all - which is why this
+    // exists to switch it back ON. Optimisers that "tune TRIM" mean turning it
+    // off; that is not a tweak, it is damage with a delay.
+    //
+    // fsutil is the supported route. The registry value behind it is not
+    // reliably present, so reading it would report "not set" on a machine where
+    // TRIM is plainly disabled.
+    trim: {
+        label: "TRIM (SSD block cleanup)",
+        file: "fsutil.exe",
+        on: ["behavior", "set", "DisableDeleteNotify", "0"],
+        off: ["behavior", "set", "DisableDeleteNotify", "1"],
     },
     reservedStorage: {
         label: "Reserved storage",

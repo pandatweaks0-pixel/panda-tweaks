@@ -279,6 +279,18 @@
     ]
   },
   {
+    "id": "fix_trim",
+    "name": "SSD TRIM",
+    "description": "Turns TRIM back on. TRIM is how Windows tells an SSD which blocks are free; without it the drive gets slower over time and wears faster. Several \"optimizers\" switch it off, which gains nothing and costs the drive. Harmless to run if it was already on.",
+    "operations": [
+      {
+        "type": "toggle",
+        "setting": "trim",
+        "enabled": true
+      }
+    ]
+  },
+  {
     "id": "fix_sysfiles",
     "name": "Corrupted System Files",
     "description": "Repairs the component store and then checks every protected system file. This takes a long time — often 15 to 45 minutes.",

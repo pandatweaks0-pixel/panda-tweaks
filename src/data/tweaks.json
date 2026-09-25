@@ -4224,5 +4224,53 @@
     ],
     "originalCommand": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v GlobalTimerResolutionRequests /t REG_DWORD /d 1 /f",
     "originalRevert": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v GlobalTimerResolutionRequests /f"
+  },
+  {
+    "id": "mem_8dot3_off",
+    "name": "Stop creating short (8.3) file names",
+    "category": "Performance",
+    "sourceCategory": "Memory",
+    "risk": "advanced",
+    "description": "Windows still writes a second, MS-DOS style name for every file it creates, so software from the nineties can find it. Switching that off saves a little work each time a file is made, and the more files a folder already holds the more it saves. It does nothing for files that exist, nothing for reading, and nothing for framerate - if you are here for FPS, skip it. Very old installers that still look for short names can fail afterwards. Takes effect for newly created files only.",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": {
+      "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\NtfsDisable8dot3NameCreation": "2"
+    },
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registry",
+        "action": "set",
+        "hive": "HKLM",
+        "key": "SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+        "name": "NtfsDisable8dot3NameCreation",
+        "valueType": "REG_DWORD",
+        "value": "1"
+      }
+    ]
+  },
+  {
+    "id": "net_interrupt_mod_off",
+    "name": "Network card interrupt moderation off",
+    "category": "Network",
+    "sourceCategory": "Network",
+    "risk": "advanced",
+    "description": "The network card normally collects a few packets before interrupting the processor, which saves CPU at the cost of holding each packet back a moment. Turning it off hands packets over immediately - worth a little latency in a shooter, paid for with more interrupts and slightly higher CPU use under heavy traffic. Only cards whose driver actually offers the setting are touched; one that does not have it is left alone rather than having it invented. Takes effect after a restart.",
+    "detailedDescription": null,
+    "recommended": false,
+    "requiresRestart": true,
+    "oneTimeAction": false,
+    "windowsDefault": null,
+    "warnings": [],
+    "operations": [
+      {
+        "type": "registryScan",
+        "setting": "nicInterruptModeration",
+        "value": "0"
+      }
+    ]
   }
 ]

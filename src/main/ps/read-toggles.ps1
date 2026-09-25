@@ -31,6 +31,19 @@ foreach ($setting in $req.settings) {
         } elseif ($setting -eq 'pageCombining') {
             $v = (Get-MMAgent -ErrorAction Stop).PageCombining
             if ($null -ne $v) { $res.ok = $true; $res.enabled = [bool]$v }
+        } elseif ($setting -eq 'trim') {
+            # fsutil prints "NTFS DisableDeleteNotify = 0" followed by an
+            # explanation in the system language. The number is read out of the
+            # NTFS line; the sentence after it is never parsed.
+            #
+            # Reported the way the rest of the app thinks: enabled = TRIM is on,
+            # which is DisableDeleteNotify = 0.
+            $fsout = & fsutil.exe behavior query DisableDeleteNotify 2>$null
+            $line = @($fsout) | Where-Object { $_ -match 'NTFS\s+DisableDeleteNotify\s*=\s*(\d+)' } | Select-Object -First 1
+            if ($line -and $line -match 'NTFS\s+DisableDeleteNotify\s*=\s*(\d+)') {
+                $res.ok = $true
+                $res.enabled = ([int]$Matches[1] -eq 0)
+            }
         } elseif ($setting -eq 'reservedStorage') {
             $v = (Get-WindowsReservedStorageState -ErrorAction Stop).ReservedStorageState
             if ($v) { $res.ok = $true; $res.enabled = ([string]$v -eq 'Enabled') }

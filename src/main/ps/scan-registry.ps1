@@ -86,6 +86,29 @@ foreach ($scope in $req.scopes) {
                     [void]$list.Add((Strip-Hive $k.Name))
                 }
             }
+        } elseif ($scope -eq 'netAdapters') {
+            # Network card settings live in the driver's class key, not under
+            # Enum. Only physical adapters are considered - the class is full of
+            # VPN, loopback and virtual entries - and only keys that already
+            # carry the value, so a card whose driver does not support interrupt
+            # moderation never has the setting invented for it.
+            $guids = @{}
+            foreach ($a in (Get-NetAdapter -Physical -ErrorAction Stop)) {
+                if ($a.InterfaceGuid) { $guids[([string]$a.InterfaceGuid).ToLower()] = $true }
+            }
+            $classRoot = 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}'
+            # The root has to be there, but individual subkeys under it can be
+            # locked down - one of them always is on a normal machine. Enumerating
+            # strictly turns that single refusal into "no network cards found".
+            if (-not (Test-Path -LiteralPath $classRoot)) { throw "network class key missing" }
+            foreach ($k in (Get-ChildItem -LiteralPath $classRoot -ErrorAction SilentlyContinue)) {
+                if ($k.PSChildName -notmatch '^\d{4}$') { continue }
+                $props = Get-ItemProperty -LiteralPath $k.PSPath
+                $id = [string]$props.NetCfgInstanceId
+                if (-not $id -or -not $guids.ContainsKey($id.ToLower())) { continue }
+                if ($null -eq $props.'*InterruptModeration') { continue }
+                [void]$list.Add((Strip-Hive $k.Name))
+            }
         } elseif ($scope -eq 'tcpInterfaces') {
             $root = 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces'
             foreach ($k in (Get-ChildItem -LiteralPath $root -ErrorAction Stop)) {
