@@ -1632,21 +1632,21 @@
     "category": "Windows",
     "sourceCategory": "Windows",
     "risk": "safe",
-    "description": "Removes the Widgets button (frees a background process).",
+    "description": "Removes the Widgets button from the taskbar and the board behind it, and with them the background process that keeps their feed updated. This is the Group Policy Windows provides for it. The taskbar value most guides name stopped being writable on current builds - the key still is, that one value is not, and running as administrator does not change it, so a tweak that sets it can only ever fail. Needs administrator rights and takes effect after a restart.",
     "recommended": true,
-    "requiresRestart": false,
+    "requiresRestart": true,
     "oneTimeAction": false,
     "windowsDefault": {
-      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDa": "1"
+      "HKLM\\SOFTWARE\\Policies\\Microsoft\\Dsh\\AllowNewsAndInterests": "1"
     },
     "warnings": [],
     "operations": [
       {
         "type": "registry",
         "action": "set",
-        "hive": "HKCU",
-        "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
-        "name": "TaskbarDa",
+        "hive": "HKLM",
+        "key": "SOFTWARE\\Policies\\Microsoft\\Dsh",
+        "name": "AllowNewsAndInterests",
         "valueType": "REG_DWORD",
         "value": "0"
       }
